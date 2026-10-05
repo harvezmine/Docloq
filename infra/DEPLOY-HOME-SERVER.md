@@ -88,6 +88,7 @@ infra/
     vault-init-home.sh          init/unseal Vault, switch KEY_PROVIDER
     backup-home.sh              dump everything unrecoverable
     set-secrets.sh              fill .env secrets interactively, no shell history
+    cf-dns-point.sh             repoint DNS at an EXISTING tunnel (DNS scope only)
 ```
 
 Nothing under `backend/` or `frontend/` was modified.
@@ -129,12 +130,86 @@ one it baselines instead of re-running. There is no manual migration step.
 
 ### If you only have a dashboard tunnel token (no API token)
 
-Create the tunnel in Zero Trust → Networks → Tunnels, paste the token into
-`CLOUDFLARE_TUNNEL_TOKEN` in `.env`, then add these four public hostnames
-**in the dashboard** (the token mode ignores `cloudflared/config.yml`):
+A tunnel token is just base64 JSON — `{"a": accountTag, "t": tunnelID,
+"s": tunnelSecret}` — which is **exactly** the three fields of a credentials
+file. So a dashboard-created tunnel does not force you into dashboard-managed
+ingress: derive the credentials file from the token and run the preferred
+locally-managed mode instead, keeping ingress in version control rather than
+clicked into a web UI.
+
+```bash
+cd /home/Docloq-new/infra
+TOKEN=$(grep -oP '(?<=^CLOUDFLARE_TUNNEL_TOKEN=).*' .env)
+TID=$(printf '%s' "$TOKEN" | base64 -d | jq -r .t)
+printf '%s' "$TOKEN" | base64 -d \
+  | jq '{AccountTag:.a, TunnelID:.t, TunnelSecret:.s}' > "cloudflared/$TID.json"
+
+# cloudflared runs as uid 65532, so a root-owned 0600 file is unreadable:
+#   "couldn't read tunnel credentials ...: permission denied"
+chown 65532:65532 "cloudflared/$TID.json" && chmod 600 "cloudflared/$TID.json"
+
+sed -e "s|__TUNNEL_ID__|$TID|g" -e "s|__DOMAIN_APP__|$DOMAIN_APP|g" \
+    -e "s|__DOMAIN_API__|$DOMAIN_API|g" -e "s|__DOMAIN_OFFICE__|$DOMAIN_OFFICE|g" \
+    -e "s|__DOMAIN_SIGN__|$DOMAIN_SIGN|g" \
+    cloudflared/config.yml.template > cloudflared/config.yml
+
+docker compose -f docker-compose.home.yml --env-file .env \
+  --profile tunnel-file up -d cloudflared
+```
+
+Confirm it took the **local** config rather than pulling the dashboard's:
+
+```bash
+docker run --rm --network docloq_edge curlimages/curl -sS \
+  http://cloudflared:2000/ready    # {"status":200,"readyConnections":4,...}
+docker run --rm --network docloq_edge curlimages/curl -sS \
+  http://cloudflared:2000/metrics | grep orchestration_config_version
+# cloudflared_orchestration_config_version 0   <- 0 means local config.yml.
+#                                                 Non-zero = remote config won.
+```
+
+If you would rather use dashboard-managed ingress, add the four public
+hostnames there (the token mode ignores `cloudflared/config.yml`):
 
 | Public hostname | Service |
 |---|---|
+| `docloq.site` | `HTTP` → `frontend:80` |
+| `api.docloq.site` | `HTTP` → `backend:3000` |
+| `office.docloq.site` | `HTTP` → `onlyoffice:80` |
+| `sign.docloq.site` | `HTTP` → `docuseal:3000` |
+
+For `office.docloq.site` also set *Additional application settings → HTTP Host
+Header* to `office.docloq.site`, otherwise OnlyOffice builds its self-URLs from
+the container name and the editor fails to load. Then:
+
+```bash
+docker compose -f docker-compose.home.yml --env-file .env --profile tunnel-token up -d cloudflared-token
+```
+
+### A connected tunnel is not a reachable site — DNS is separate
+
+`cloudflared` dialling out successfully says nothing about whether traffic can
+reach it. The edge only sends a hostname down the tunnel if that hostname's DNS
+record is a CNAME to `<tunnel-id>.cfargotunnel.com`. While the four records
+still pointed at the dead VPS, all four hostnames returned **HTTP 522** with a
+fully healthy 4-connection tunnel running.
+
+A tunnel token carries no zone authority, so it cannot fix DNS. That step needs
+an API token with `Zone → DNS → Edit` — and nothing else, no account or tunnel
+scope:
+
+```bash
+./scripts/set-secrets.sh CLOUDFLARE_API_TOKEN
+DRY_RUN=1 ./scripts/cf-dns-point.sh     # show the changes first
+./scripts/cf-dns-point.sh               # replace A records with proxied CNAMEs
+```
+
+`cf-dns-point.sh` only touches DNS — it never creates or alters a tunnel, which
+is what makes it safe to run against a tunnel somebody else created. It also
+deletes leftover `A`/`AAAA` records on the same name, since one stale record is
+enough to keep sending a share of traffic to the old origin.
+
+---|---|
 | `docloq.site` | `HTTP` → `frontend:80` |
 | `api.docloq.site` | `HTTP` → `backend:3000` |
 | `office.docloq.site` | `HTTP` → `onlyoffice:80` |
@@ -223,18 +298,28 @@ Deployed and verified 2026-10-05:
 | mongodb 7 | healthy | `[AI Cache] MongoDB connected` |
 | qdrant 1.13.1 | up | reachable on `:6333` |
 | vault 1.17 | up | **uninitialised** (`KEY_PROVIDER=local`) |
-| backend | healthy | `GET /` 200, register + login verified |
+| backend | healthy | `GET /` 200; register, 2FA email-OTP, upload, encrypt/decrypt round-trip, QR verify, signed OnlyOffice convert all verified end-to-end through the tunnel |
 | frontend | healthy | `/health` 200 |
-| onlyoffice | up | `/healthcheck` 200 |
+| onlyoffice | healthy | `/healthcheck` 200; **JWT now enforced** (see defect 5) |
 | docuseal | up | 302 to setup |
 | clamav | healthy | ~1 GB resident, freshclam running, `clamdcheck.sh` passes |
 | searxng | up | 200 |
-| cloudflared | **not started** | waiting on a Cloudflare token — everything else is ready for it |
+| cloudflared | **live** | locally-managed tunnel, 4 QUIC conns to Cloudflare; all four hostnames return 200/302 from the public internet |
 
 Footprint: ~2 GB RAM for the whole stack, 7.6 GB still available on the host.
 Disk went from 34 GB to 21 GB free (OnlyOffice alone is 4.9 GB).
 
-Three defects had to be worked around; none is in the old compose files:
+Live as of the second session (2026-10-05): the tunnel is up in locally-managed
+mode (credentials derived from a dashboard tunnel token — see §3), DNS for all
+four hostnames was repointed off the dead VPS at `141.11.25.76` with
+`cf-dns-point.sh`, and SMTP (Brevo), the OpenAI key, blockchain anchoring
+(Amoy, wallet `0x6B92…`), Serper and the GitHub OSINT token were all filled in
+from the recovered env. The login blocker is cleared — an email OTP was sent
+and accepted end-to-end.
+
+Five defects had to be worked around; none is in the old compose files. The
+first three are infra-only; defects 4 and 5 are genuine application bugs that
+would hit **any** fresh deploy of this repo, not just this host:
 
 1. **Vault crash-loop.** The `vault_data` volume is created root-owned but
    `hashicorp/vault` runs as uid 100, so Vault died on
@@ -256,6 +341,29 @@ Three defects had to be worked around; none is in the old compose files:
    than a cosmetic status: `SCANNER_ENABLED=true`, so an unhealthy-looking
    scanner invites someone to "fix" it by turning scanning off.
 
+4. **Every document upload failed (schema drift).** `document_qr_codes` is only
+   ever created by `0000_goofy_magma.sql`, but `src/db/schema.js` later grew a
+   QR lifecycle (`status`, `superseded_*`, `purged_at`) and three issue-time
+   snapshot columns with no migration behind them. A DB built purely from
+   `drizzle/*.sql` was seven columns short of what the upload pipeline inserts,
+   so step 9 (QR generation) threw and the whole upload transaction rolled back
+   — a fresh deploy could not store a single file. The previous production DB
+   had the columns applied out-of-band, which is why nobody noticed. Fixed by
+   the new `0024_qr_lifecycle_columns.sql`; a full Drizzle introspection of all
+   69 tables confirmed this was the only drift.
+
+5. **OnlyOffice was a public SSRF.** `JWT_ENABLED` was `"false"`, so
+   `office.docloq.site/ConvertService.ashx` — reachable from the internet —
+   would fetch any URL it was handed and return the body. A single unauthenticated
+   request made it pull the internal-only `backend:3000`. The backend already
+   had a dormant `ONLYOFFICE_SECRET` and `jsonwebtoken`; the signing was simply
+   never wired. Now the backend signs the editor config, ConvertService and
+   CommandService calls, the container runs `JWT_ENABLED=true`, and
+   `ALLOW_META_IP_ADDRESS` is off (`ALLOW_PRIVATE_IP_ADDRESS` must stay on,
+   since `backend:3000` is a Docker-private address). Verified: an unsigned
+   ConvertService call now returns `Error -8`, while the backend's own signed
+   convert path still produces a valid `.docx`.
+
 ### Two things are deliberately set to a non-production value
 
 1. **Turnstile is on Cloudflare's public test pair** (site key
@@ -275,47 +383,31 @@ Three defects had to be worked around; none is in the old compose files:
 
 ---
 
-## 6. Still needed before this is usable
+## 6. Configuration status
 
-### Blocker — nobody can log in without this
+### Login blocker — RESOLVED
 
-**SMTP credentials.** `login` in `backend/src/controllers/auth.controller.js:116`
-makes 2FA mandatory for every account (`// 2FA is always required`), and the only
-second factor a new user can actually complete is the emailed OTP
-(`POST /api/totp/send-email-otp`). The TOTP path needs an authenticator secret
-the user has never been shown. With `SMTP_*` empty that endpoint returns
-`Failed to send verification email` — verified against the running stack. The
-dev shortcut codes `123456`/`000000` are gated on `NODE_ENV !== 'production'`.
+Login needs email OTP as the mandatory second factor (`login` in
+`backend/src/controllers/auth.controller.js` makes 2FA mandatory, and the emailed
+OTP via `POST /api/totp/send-email-otp` is the only factor a new user can
+complete — the dev shortcut codes `123456`/`000000` are gated on
+`NODE_ENV !== 'production'`). SMTP is now configured (Brevo, recovered from the
+old env) and an OTP was sent and accepted end-to-end. If you ever rotate it, use
+`./scripts/set-secrets.sh SMTP_HOST SMTP_USER SMTP_PASS` (it hides secrets, keeps
+them out of shell history, re-applies mode 600) then restart the backend.
 
-Fill in `.env` (the old deploy used Brevo):
+### Tunnel + DNS — DONE
 
-```
-SMTP_HOST=smtp-relay.brevo.com
-SMTP_PORT=587
-SMTP_USER=<brevo login>
-SMTP_PASS=<brevo SMTP key>
-SMTP_FROM=no-reply@docloq.site
-```
-
-Use `./scripts/set-secrets.sh` rather than editing by hand — it prompts for
-each value, hides the ones that are secrets instead of echoing them, keeps them
-out of your shell history, and re-applies mode 600 afterwards. It takes key
-names too: `./scripts/set-secrets.sh SMTP_PASS CLOUDFLARE_API_TOKEN`.
-Then `docker compose ... restart backend` to pick the new values up.
-
-### Needed for the tunnel (pick one)
-
-- `CLOUDFLARE_API_TOKEN` — scopes `Account → Cloudflare Tunnel → Edit` and
-  `Zone → DNS → Edit` on `docloq.site`. Then `./scripts/cf-tunnel-setup.sh`
-  does the rest. Account ID already in `.env`:
-  `7644bc065a6f2d87aca679eb300af542` (read off the existing portalio tunnel —
-  confirm `docloq.site` is in that same account).
-- or `CLOUDFLARE_TUNNEL_TOKEN` plus the four hostnames added by hand (§3).
-
-All four DNS records currently exist and are proxied, pointing at the dead VPS.
-`cf-tunnel-setup.sh` replaces them with CNAMEs to `<tunnel-id>.cfargotunnel.com`.
+The tunnel runs in locally-managed mode. It was created in the Zero Trust
+dashboard; its credentials file was derived from the tunnel token (§3) so
+ingress lives in `cloudflared/config.yml` under version control rather than in
+the dashboard. DNS for all four hostnames was moved off the dead VPS
+(`141.11.25.76`) onto `<tunnel-id>.cfargotunnel.com` with
+`./scripts/cf-dns-point.sh`, which needs only a `Zone → DNS → Edit` API token
+and never touches the tunnel itself.
 
 ### Needed per feature
+
 
 | Variable | Without it |
 |---|---|
@@ -326,6 +418,14 @@ All four DNS records currently exist and are proxied, pointing at the dead VPS.
 | `GOOGLE_CLIENT_ID` / `_SECRET` | "Sign in with Google" unavailable |
 | `POLYGON_PRIVATE_KEY` | blockchain anchoring stays off. Contract `0x8CAeedf1dF7EE5119D18630EfC271C30cbc3909A` on Amoy is reusable — no redeploy |
 | `GOOGLE_CSE_KEY` / `SERPER_API_KEY` | optional; self-hosted SearXNG already covers OSINT discovery |
+
+Filled in this session from the recovered env: `OPENAI_API_KEY` (validated against
+`/v1/models`), `POLYGON_PRIVATE_KEY` + `BLOCKCHAIN_ENABLED=true` +
+`AUDIT_ANCHOR_ENABLED=true` (backend logs `[Blockchain] Connected to chain 80002,
+wallet 0x6B92…` and `[AuditAnchor] scheduled`), `SERPER_API_KEY`, `GITHUB_TOKEN`
+(OSINT), `PQC_WRAP_ENABLED=true`. Still open: `DOCUSEAL_API_KEY` (create the admin
+at `https://sign.docloq.site` first), `TURNSTILE_SECRET_KEY` (still the always-pass
+test pair — see below), and the Google OAuth pair (burned, must be rotated).
 
 ### Security debt found while reading the repo
 

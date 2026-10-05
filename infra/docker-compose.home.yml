@@ -262,10 +262,19 @@ services:
     image: onlyoffice/documentserver:latest
     restart: unless-stopped
     environment:
-      JWT_ENABLED: "false"
+      # JWT closes the ConvertService/CommandService SSRF: office.docloq.site is
+      # public, so without a shared secret anyone could drive the document
+      # server to fetch internal URLs. The backend signs config/convert/command
+      # with ONLYOFFICE_SECRET; the server rejects anything unsigned.
+      JWT_ENABLED: "true"
+      JWT_SECRET: ${ONLYOFFICE_SECRET}
+      JWT_HEADER: "Authorization"
+      JWT_IN_BODY: "true"
       DS_FORCESAVE: "true"
+      # backend:3000 is a Docker-private address, so private IPs must stay
+      # reachable; link-local/metadata (169.254.0.0/16) never is, so keep it off.
       ALLOW_PRIVATE_IP_ADDRESS: "true"
-      ALLOW_META_IP_ADDRESS: "true"
+      ALLOW_META_IP_ADDRESS: "false"
     volumes:
       - onlyoffice_data:/var/www/onlyoffice/Data
       - onlyoffice_logs:/var/log/onlyoffice
