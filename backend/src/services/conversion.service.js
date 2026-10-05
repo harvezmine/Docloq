@@ -3,6 +3,7 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { randomUUID } from 'crypto';
+import jwt from 'jsonwebtoken';
 import archiver from 'archiver';
 
 const ONLYOFFICE_URL = process.env.ONLYOFFICE_URL_INTERNAL || process.env.ONLYOFFICE_URL || 'http://localhost:8082';
@@ -96,7 +97,12 @@ export async function convertDocument(fileUrl, fromType, outputType, key) {
     url: fileUrl,
   };
 
-  console.log('[Conversion] Requesting conversion:', payload);
+  const ooSecret = process.env.ONLYOFFICE_SECRET || null;
+  if (ooSecret) {
+    payload.token = jwt.sign(payload, ooSecret, { expiresIn: '1h' });
+  }
+
+  console.log('[Conversion] Requesting conversion:', { ...payload, token: payload.token ? '<signed>' : undefined });
 
   const response = await fetch(conversionUrl, {
     method: 'POST',

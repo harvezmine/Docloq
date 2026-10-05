@@ -12,6 +12,7 @@ import { eq, desc, and, isNull, inArray } from 'drizzle-orm';
 import path from 'path';
 import fs from 'fs/promises';
 import crypto, { randomUUID } from 'crypto';
+import jwt from 'jsonwebtoken';
 
 import { uploadPipeline } from '../services/upload-pipeline.service.js';
 import { downloadFile, uploadFile } from '../services/storage.service.js';
@@ -96,6 +97,18 @@ export async function toggleQrOnDownload(req, res) {
 // OnlyOffice can't send JWT headers, so signed short-lived tokens ride as query params.
 // Secret is per-process when ONLYOFFICE_SECRET is unset.
 const OO_SECRET = process.env.ONLYOFFICE_SECRET || crypto.randomBytes(32).toString('hex');
+
+// OnlyOffice document-server JWT. When ONLYOFFICE_SECRET is set we also set
+// JWT_ENABLED=true on the container, so every request the server accepts
+// (editor config, ConvertService, CommandService) and every request it makes
+// back (callback, file fetch) must carry a token signed with this secret.
+// Without it the ConvertService/CommandService endpoints are an unauthenticated
+// SSRF: anyone on the internet can make OnlyOffice fetch an arbitrary URL and
+// read the body back. Null (dev, secret unset) => no signing, JWT disabled.
+const OO_JWT_SECRET = process.env.ONLYOFFICE_SECRET || null;
+export function signOOConfig(payload) {
+  return OO_JWT_SECRET ? jwt.sign(payload, OO_JWT_SECRET, { expiresIn: '12h' }) : undefined;
+}
 
 export function generateOOToken(documentId) {
   const expires = Date.now() + 12 * 60 * 60 * 1000;
@@ -808,6 +821,10 @@ export const getOnlyOfficeConfig = async (req, res) => {
       type: isSlow ? 'mobile' : 'desktop',
     };
 
+    // Sign the config so the document server accepts it when JWT is enforced.
+    const ooConfigToken = signOOConfig(config);
+    if (ooConfigToken) config.token = ooConfigToken;
+
     res.json({
       success: true,
       data: {
@@ -1219,10 +1236,12 @@ export const forceSaveDocument = async (req, res) => {
     const response = await fetch(`${onlyOfficeUrl}/coauthoring/CommandService.ashx`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        c: 'forcesave',
-        key: docKey,
-      }),
+      body: JSON.stringify((() => {
+        const cmd = { c: 'forcesave', key: docKey };
+        const t = signOOConfig(cmd);
+        if (t) cmd.token = t;
+        return cmd;
+      })()),
     });
 
     const result = await response.json();
