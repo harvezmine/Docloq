@@ -19,4 +19,8 @@ ingress:
       httpHostHeader: __DOMAIN_OFFICE__
   - hostname: __DOMAIN_SIGN__
     service: http://docuseal:3000
+  - hostname: __DOMAIN_PORTAINER__
+    service: http://portainer:9000
+  - hostname: __DOMAIN_DB__
+    service: http://adminer:8080
   - service: http_status:404

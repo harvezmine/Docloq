@@ -63,6 +63,8 @@ sit on the edge network instead because they genuinely need egress — ClamAV fo
 | `api.docloq.site` | `backend` (express) | 3000 |
 | `office.docloq.site` | `onlyoffice` | 80 |
 | `sign.docloq.site` | `docuseal` | 3000 |
+| `portainer.docloq.site` | `portainer` | 9000 |
+| `db.docloq.site` | `adminer` | 8080 |
 
 ---
 
@@ -436,6 +438,45 @@ and replace the example values with placeholders. `infra/.env` deliberately
 leaves both blank rather than reusing them.
 
 ---
+
+## 6b. Admin tools, admin panel, and disabled features (session 2)
+
+**Admin panel** lives at `https://docloq.site/kicawkicaw` (hidden route). It is
+gated by `ADMIN_GATE_SECRET`, sent as the `X-Admin-Gate` header; the React app
+stores what you type in `sessionStorage` and attaches it to every call. If the
+panel shows everything failing to load, the gate value is wrong — every
+superadmin call 401s. CORS is fine (preflight 204, `X-Admin-Gate` is in
+`allowedHeaders`, origin `https://docloq.site` is allowed). The gate is
+currently set to `IndonesiaRaya` at the user's request — note this is the
+middleware's hardcoded fallback and is weak; change `ADMIN_GATE_SECRET` in
+`.env` and restart the backend for anything production-facing.
+
+**Portainer** (`portainer.docloq.site`) and **Adminer** (`db.docloq.site`) were
+added to the stack and tunnel at the user's explicit request, **tunnel-only with
+no Cloudflare Access in front**. Portainer controls all Docker on this host
+(including the milo/portalio/supabase stacks) and Adminer is a raw SQL console
+to Postgres — both are sensitive. Open Portainer immediately after first start
+to set its admin password (Portainer CE locks first-user creation on a timeout).
+Adminer logs in with the Postgres creds from `.env`
+(`ADMINER_DEFAULT_SERVER=postgres`). Harden later with a Cloudflare Access
+policy (set in the Zero Trust dashboard — a tunnel token can't create it).
+
+**E-signature (signing) is disabled in the UI.** DocuSeal has no API key in this
+deployment, so the sign-task flow would break. `frontend/.../tasks/Tasks.jsx`
+now renders an "E-signature is temporarily unavailable" notice in place of
+`SigningPanel`, and the `sign` task-type is hidden from the filter. The
+`SigningPanel` import and the original JSX are left commented right there. To
+re-enable: create the DocuSeal admin at `https://sign.docloq.site`, put its
+token in `DOCUSEAL_API_KEY`, restart the backend, then restore the commented
+`<SigningPanel>` and rebuild the frontend.
+
+**Google login** needs `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` (read by the
+backend at request time — no frontend rebuild needed). Empty id gives Google's
+"Missing required parameter: client_id". The OAuth client in Google Cloud
+Console must list `https://api.docloq.site/api/auth/google/callback` as an
+authorized redirect URI. Login is invite-only: `googleCallback` looks the email
+up in `users` and redirects with `error=unregistered_email` if it isn't already
+provisioned in a tenant — so the person must be invited/created first.
 
 ## 7. Troubleshooting
 

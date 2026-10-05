@@ -44,6 +44,7 @@ volumes:
   docuseal_data:
   backend_storage:    # STORAGE_PROVIDER=local document store
   backend_backups:    # pg_dump target (BACKUPS_DIR)
+  portainer_data:
 
 services:
 
@@ -293,3 +294,35 @@ services:
       - docuseal_data:/data
     networks: [edge]
     mem_limit: 768m
+
+  # ==========================================================================
+  # ADMIN TOOLS — exposed through the tunnel at the user's explicit request.
+  # NOTE: tunnel-only, NO Cloudflare Access in front. Anyone who learns the
+  # hostname reaches the login page. Portainer controls ALL Docker on this host
+  # (milo/portalio/supabase included) and Adminer is a raw SQL console to
+  # Postgres. Harden by setting a strong Portainer admin password on first open
+  # and, ideally, adding a Cloudflare Access policy later.
+  # ==========================================================================
+
+  # portainer.docloq.site — Docker management UI
+  portainer:
+    image: portainer/portainer-ce:latest
+    restart: unless-stopped
+    # Serve plain HTTP on 9000; the Cloudflare edge terminates TLS.
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks: [edge]
+    mem_limit: 256m
+
+  # db.docloq.site — Adminer raw DB UI. On BOTH networks: edge so cloudflared can
+  # reach it, data so it can reach postgres (which has no route off `data`).
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DESIGN: dracula
+    networks: [edge, data]
+    mem_limit: 128m

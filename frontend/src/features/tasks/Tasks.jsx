@@ -370,7 +370,8 @@ export default function Tasks() {
     { value: "fill", label: t("tasks.taskType.fill"), cfg: taskTypeConfig.fill },
     { value: "review", label: t("tasks.taskType.review"), cfg: taskTypeConfig.review },
     { value: "approve", label: t("tasks.taskType.approve"), cfg: taskTypeConfig.approve },
-    { value: "sign", label: t("tasks.taskType.sign"), cfg: taskTypeConfig.sign },
+    // sign task-type hidden while e-signature is unavailable
+    // { value: "sign", label: t("tasks.taskType.sign"), cfg: taskTypeConfig.sign },
   ];
 
   if (showEditor && selectedTask) {
@@ -559,13 +560,28 @@ export default function Tasks() {
                     </div>
                   )}
 
-                  {/* Sign: DocuSeal signing panel */}
+                  {/* Sign: DocuSeal signing panel — TEMPORARILY DISABLED.
+                      The e-signature service is not available in this deployment,
+                      so the panel is replaced with a notice instead of a broken flow.
+                      To re-enable: restore the <SigningPanel> below and configure
+                      DOCUSEAL_API_KEY on the backend. */}
                   {selectedTask.taskType === "sign" && (
+                    <div className="rounded-xl border border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10 p-4">
+                      <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
+                        E-signature is temporarily unavailable
+                      </p>
+                      <p className="mt-1 text-xs text-amber-700 dark:text-amber-400/80">
+                        Document signing has been disabled by the administrator while the
+                        signing service is being set up. Please check back later.
+                      </p>
+                    </div>
+                  )}
+                  {/* {selectedTask.taskType === "sign" && (
                     <SigningPanel
                       task={selectedTask}
                       onComplete={() => { fetchTasks(); closeTaskDetail(); }}
                     />
-                  )}
+                  )} */}
 
                   {/* Review: view + notes */}
                   {selectedTask.taskType === "review" && (

@@ -78,7 +78,7 @@ log "zone $ZONE -> $ZONE_ID"
 
 # --- repoint ---------------------------------------------------------------
 changed=0
-for host in "$DOMAIN_APP" "$DOMAIN_API" "$DOMAIN_OFFICE" "$DOMAIN_SIGN"; do
+for host in "$DOMAIN_APP" "$DOMAIN_API" "$DOMAIN_OFFICE" "$DOMAIN_SIGN" ${DOMAIN_PORTAINER:+"$DOMAIN_PORTAINER"} ${DOMAIN_DB:+"$DOMAIN_DB"}; do
   recs=$(cf GET "/zones/$ZONE_ID/dns_records?name=$host")
   echo "$recs" | ok || die "could not list DNS for $host: $(echo "$recs" | jq -c '.errors')"
 
