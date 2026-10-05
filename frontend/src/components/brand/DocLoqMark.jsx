@@ -2,17 +2,13 @@
 // Concept generated with gpt-image-1, redrawn as vector, the raster output carried
 // a glow halo and its detail bars were white-on-white (invisible at sidebar size).
 //
-// The mark stands on its own (no tile behind it), so by default it carries the accent
-// gradient itself. The gradient stops read the same --accent-* vars as the rest of the
-// app, so it re-colors with the user's accent and falls back to the default outside
-// the authenticated shell. Pass variant="current" to fill with currentColor instead.
+// The mark stands on its own (no tile behind it), so by default it is filled with the
+// solid brand color (--brand-600), which re-colors with the user's accent and falls
+// back to cobalt outside the authenticated shell. Pass variant="current" to fill with
+// currentColor instead.
 
-import { useId } from "react";
-
-export default function DocLoqMark({ className = "w-6 h-6", variant = "gradient" }) {
-  // Namespaced per instance: two marks on one page must not share a gradient id.
-  const gid = useId().replace(/:/g, "");
-  const fill = variant === "gradient" ? `url(#mk-${gid})` : "currentColor";
+export default function DocLoqMark({ className = "w-6 h-6", variant = "brand" }) {
+  const fill = variant === "current" ? "currentColor" : "var(--brand-600)";
 
   return (
     <svg
@@ -21,14 +17,6 @@ export default function DocLoqMark({ className = "w-6 h-6", variant = "gradient"
       aria-hidden="true"
       focusable="false"
     >
-      {variant === "gradient" && (
-        <defs>
-          <linearGradient id={`mk-${gid}`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--accent-from, #1d4ed8)" />
-            <stop offset="100%" stopColor="var(--accent-to, #6d28d9)" />
-          </linearGradient>
-        </defs>
-      )}
       <path
         fill={fill}
         fillRule="evenodd"

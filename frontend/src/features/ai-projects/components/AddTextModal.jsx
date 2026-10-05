@@ -141,7 +141,7 @@ export default function AddTextModal({ projectId, open, onClose, onAdded }) {
                 <button
                   type="submit"
                   disabled={!title.trim() || !content.trim() || overLimit || saving}
-                  className="min-h-[44px] px-4 rounded-xl text-sm font-medium bg-accent-gradient hover:brightness-110 disabled:bg-stone-200 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white shadow-sm shadow-accent transition-colors"
+                  className="min-h-[44px] px-4 rounded-xl text-sm font-medium bg-accent hover:brightness-110 disabled:bg-stone-200 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white transition-colors"
                 >
                   {saving ? t('aiSources.adding') : t('aiSources.addAction')}
                 </button>

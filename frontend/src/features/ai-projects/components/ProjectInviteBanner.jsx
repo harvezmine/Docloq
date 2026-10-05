@@ -42,7 +42,7 @@ export default function ProjectInviteBanner({ onChanged }) {
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/25"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/25"
           >
             <span className="flex-1 min-w-0">
               <span className="block text-[13px] font-medium text-slate-900 dark:text-white truncate">
@@ -55,7 +55,7 @@ export default function ProjectInviteBanner({ onChanged }) {
             <button
               onClick={() => respond(inv.projectId, true)}
               disabled={busy === inv.projectId}
-              className="shrink-0 min-h-[36px] px-3 rounded-lg bg-accent-gradient hover:brightness-110 disabled:opacity-50 text-white text-[12px] font-medium transition-colors"
+              className="shrink-0 min-h-[36px] px-3 rounded-lg bg-accent hover:brightness-110 disabled:opacity-50 text-white text-[12px] font-medium transition-colors"
             >
               {t('aiProjects.invite.accept')}
             </button>

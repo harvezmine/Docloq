@@ -143,7 +143,7 @@ export default function CommentModal({ documentId, documentName, onClose }) {
         {c.authorAvatar ? (
           <img src={c.authorAvatar} alt={c.authorName} className="w-9 h-9 rounded-full object-cover" />
         ) : (
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold">
+          <div className="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold">
             {initials(c.authorName)}
           </div>
         )}
@@ -162,7 +162,7 @@ export default function CommentModal({ documentId, documentName, onClose }) {
           {!isReply && (
             <button
               onClick={() => { setReplyTo(c.id); textareaRef.current?.focus(); }}
-              className="text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+              className="text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 font-medium transition-colors"
             >
               {t('comments.reply')}
             </button>
@@ -242,9 +242,9 @@ export default function CommentModal({ documentId, documentName, onClose }) {
           {/* Input area */}
           <form onSubmit={handleSubmit} className="border-t border-slate-100 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-900/50 relative">
             {replyTo && (
-              <div className="flex items-center justify-between gap-2 mb-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-500/10 rounded-lg text-xs text-blue-700 dark:text-blue-300">
+              <div className="flex items-center justify-between gap-2 mb-2 px-3 py-1.5 bg-brand-50 dark:bg-brand-500/10 rounded-lg text-xs text-brand-700 dark:text-brand-300">
                 <span>{t('comments.replyingTo')}</span>
-                <button type="button" onClick={() => setReplyTo(null)} className="hover:bg-blue-100 dark:hover:bg-blue-500/20 rounded p-0.5">
+                <button type="button" onClick={() => setReplyTo(null)} className="hover:bg-brand-100 dark:hover:bg-brand-500/20 rounded p-0.5">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
@@ -260,12 +260,12 @@ export default function CommentModal({ documentId, documentName, onClose }) {
                 }}
                 placeholder={t('comments.inputPlaceholder')}
                 rows={2}
-                className="flex-1 resize-none px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/60 transition-all"
+                className="flex-1 resize-none px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500/60 transition-all"
               />
               <button
                 type="submit"
                 disabled={submitting || !content.trim()}
-                className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white text-sm font-semibold transition-all flex items-center gap-2 shadow-md shadow-blue-500/20 disabled:shadow-none"
+                className="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white text-sm font-semibold transition-all flex items-center gap-2 disabled:shadow-none"
               >
                 {submitting ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -297,7 +297,7 @@ export default function CommentModal({ documentId, documentName, onClose }) {
                         {u.avatarUrl ? (
                           <img src={u.avatarUrl} alt={u.name} className="w-8 h-8 rounded-full object-cover" />
                         ) : (
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-[10px] font-bold">
+                          <div className="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-[10px] font-bold">
                             {initials(u.name)}
                           </div>
                         )}

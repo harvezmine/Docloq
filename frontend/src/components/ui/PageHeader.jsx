@@ -6,15 +6,12 @@ export default function PageHeader({
   title,
   subtitle,
   actions,
-  accent, // optional Tailwind gradient stops; omit to follow the user's accent preference
   onBack,
   className = "",
   children,
 }) {
   const reduce = useReducedMotion();
   const { t } = useLang();
-  // No explicit accent → the themeable accent gradient (indigo by default).
-  const accentBg = accent ? `bg-linear-to-r ${accent}` : "bg-accent-gradient";
 
   return (
     <motion.div
@@ -39,12 +36,10 @@ export default function PageHeader({
           <div className="min-w-0">
             {eyebrow && (
               <div className="flex items-center gap-2 mb-2">
-                <span className={`h-px w-5 rounded-full ${accentBg}`} />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500">{eyebrow}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{eyebrow}</span>
               </div>
             )}
             <h1 className="text-[26px] sm:text-[32px] leading-[1.05] font-bold tracking-[-0.02em] text-slate-900 dark:text-white">{title}</h1>
-            <div className={`mt-3 h-[3px] w-10 rounded-full ${accentBg}`} />
             {subtitle && (
               <p className="mt-3 text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-2xl">{subtitle}</p>
             )}

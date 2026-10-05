@@ -134,7 +134,7 @@ export default function StudioSettingsModal({ project, tab, onClose, onProjectUp
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-[12px] text-slate-500 dark:text-slate-400 leading-relaxed flex-1 pr-3">{t('aiStudio.settings.addedToPrompt')}</p>
                   <div className="relative shrink-0">
-                    <button onClick={() => setShowPresets((v) => !v)} aria-expanded={showPresets} className="flex items-center gap-1 text-[11px] font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                    <button onClick={() => setShowPresets((v) => !v)} aria-expanded={showPresets} className="flex items-center gap-1 text-[11px] font-medium text-brand-600 dark:text-brand-400 hover:underline">
                       {t('aiStudio.settings.preset')}
                       <ChevronDown className={`w-3 h-3 transition-transform duration-150 ${showPresets ? 'rotate-180' : ''}`} strokeWidth={1.8} aria-hidden="true" />
                     </button>
@@ -201,7 +201,7 @@ export default function StudioSettingsModal({ project, tab, onClose, onProjectUp
                       </div>
                     )}
                     <ComplianceBadge />
-                    <button onClick={refreshUsage} className="w-full text-[11px] font-medium text-indigo-600 dark:text-indigo-400 hover:underline">{t('common.refresh')}</button>
+                    <button onClick={refreshUsage} className="w-full text-[11px] font-medium text-brand-600 dark:text-brand-400 hover:underline">{t('common.refresh')}</button>
                   </>
                 )}
               </div>

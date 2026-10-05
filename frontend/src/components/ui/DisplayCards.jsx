@@ -6,10 +6,10 @@ function DisplayCard({
   title = "Featured",
   description = "Discover amazing content",
   date = "Just now",
-  iconClassName = "text-blue-500",
-  titleClassName = "text-blue-500",
-  iconBg = "bg-blue-800",
-  gradient = "from-blue-500 to-indigo-500",
+  iconClassName = "text-brand-500",
+  titleClassName = "text-brand-500",
+  iconBg = "bg-brand-800",
+  gradient = "from-brand-500 to-brand-500",
   index = 0,
 }) {
   return (
@@ -18,10 +18,9 @@ function DisplayCard({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       viewport={{ once: true }}
-      className={`group relative select-none rounded-2xl border border-white/[0.08] bg-slate-900/70 backdrop-blur-sm p-6 transition-all duration-500 hover:border-white/20 hover:bg-slate-800/80 hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent ${className}`}
+      className={`group relative select-none rounded-2xl border border-white/[0.08] bg-slate-900/70 backdrop-blur-sm p-6 transition-all duration-500 hover:border-white/20 hover:bg-slate-800/80 hover:-translate-y-2 ${className}`}
     >
       {/* Hover glow */}
-      <div className={`absolute -inset-0.5 bg-linear-to-r ${gradient} opacity-0 group-hover:opacity-20 rounded-2xl blur-xl transition duration-500`} />
       
       <div className="relative">
         {/* Icon */}

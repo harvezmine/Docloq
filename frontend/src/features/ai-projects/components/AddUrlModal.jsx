@@ -85,7 +85,7 @@ export default function AddUrlModal({ projectId, onClose, onAdded }) {
 
               <div className="px-6 py-4 bg-stone-50/50 dark:bg-slate-900/50 border-t border-stone-100 dark:border-slate-800 flex items-center justify-end gap-2">
                 <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-stone-100 rounded-lg transition-colors">{t('common.cancel')}</button>
-                <button onClick={handleNext} disabled={!url.trim()} className="px-4 py-2 bg-accent-gradient hover:brightness-110 text-white text-sm font-semibold rounded-lg shadow-sm shadow-accent disabled:opacity-50">{t('common.next')}</button>
+                <button onClick={handleNext} disabled={!url.trim()} className="px-4 py-2 bg-accent hover:brightness-110 text-white text-sm font-semibold rounded-lg disabled:opacity-50">{t('common.next')}</button>
               </div>
             </>
           ) : (
@@ -114,7 +114,7 @@ export default function AddUrlModal({ projectId, onClose, onAdded }) {
                 <button
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="flex items-center gap-2 px-4 py-2 bg-accent-gradient hover:brightness-110 text-white text-sm font-semibold rounded-lg shadow-md shadow-accent disabled:opacity-60"
+                  className="flex items-center gap-2 px-4 py-2 bg-accent hover:brightness-110 text-white text-sm font-semibold rounded-lg disabled:opacity-60"
                 >
                   {submitting && <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />}
                   {t('aiSources.url.agreeAdd')}

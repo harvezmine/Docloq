@@ -58,7 +58,7 @@ function renderContentWithCitations(content, citations, onCitationClick) {
         }
         if (line.startsWith('- ') || line.startsWith('* ')) {
           return (
-            <p key={i} className="ml-3 before:content-['•'] before:mr-1.5 before:text-indigo-400">
+            <p key={i} className="ml-3 before:content-['•'] before:mr-1.5 before:text-brand-400">
               {inline(line.slice(2))}
             </p>
           );
@@ -259,7 +259,7 @@ export default function ChatPanel({
                   <button
                     key={`${idx}-${s.slice(0, 30)}`}
                     onClick={() => { setPrompt(s); textareaRef.current?.focus(); }}
-                    className="w-full text-left text-[13px] px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-300 dark:hover:border-indigo-500/40 hover:bg-white dark:hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-stone-50 transition-colors"
+                    className="w-full text-left text-[13px] px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-brand-300 dark:hover:border-brand-500/40 hover:bg-white dark:hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-stone-50 transition-colors"
                   >
                     {s}
                   </button>
@@ -279,7 +279,7 @@ export default function ChatPanel({
               className={msg.role === 'user' ? 'flex justify-end' : 'flex items-start gap-3'}
             >
               {msg.role === 'user' ? (
-                <div className="max-w-[80%] px-4 py-2.5 rounded-2xl rounded-br-md bg-indigo-600 dark:bg-indigo-500/90 text-white text-[14px] leading-relaxed whitespace-pre-wrap shadow-sm shadow-accent">
+                <div className="max-w-[80%] px-4 py-2.5 rounded-2xl rounded-br-md bg-brand-600 dark:bg-brand-500/90 text-white text-[14px] leading-relaxed whitespace-pre-wrap">
                   {msg.content}
                 </div>
               ) : (
@@ -295,7 +295,7 @@ export default function ChatPanel({
                       {!msg.metadata?.error && (
                         <button
                           onClick={() => handleSaveToNote(msg)}
-                          className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-1 -mx-1 py-0.5 transition-colors"
+                          className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-1 -mx-1 py-0.5 transition-colors"
                           title={t('aiStudio.chat.saveNoteTitle')}
                         >
                           {savedNoteFor === msg.id ? (
@@ -318,7 +318,7 @@ export default function ChatPanel({
                       {!msg.metadata?.error && !String(msg.id).startsWith('temp-') && (
                         <button
                           onClick={() => onShowProvenance?.(msg)}
-                          className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-1 -mx-1 py-0.5 transition-colors"
+                          className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-1 -mx-1 py-0.5 transition-colors"
                           title={t('aiStudio.chat.provenanceTitle')}
                         >
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
@@ -352,9 +352,9 @@ export default function ChatPanel({
               <AssistantAvatar />
               <div className="flex items-center gap-2 pt-2">
                 <div className="flex gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '120ms' }} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '240ms' }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-bounce" style={{ animationDelay: '120ms' }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-bounce" style={{ animationDelay: '240ms' }} />
                 </div>
                 <span className="text-[13px] text-slate-500 dark:text-slate-400 italic">{t('aiStudio.chat.reading')}</span>
               </div>
@@ -408,7 +408,7 @@ export default function ChatPanel({
           <button
             type="submit"
             disabled={!prompt.trim() || sending || !hasSources || noneSelected || limitReached}
-            className="px-4 min-h-[44px] bg-accent-gradient hover:brightness-110 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow-md shadow-accent disabled:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 transition-all flex items-center justify-center gap-2"
+            className="px-4 min-h-[44px] bg-accent hover:brightness-110 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl disabled:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 transition-all flex items-center justify-center gap-2"
             aria-label={t('aiStudio.chat.sendAria')}
           >
             {sending ? (
@@ -423,7 +423,7 @@ export default function ChatPanel({
           {/* Scope is invisible otherwise, the user needs to know the AI is not reading everything. */}
           <span>
             {Array.isArray(selectedSourceIds) && selectedSourceIds.length > 0 && (
-              <span className="text-indigo-600 dark:text-indigo-400 font-medium">
+              <span className="text-brand-600 dark:text-brand-400 font-medium">
                 {t('aiStudio.chat.scopeOnly')} {selectedSourceIds.length} {t('aiStudio.chat.scopeOf')} {activeSources.length} {t('aiStudio.chat.scopeSources')}
               </span>
             )}

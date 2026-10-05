@@ -16,7 +16,7 @@ export default function MessageBubble({ msg }) {
       className={`flex gap-2 ${isUser ? 'justify-end' : 'justify-start'}`}
     >
       {!isUser && <DokiAvatar size={30} className="mt-0.5" />}
-      <div className={`max-w-[85%] px-4 py-3 ${isUser ? doki.userBubble + ' shadow-md shadow-accent' : doki.botBubble}`}>
+      <div className={`max-w-[85%] px-4 py-3 ${isUser ? doki.userBubble + ' ' : doki.botBubble}`}>
         {isUser
           ? <p className="text-[13.5px] leading-relaxed">{msg.content}</p>
           : thinking ? <TypingDots /> : <DokiMarkdown text={msg.content} />}

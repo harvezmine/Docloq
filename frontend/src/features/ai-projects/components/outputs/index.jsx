@@ -48,7 +48,7 @@ export function SummaryView({ payload, onCitationClick }) {
         if (line.startsWith('## ')) return <h3 key={i} className="font-bold mt-3">{cite(line.slice(3))}</h3>;
         if (line.startsWith('- ') || line.startsWith('* ')) {
           return (
-            <p key={i} className="ml-3 before:content-['•'] before:mr-1.5 before:text-indigo-400">
+            <p key={i} className="ml-3 before:content-['•'] before:mr-1.5 before:text-brand-400">
               {cite(line.slice(2))}
             </p>
           );
@@ -86,8 +86,8 @@ export function TimelineView({ payload, onCitationClick }) {
     <ol className="relative border-l border-stone-200 dark:border-slate-700 ml-2 space-y-4">
       {data.events.map((ev, i) => (
         <li key={i} className="ml-4">
-          <span className="absolute -left-[5px] w-2.5 h-2.5 rounded-full bg-indigo-500 ring-2 ring-white dark:ring-slate-900" aria-hidden="true" />
-          <span className="block text-[11px] font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-300 tabular-nums">
+          <span className="absolute -left-[5px] w-2.5 h-2.5 rounded-full bg-brand-500 ring-2 ring-white dark:ring-slate-900" aria-hidden="true" />
+          <span className="block text-[11px] font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-300 tabular-nums">
             {ev.date}
           </span>
           <p className="text-[13px] font-semibold text-slate-900 dark:text-white mt-0.5">{ev.title}</p>
@@ -152,7 +152,7 @@ export function DataTableView({ payload, onCitationClick, title = 'tabel' }) {
   return (
     <div>
       <div className="flex justify-end mb-2">
-        <button onClick={download} className="text-[11px] font-medium text-indigo-600 dark:text-indigo-300 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-1">
+        <button onClick={download} className="text-[11px] font-medium text-brand-600 dark:text-brand-300 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-1">
           {t('aiStudio.render.exportCsv')}
         </button>
       </div>
@@ -192,10 +192,10 @@ export function MindMapView({ payload }) {
   const branches = data.root.children || [];
   return (
     <div className="space-y-2">
-      <div className="inline-block px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-[12.5px] font-semibold">
+      <div className="inline-block px-3 py-1.5 rounded-lg bg-brand-600 text-white text-[12.5px] font-semibold">
         {data.root.label}
       </div>
-      <div className="pl-3 border-l-2 border-indigo-200 dark:border-indigo-500/30 space-y-2 ml-2">
+      <div className="pl-3 border-l-2 border-brand-200 dark:border-brand-500/30 space-y-2 ml-2">
         {branches.map((b, i) => (
           <div key={i}>
             <div className="text-[12.5px] font-medium text-slate-800 dark:text-slate-100">{b.label}</div>
@@ -250,7 +250,7 @@ export function SlidesView({ payload, onCitationClick, title = 'deck' }) {
   return (
     <div>
       <div className="flex justify-end mb-2">
-        <button onClick={exportPptx} className="text-[11px] font-medium text-indigo-600 dark:text-indigo-300 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-1">
+        <button onClick={exportPptx} className="text-[11px] font-medium text-brand-600 dark:text-brand-300 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-1">
           {t('aiStudio.render.exportPptx')}
         </button>
       </div>
@@ -264,7 +264,7 @@ export function SlidesView({ payload, onCitationClick, title = 'deck' }) {
             </div>
             <ul className="mt-1.5 space-y-0.5">
               {(s.bullets || []).map((b, j) => (
-                <li key={j} className="text-[12.5px] text-slate-600 dark:text-slate-300 ml-3 before:content-['•'] before:mr-1.5 before:text-indigo-400">
+                <li key={j} className="text-[12.5px] text-slate-600 dark:text-slate-300 ml-3 before:content-['•'] before:mr-1.5 before:text-brand-400">
                   {inlineCite(b, citations, onCitationClick, `s${i}-${j}`)}
                 </li>
               ))}
@@ -301,7 +301,7 @@ export function ImageView({ projectId, outputId, title }) {
   return (
     <div>
       <div className="flex justify-end mb-2">
-        <button onClick={download} className="text-[11px] font-medium text-indigo-600 dark:text-indigo-300 hover:underline">{t('aiStudio.render.downloadPng')}</button>
+        <button onClick={download} className="text-[11px] font-medium text-brand-600 dark:text-brand-300 hover:underline">{t('aiStudio.render.downloadPng')}</button>
       </div>
       <img src={url} alt={title} className="w-full rounded-xl border border-stone-200 dark:border-slate-700" />
     </div>
@@ -316,7 +316,7 @@ export function ReportView({ payload, onCitationClick, title = 'Laporan' }) {
   return (
     <div>
       <div className="flex justify-end mb-2">
-        <button onClick={() => downloadReportPdf(title, data.markdown)} className="text-[11px] font-medium text-indigo-600 dark:text-indigo-300 hover:underline">{t('aiStudio.render.downloadPdf')}</button>
+        <button onClick={() => downloadReportPdf(title, data.markdown)} className="text-[11px] font-medium text-brand-600 dark:text-brand-300 hover:underline">{t('aiStudio.render.downloadPdf')}</button>
       </div>
       <SummaryView payload={payload} onCitationClick={onCitationClick} />
     </div>

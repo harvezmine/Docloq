@@ -39,13 +39,13 @@ const VARIANTS = {
   // Always-dark public landing (Contact) — violet accent.
   "landing-violet": {
     trigger:
-      "bg-slate-800/50 border-white/[0.08] focus:ring-1 focus:ring-violet-500/30 focus:border-violet-500/50",
+      "bg-slate-800/50 border-white/[0.08] focus:ring-1 focus:ring-brand-500/30 focus:border-brand-500/50",
     triggerError: "border-rose-500 focus:ring-1 focus:ring-rose-500/40",
     text: "text-white",
     placeholder: "text-slate-500",
     chevron: "text-slate-500",
     menu: "border-white/[0.08] bg-slate-900 shadow-black/50",
-    optSelected: "bg-violet-500/15 text-violet-300 font-medium",
+    optSelected: "bg-brand-500/15 text-brand-300 font-medium",
     optActive: "bg-white/[0.06] text-white",
     optIdle: "text-slate-200 hover:bg-white/[0.06]",
   },

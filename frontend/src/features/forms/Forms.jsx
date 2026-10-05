@@ -58,7 +58,7 @@ const workflowIcons = {
 const statusConfig = {
   active: { bg: "bg-emerald-50 dark:bg-emerald-500/10", text: "text-emerald-700 dark:text-emerald-400", dot: "bg-emerald-500" },
   draft: { bg: "bg-slate-100 dark:bg-slate-500/10", text: "text-slate-600 dark:text-slate-400", dot: "bg-slate-400" },
-  completed: { bg: "bg-indigo-50 dark:bg-indigo-500/10", text: "text-indigo-700 dark:text-indigo-400", dot: "bg-indigo-500" },
+  completed: { bg: "bg-brand-50 dark:bg-brand-500/10", text: "text-brand-700 dark:text-brand-400", dot: "bg-brand-500" },
   cancelled: { bg: "bg-rose-50 dark:bg-rose-500/10", text: "text-rose-700 dark:text-rose-400", dot: "bg-rose-500" },
 };
 
@@ -72,7 +72,7 @@ const categoryOptions = [
 
 const stepStatusConfig = {
   completed: { bg: "bg-emerald-50 dark:bg-emerald-500/10", text: "text-emerald-600 dark:text-emerald-400", ring: "ring-2 ring-emerald-500/30", border: "border-emerald-200 dark:border-emerald-500/30", badge: "bg-emerald-500", icon: <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg> },
-  in_progress: { bg: "bg-indigo-50 dark:bg-indigo-500/10", text: "text-indigo-600 dark:text-indigo-400", ring: "ring-2 ring-indigo-500/30", border: "border-indigo-200 dark:border-indigo-500/30", badge: "bg-indigo-500", icon: <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 8v4l3 3" /></svg> },
+  in_progress: { bg: "bg-brand-50 dark:bg-brand-500/10", text: "text-brand-600 dark:text-brand-400", ring: "ring-2 ring-brand-500/30", border: "border-brand-200 dark:border-brand-500/30", badge: "bg-brand-500", icon: <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 8v4l3 3" /></svg> },
   pending: { bg: "bg-slate-50 dark:bg-slate-500/10", text: "text-slate-400 dark:text-slate-500", ring: "", border: "border-slate-200 dark:border-slate-700", badge: "bg-slate-400", icon: null },
   skipped: { bg: "bg-amber-50 dark:bg-amber-500/10", text: "text-amber-600 dark:text-amber-400", ring: "", border: "border-amber-200 dark:border-amber-500/30", badge: "bg-amber-500", icon: null },
 };
@@ -480,7 +480,7 @@ export default function Forms() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                 {t("forms.header.newTemplate")}
               </button>
-              <button onClick={() => setShowCreateModal(true)} className="px-4 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white text-sm font-semibold shadow-lg shadow-accent transition-all flex items-center gap-2">
+              <button onClick={() => setShowCreateModal(true)} className="px-4 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white text-sm font-semibold transition-all flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                 {t("forms.header.createForm")}
               </button>
@@ -495,7 +495,7 @@ export default function Forms() {
                 activeSection === s.id ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm" : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
               }`}>
               {s.label}
-              <span className={`px-2 py-0.5 rounded-full text-xs ${activeSection === s.id ? "bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400" : "bg-slate-200 dark:bg-slate-700 text-slate-500"}`}>
+              <span className={`px-2 py-0.5 rounded-full text-xs ${activeSection === s.id ? "bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400" : "bg-slate-200 dark:bg-slate-700 text-slate-500"}`}>
                 {s.count}
               </span>
             </button>
@@ -504,7 +504,7 @@ export default function Forms() {
 
         {loading && (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
           </div>
         )}
 
@@ -523,16 +523,16 @@ export default function Forms() {
                 <motion.div key={tpl.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}>
                   <Card
                     onClick={() => tpl.schema?.documentId ? openTemplateInEditor(tpl.id, 'view') : handleTemplateClick(tpl)}
-                    className="group relative overflow-hidden border border-slate-200 dark:border-slate-700/50 hover:border-indigo-300 dark:hover:border-indigo-500/30 hover:shadow-xl hover:shadow-accent transition-all duration-300 p-5 cursor-pointer"
+                    className="group relative overflow-hidden border border-slate-200 dark:border-slate-700/50 hover:border-brand-300 dark:hover:border-brand-500/30 transition-all duration-300 p-5 cursor-pointer"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                        <div className="w-11 h-11 rounded-xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400">
                           {templateIcons[tpl.icon] || templateIcons.document}
                         </div>
                         <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide ${
                           tpl.schema?.type === 'document-template'
-                            ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                            ? 'bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400'
                             : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
                         }`}>
                           {tpl.schema?.type === 'document-template' ? t("forms.badge.document") : t("forms.badge.schema")}
@@ -548,7 +548,7 @@ export default function Forms() {
                         </button>
                         <button
                           onClick={(e) => handleEditMeta(tpl, e)}
-                          className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-violet-50 dark:hover:bg-violet-500/10 text-slate-400 hover:text-violet-500 transition-all"
+                          className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-brand-50 dark:hover:bg-brand-500/10 text-slate-400 hover:text-brand-500 transition-all"
                           title={t("forms.card.editTemplate")}
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
@@ -609,7 +609,7 @@ export default function Forms() {
                 const st = statusConfig[form.status] || statusConfig.draft;
                 return (
                   <motion.div key={form.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}>
-                    <Card className="p-4 sm:p-5 border border-slate-200 dark:border-slate-700/50 hover:border-indigo-200 dark:hover:border-indigo-500/20 transition-all">
+                    <Card className="p-4 sm:p-5 border border-slate-200 dark:border-slate-700/50 hover:border-brand-200 dark:hover:border-brand-500/20 transition-all">
                       <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-2">
@@ -659,7 +659,7 @@ export default function Forms() {
                                     <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 px-3 py-2 rounded-xl bg-slate-900 dark:bg-slate-700 text-white text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-10 shadow-xl">
                                       <div className="font-semibold">{step.user || t("forms.instance.unassigned")}</div>
                                       <div className="text-slate-400 capitalize flex items-center gap-1.5 mt-0.5">
-                                        <span className={`w-1.5 h-1.5 rounded-full ${step.status === "completed" ? "bg-emerald-400" : step.status === "in_progress" ? "bg-indigo-400" : "bg-slate-400"}`} />
+                                        <span className={`w-1.5 h-1.5 rounded-full ${step.status === "completed" ? "bg-emerald-400" : step.status === "in_progress" ? "bg-brand-400" : "bg-slate-400"}`} />
                                         {step.action} &bull; {(step.status || "pending").replace(/_/g, " ")}
                                       </div>
                                       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rotate-45 bg-slate-900 dark:bg-slate-700" />
@@ -669,7 +669,7 @@ export default function Forms() {
                                     <div className="relative w-8 h-[2px] mx-0.5">
                                       <div className="absolute inset-0 bg-slate-200 dark:bg-slate-700 rounded-full" />
                                       <div className={`absolute inset-y-0 left-0 rounded-full transition-all duration-500 ${
-                                        step.status === "completed" ? "bg-emerald-500 w-full" : step.status === "in_progress" ? "bg-indigo-500 w-1/2" : "w-0"
+                                        step.status === "completed" ? "bg-emerald-500 w-full" : step.status === "in_progress" ? "bg-brand-500 w-1/2" : "w-0"
                                       }`} />
                                     </div>
                                   )}
@@ -700,7 +700,7 @@ export default function Forms() {
             <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
               <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg">
+                  <div className="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center shadow-lg">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                   </div>
                   <div>
@@ -726,10 +726,10 @@ export default function Forms() {
                     options={templates}
                     onChange={(tp) => setNewForm({ ...newForm, formId: tp.id })}
                     placeholder={t("forms.createModal.selectTemplate")}
-                    renderValue={(tp) => <span className="flex items-center gap-2 text-sm"><span className="w-3 h-3 rounded-full bg-indigo-500" /><span className="truncate">{tp.title}</span></span>}
+                    renderValue={(tp) => <span className="flex items-center gap-2 text-sm"><span className="w-3 h-3 rounded-full bg-brand-500" /><span className="truncate">{tp.title}</span></span>}
                     renderOption={(tp) => (
                       <>
-                        <span className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">{templateIcons[tp.icon] || templateIcons.document}</span>
+                        <span className="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400 shrink-0">{templateIcons[tp.icon] || templateIcons.document}</span>
                         <div className="flex-1 min-w-0"><div className="font-medium text-slate-900 dark:text-white text-sm">{tp.title}</div><div className="text-xs text-slate-500 truncate">{tp.description || t("forms.createModal.noDescription")}</div></div>
                       </>
                     )}
@@ -741,7 +741,7 @@ export default function Forms() {
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{t("forms.createModal.startDate")}</label>
                     <div className="relative">
                       <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                       </div>
                       <input type="date" value={newForm.startDate} onChange={(e) => setNewForm({ ...newForm, startDate: e.target.value })} className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:border-accent focus:ring-2 focus:ring-accent focus:bg-white dark:focus:bg-slate-800 dark:focus:bg-slate-800 transition-all outline-none text-sm dark:[color-scheme:dark] appearance-none [&::-webkit-calendar-picker-indicator]:opacity-60 [&::-webkit-calendar-picker-indicator]:dark:invert [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:hover:opacity-100 [&::-webkit-datetime-edit]:text-slate-900 dark:[&::-webkit-datetime-edit]:text-white [&::-webkit-datetime-edit-text]:text-slate-900 dark:[&::-webkit-datetime-edit-text]:text-white [&::-webkit-datetime-edit-month-field]:text-slate-900 dark:[&::-webkit-datetime-edit-month-field]:text-white [&::-webkit-datetime-edit-day-field]:text-slate-900 dark:[&::-webkit-datetime-edit-day-field]:text-white [&::-webkit-datetime-edit-year-field]:text-slate-900 dark:[&::-webkit-datetime-edit-year-field]:text-white" />
                     </div>
@@ -760,7 +760,7 @@ export default function Forms() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t("forms.createModal.workflowSteps")}</label>
-                    <button type="button" onClick={addWorkflowStep} className="text-sm text-indigo-600 dark:text-indigo-400 font-medium hover:text-indigo-700 flex items-center gap-1">
+                    <button type="button" onClick={addWorkflowStep} className="text-sm text-brand-600 dark:text-brand-400 font-medium hover:text-brand-700 flex items-center gap-1">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                       {t("forms.createModal.addStep")}
                     </button>
@@ -768,7 +768,7 @@ export default function Forms() {
                   <div className="space-y-2">
                     {newForm.workflowSteps.map((step, index) => (
                       <motion.div key={step.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-start gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                        <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-sm font-bold shrink-0 shadow">{index + 1}</div>
+                        <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center text-white text-sm font-bold shrink-0 shadow">{index + 1}</div>
                         <div className="flex-1 grid grid-cols-2 gap-2">
                           <CustomSelect
                             value={orgUsers.find(u => u.id === step.userId)}
@@ -807,7 +807,7 @@ export default function Forms() {
 
               <div className="px-5 py-4 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0">
                 <button onClick={() => setShowCreateModal(false)} className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm">{t("common.cancel")}</button>
-                <button onClick={handleCreateForm} disabled={!newForm.name || !newForm.formId} className="flex-1 px-4 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold shadow-lg shadow-accent transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm">{t("forms.header.createForm")}</button>
+                <button onClick={handleCreateForm} disabled={!newForm.name || !newForm.formId} className="flex-1 px-4 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm">{t("forms.header.createForm")}</button>
               </div>
             </motion.div>
           </motion.div>
@@ -820,7 +820,7 @@ export default function Forms() {
             <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
               <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-violet-600 flex items-center justify-center shadow-lg">
+                  <div className="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center shadow-lg">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z" /></svg>
                   </div>
                   <div>
@@ -850,7 +850,7 @@ export default function Forms() {
                     <div className="flex gap-1.5 flex-wrap">
                       {Object.keys(templateIcons).map(key => (
                         <button key={key} type="button" onClick={() => setNewTemplate({ ...newTemplate, icon: key })}
-                          className={`w-9 h-9 rounded-lg flex items-center justify-center border transition-all ${newTemplate.icon === key ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600" : "border-slate-200 dark:border-slate-700 text-slate-400 hover:border-slate-300"}`}>
+                          className={`w-9 h-9 rounded-lg flex items-center justify-center border transition-all ${newTemplate.icon === key ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600" : "border-slate-200 dark:border-slate-700 text-slate-400 hover:border-slate-300"}`}>
                           {templateIcons[key]}
                         </button>
                       ))}
@@ -872,7 +872,7 @@ export default function Forms() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t("forms.templateModal.formFields")}</label>
-                    <button type="button" onClick={addField} className="text-sm text-indigo-600 dark:text-indigo-400 font-medium hover:text-indigo-700 flex items-center gap-1">
+                    <button type="button" onClick={addField} className="text-sm text-brand-600 dark:text-brand-400 font-medium hover:text-brand-700 flex items-center gap-1">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                       {t("forms.templateModal.addField")}
                     </button>
@@ -908,7 +908,7 @@ export default function Forms() {
 
               <div className="px-5 py-4 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0">
                 <button onClick={() => setShowTemplateModal(false)} className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm">Cancel</button>
-                <button onClick={handleCreateTemplate} disabled={!newTemplate.title} className="flex-1 px-4 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold shadow-lg shadow-accent transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm">Create Template</button>
+                <button onClick={handleCreateTemplate} disabled={!newTemplate.title} className="flex-1 px-4 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm">Create Template</button>
               </div>
             </motion.div>
           </motion.div>
@@ -933,17 +933,17 @@ export default function Forms() {
                 <button
                   onClick={handleCreateBlankTemplate}
                   disabled={templateLoading}
-                  className="w-full p-5 rounded-2xl border-2 border-indigo-100 dark:border-indigo-500/20 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-500/5 dark:to-blue-500/5 hover:border-indigo-300 dark:hover:border-indigo-500/40 hover:shadow-lg hover:shadow-accent text-left transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full p-5 rounded-2xl border-2 border-brand-100 dark:border-brand-500/20 bg-brand-50 dark:bg-brand-500/5 hover:border-brand-300 dark:hover:border-brand-500/40 text-left transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-105 transition-transform shrink-0">
+                    <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-brand-100 dark:border-brand-500/20 flex items-center justify-center text-brand-600 dark:text-brand-400 group-hover:scale-105 transition-transform shrink-0">
                       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" /></svg>
                     </div>
                     <div className="flex-1">
                       <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">Blank Document</h3>
                       <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Start fresh with an empty document. Opens directly in the editor.</p>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-500 group-hover:translate-x-0.5 transition-transform shrink-0 mt-1">
+                    <div className="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-500/20 flex items-center justify-center text-brand-500 group-hover:translate-x-0.5 transition-transform shrink-0 mt-1">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </div>
                   </div>
@@ -952,17 +952,17 @@ export default function Forms() {
                 <button
                   onClick={() => { setShowNewTemplateChoice(false); setShowUploadModal(true); }}
                   disabled={templateLoading}
-                  className="w-full p-5 rounded-2xl border-2 border-violet-100 dark:border-violet-500/20 bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-500/5 dark:to-purple-500/5 hover:border-violet-300 dark:hover:border-violet-500/40 hover:shadow-lg hover:shadow-accent text-left transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full p-5 rounded-2xl border-2 border-brand-100 dark:border-brand-500/20 bg-brand-50 dark:bg-brand-500/5 hover:border-brand-300 dark:hover:border-brand-500/40 text-left transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-violet-100 dark:border-violet-500/20 flex items-center justify-center text-violet-600 dark:text-violet-400 group-hover:scale-105 transition-transform shrink-0">
+                    <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-brand-100 dark:border-brand-500/20 flex items-center justify-center text-brand-600 dark:text-brand-400 group-hover:scale-105 transition-transform shrink-0">
                       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                     </div>
                     <div className="flex-1">
                       <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">Upload File</h3>
                       <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Upload a DOCX or PDF file. PDF will be auto-converted for editing.</p>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-violet-100 dark:bg-violet-500/20 flex items-center justify-center text-violet-500 group-hover:translate-x-0.5 transition-transform shrink-0 mt-1">
+                    <div className="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-500/20 flex items-center justify-center text-brand-500 group-hover:translate-x-0.5 transition-transform shrink-0 mt-1">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </div>
                   </div>
@@ -991,9 +991,9 @@ export default function Forms() {
 
               {templateLoading && (
                 <div className="px-6 pb-5">
-                  <div className="flex items-center gap-3 p-3.5 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20">
-                    <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-sm text-indigo-600 dark:text-indigo-400 font-medium">Creating blank template...</span>
+                  <div className="flex items-center gap-3 p-3.5 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-100 dark:border-brand-500/20">
+                    <div className="w-5 h-5 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-sm text-brand-600 dark:text-brand-400 font-medium">Creating blank template...</span>
                   </div>
                 </div>
               )}
@@ -1009,8 +1009,8 @@ export default function Forms() {
               <div className="px-6 pt-6 pb-2 shrink-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-500/20 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                    <div className="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-500/20 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-slate-900 dark:text-white">Upload Template</h2>
@@ -1027,11 +1027,11 @@ export default function Forms() {
 
               <div className="px-6 pb-4 space-y-4 flex-1 overflow-y-auto">
                 <div>
-                  <div className={`relative border-2 border-dashed rounded-2xl transition-all cursor-pointer ${uploadTemplate.file ? 'border-emerald-300 dark:border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-500/5' : 'border-slate-300 dark:border-slate-600 hover:border-violet-400 dark:hover:border-violet-500/40 hover:bg-violet-50/30 dark:hover:bg-violet-500/5'}`}>
+                  <div className={`relative border-2 border-dashed rounded-2xl transition-all cursor-pointer ${uploadTemplate.file ? 'border-emerald-300 dark:border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-500/5' : 'border-slate-300 dark:border-slate-600 hover:border-brand-400 dark:hover:border-brand-500/40 hover:bg-brand-50/30 dark:hover:bg-brand-500/5'}`}>
                     {uploadTemplate.file ? (
                       <div className="p-5">
                         <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${uploadTemplate.file.type.includes('pdf') ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${uploadTemplate.file.type.includes('pdf') ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400' : 'bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400'}`}>
                             {uploadTemplate.file.type.includes('pdf') ? (
                               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
                             ) : (
@@ -1063,13 +1063,13 @@ export default function Forms() {
                       </div>
                     ) : (
                       <div className="p-8 text-center">
-                        <div className="w-16 h-16 rounded-2xl bg-violet-100 dark:bg-violet-500/10 flex items-center justify-center mx-auto mb-4">
-                          <svg className="w-8 h-8 text-violet-500 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                        <div className="w-16 h-16 rounded-2xl bg-brand-100 dark:bg-brand-500/10 flex items-center justify-center mx-auto mb-4">
+                          <svg className="w-8 h-8 text-brand-500 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                         </div>
                         <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Click to browse or drag & drop</p>
                         <p className="text-xs text-slate-400">Supports DOCX, PDF, DOC, ODT (max 50MB)</p>
                         <div className="flex items-center justify-center gap-3 mt-4">
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-xs text-blue-600 dark:text-blue-400 font-medium">DOCX</span>
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-brand-50 dark:bg-brand-500/10 text-xs text-brand-600 dark:text-brand-400 font-medium">DOCX</span>
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 text-xs text-rose-600 dark:text-rose-400 font-medium">PDF</span>
                         </div>
                       </div>
@@ -1099,7 +1099,7 @@ export default function Forms() {
                     <div className="grid grid-cols-4 gap-1.5">
                       {Object.keys(templateIcons).map(key => (
                         <button key={key} type="button" onClick={() => setUploadTemplate({ ...uploadTemplate, icon: key })}
-                          className={`w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-200 ${uploadTemplate.icon === key ? "border-violet-500 bg-violet-50 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400 shadow-sm shadow-accent" : "border-transparent bg-slate-50 dark:bg-slate-800 text-slate-400 hover:border-slate-200 dark:hover:border-slate-600 hover:text-slate-600 dark:hover:text-slate-300"}`}>
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-200 ${uploadTemplate.icon === key ? "border-brand-500 bg-brand-50 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400" : "border-transparent bg-slate-50 dark:bg-slate-800 text-slate-400 hover:border-slate-200 dark:hover:border-slate-600 hover:text-slate-600 dark:hover:text-slate-300"}`}>
                           {templateIcons[key]}
                         </button>
                       ))}
@@ -1121,7 +1121,7 @@ export default function Forms() {
 
               <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0">
                 <button onClick={() => { if (!templateLoading) setShowUploadModal(false); }} disabled={templateLoading} className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-medium hover:bg-white dark:hover:bg-slate-800 transition-colors text-sm disabled:opacity-50">Cancel</button>
-                <button onClick={handleUploadTemplate} disabled={!uploadTemplate.file || templateLoading} className="flex-1 px-4 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold shadow-lg shadow-accent transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2">
+                <button onClick={handleUploadTemplate} disabled={!uploadTemplate.file || templateLoading} className="flex-1 px-4 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2">
                   {templateLoading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -1192,7 +1192,7 @@ export default function Forms() {
                     <div className="grid grid-cols-4 gap-1.5">
                       {Object.keys(templateIcons).map(key => (
                         <button key={key} type="button" onClick={() => setSettingsForm({ ...settingsForm, icon: key })}
-                          className={`w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-200 ${settingsForm.icon === key ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 shadow-sm shadow-accent" : "border-transparent bg-slate-50 dark:bg-slate-800 text-slate-400 hover:border-slate-200 dark:hover:border-slate-600 hover:text-slate-600 dark:hover:text-slate-300"}`}>
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-200 ${settingsForm.icon === key ? "border-brand-500 bg-brand-50 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400" : "border-transparent bg-slate-50 dark:bg-slate-800 text-slate-400 hover:border-slate-200 dark:hover:border-slate-600 hover:text-slate-600 dark:hover:text-slate-300"}`}>
                           {templateIcons[key]}
                         </button>
                       ))}
@@ -1217,7 +1217,7 @@ export default function Forms() {
                   Save & Close
                 </button>
                 {createdTemplate?.schema?.documentId && (
-                  <button onClick={() => handleSaveSettings(true)} className="flex-1 px-4 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold shadow-lg shadow-accent transition-all text-sm flex items-center justify-center gap-2">
+                  <button onClick={() => handleSaveSettings(true)} className="flex-1 px-4 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white font-semibold transition-all text-sm flex items-center justify-center gap-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                     Continue Editing
                   </button>
@@ -1234,7 +1234,7 @@ export default function Forms() {
             <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
               <div className="px-6 pt-6 pb-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+                  <div className="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400 shrink-0">
                     {templateIcons[selectedTemplate.icon] || templateIcons.document}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -1243,7 +1243,7 @@ export default function Forms() {
                     <div className="flex items-center gap-3 mt-2">
                       <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide ${
                         selectedTemplate.schema?.type === 'document-template'
-                          ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                          ? 'bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400'
                           : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
                       }`}>
                         {selectedTemplate.schema?.type === 'document-template' ? 'Document' : 'Schema'}
@@ -1259,10 +1259,10 @@ export default function Forms() {
                 {selectedTemplate.schema?.documentId && (
                   <button
                     onClick={() => openTemplateInEditor(selectedTemplate.id, 'edit')}
-                    className="w-full p-4 rounded-2xl border-2 border-indigo-100 dark:border-indigo-500/20 bg-indigo-50/50 dark:bg-indigo-500/5 hover:border-indigo-300 dark:hover:border-indigo-500/40 hover:shadow-md text-left transition-all group"
+                    className="w-full p-4 rounded-2xl border-2 border-brand-100 dark:border-brand-500/20 bg-brand-50/50 dark:bg-brand-500/5 hover:border-brand-300 dark:hover:border-brand-500/40 hover:shadow-md text-left transition-all group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform">
+                      <div className="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                       </div>
                       <div>
@@ -1295,7 +1295,7 @@ export default function Forms() {
                   className="w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md text-left transition-all group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-500/20 flex items-center justify-center text-violet-600 dark:text-violet-400 shrink-0 group-hover:scale-105 transition-transform">
+                    <div className="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-500/20 flex items-center justify-center text-brand-600 dark:text-brand-400 shrink-0 group-hover:scale-105 transition-transform">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     </div>
                     <div>
@@ -1339,8 +1339,8 @@ export default function Forms() {
               <div className="px-6 pt-6 pb-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-500/20 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    <div className="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-500/20 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-slate-900 dark:text-white">Edit Template</h2>
@@ -1371,7 +1371,7 @@ export default function Forms() {
                     <div className="grid grid-cols-4 gap-1.5">
                       {Object.keys(templateIcons).map(key => (
                         <button key={key} type="button" onClick={() => setEditMetaForm({ ...editMetaForm, icon: key })}
-                          className={`w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-200 ${editMetaForm.icon === key ? "border-violet-500 bg-violet-50 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400 shadow-sm shadow-accent" : "border-transparent bg-slate-50 dark:bg-slate-800 text-slate-400 hover:border-slate-200 dark:hover:border-slate-600 hover:text-slate-600 dark:hover:text-slate-300"}`}>
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-200 ${editMetaForm.icon === key ? "border-brand-500 bg-brand-50 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400" : "border-transparent bg-slate-50 dark:bg-slate-800 text-slate-400 hover:border-slate-200 dark:hover:border-slate-600 hover:text-slate-600 dark:hover:text-slate-300"}`}>
                           {templateIcons[key]}
                         </button>
                       ))}
@@ -1393,7 +1393,7 @@ export default function Forms() {
 
               <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex gap-3">
                 <button onClick={() => setShowEditMetaModal(false)} className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-medium hover:bg-white dark:hover:bg-slate-800 transition-colors text-sm">Cancel</button>
-                <button onClick={handleSaveMetaEdit} disabled={!editMetaForm.title} className="flex-1 px-4 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold shadow-lg shadow-accent transition-all disabled:opacity-50 text-sm flex items-center justify-center gap-2">
+                <button onClick={handleSaveMetaEdit} disabled={!editMetaForm.title} className="flex-1 px-4 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white font-semibold transition-all disabled:opacity-50 text-sm flex items-center justify-center gap-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                   Save Changes
                 </button>
@@ -1430,7 +1430,7 @@ export default function Forms() {
                 <button onClick={() => setDeleteConfirm({ show: false, type: null, id: null, name: '' })} className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-medium hover:bg-white dark:hover:bg-slate-800 transition-colors text-sm">
                   Cancel
                 </button>
-                <button onClick={confirmDelete} className="flex-1 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold shadow-lg shadow-rose-500/25 transition-all text-sm flex items-center justify-center gap-2">
+                <button onClick={confirmDelete} className="flex-1 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold transition-all text-sm flex items-center justify-center gap-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                   Delete
                 </button>

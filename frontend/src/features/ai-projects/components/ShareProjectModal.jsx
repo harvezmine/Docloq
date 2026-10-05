@@ -162,7 +162,7 @@ export default function ShareProjectModal({ project, open, onClose }) {
                         type="checkbox"
                         checked={selected.includes(u.id)}
                         onChange={() => setSelected((s) => (s.includes(u.id) ? s.filter((x) => x !== u.id) : [...s, u.id]))}
-                        className="w-4 h-4 rounded border-stone-300 text-indigo-600 focus:ring-2 focus:ring-accent"
+                        className="w-4 h-4 rounded border-stone-300 text-brand-600 focus:ring-2 focus:ring-accent"
                       />
                       <span className="flex-1 min-w-0">
                         <span className="block text-[12.5px] text-slate-800 dark:text-slate-100 truncate">
@@ -179,7 +179,7 @@ export default function ShareProjectModal({ project, open, onClose }) {
                 <button
                   onClick={invite}
                   disabled={!selected.length || busy}
-                  className="mt-2 w-full min-h-[40px] rounded-xl bg-accent-gradient hover:brightness-110 disabled:bg-stone-200 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white text-sm font-medium transition-colors"
+                  className="mt-2 w-full min-h-[40px] rounded-xl bg-accent hover:brightness-110 disabled:bg-stone-200 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white text-sm font-medium transition-colors"
                 >
                   {t('aiProjects.share.invite')} {selected.length > 0 ? `(${selected.length})` : ''}
                 </button>
@@ -239,7 +239,7 @@ export default function ShareProjectModal({ project, open, onClose }) {
                   <button
                     onClick={toggleLink}
                     disabled={busy}
-                    className="w-full min-h-[40px] rounded-xl border border-dashed border-stone-300 dark:border-slate-700 text-[12.5px] font-medium text-slate-600 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-600 transition-colors"
+                    className="w-full min-h-[40px] rounded-xl border border-dashed border-stone-300 dark:border-slate-700 text-[12.5px] font-medium text-slate-600 dark:text-slate-300 hover:border-brand-400 hover:text-brand-600 transition-colors"
                   >
                     {t('aiProjects.share.createLink')}
                   </button>

@@ -8,13 +8,13 @@ import { useLang } from '@/app/providers/LanguageProvider';
 
 const MIME_ICONS = {
   pdf: { bg: 'bg-red-50 dark:bg-red-900/30', text: 'text-red-600 dark:text-red-400', label: 'PDF' },
-  docx: { bg: 'bg-blue-50 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400', label: 'DOCX' },
-  doc: { bg: 'bg-blue-50 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400', label: 'DOC' },
+  docx: { bg: 'bg-brand-50 dark:bg-brand-900/30', text: 'text-brand-600 dark:text-brand-400', label: 'DOCX' },
+  doc: { bg: 'bg-brand-50 dark:bg-brand-900/30', text: 'text-brand-600 dark:text-brand-400', label: 'DOC' },
   xlsx: { bg: 'bg-emerald-50 dark:bg-emerald-900/30', text: 'text-emerald-600 dark:text-emerald-400', label: 'XLSX' },
   xls: { bg: 'bg-emerald-50 dark:bg-emerald-900/30', text: 'text-emerald-600 dark:text-emerald-400', label: 'XLS' },
   pptx: { bg: 'bg-orange-50 dark:bg-orange-900/30', text: 'text-orange-600 dark:text-orange-400', label: 'PPTX' },
-  png: { bg: 'bg-violet-50 dark:bg-violet-900/30', text: 'text-violet-600 dark:text-violet-400', label: 'PNG' },
-  jpg: { bg: 'bg-violet-50 dark:bg-violet-900/30', text: 'text-violet-600 dark:text-violet-400', label: 'JPG' },
+  png: { bg: 'bg-brand-50 dark:bg-brand-900/30', text: 'text-brand-600 dark:text-brand-400', label: 'PNG' },
+  jpg: { bg: 'bg-brand-50 dark:bg-brand-900/30', text: 'text-brand-600 dark:text-brand-400', label: 'JPG' },
 };
 const getFileStyle = (filename) => {
   const ext = filename?.split('.').pop()?.toLowerCase() || '';
@@ -36,12 +36,12 @@ const ROLE_COLORS = {
 const PRIORITY_STYLES = {
   urgent: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-600 dark:text-red-400' },
   high: { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-600 dark:text-orange-400' },
-  medium: { bg: 'bg-indigo-100 dark:bg-indigo-900/30', text: 'text-indigo-600 dark:text-indigo-400' },
+  medium: { bg: 'bg-brand-100 dark:bg-brand-900/30', text: 'text-brand-600 dark:text-brand-400' },
   low: { bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-500 dark:text-slate-400' },
 };
 const STATUS_STYLES = {
   pending: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400' },
-  in_progress: { bg: 'bg-indigo-100 dark:bg-indigo-900/30', text: 'text-indigo-700 dark:text-indigo-400' },
+  in_progress: { bg: 'bg-brand-100 dark:bg-brand-900/30', text: 'text-brand-700 dark:text-brand-400' },
   completed: { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-400' },
   cancelled: { bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-500 dark:text-slate-400' },
 };
@@ -96,7 +96,7 @@ export function UserList({ items }) {
         return (
           <motion.div key={u.id || idx} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.04 }}
             className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-stone-100 dark:border-slate-700/60 hover:border-accent-soft transition-colors">
-            <div className="w-9 h-9 rounded-full bg-accent-gradient flex items-center justify-center shrink-0 text-white text-xs font-bold">{name.charAt(0).toUpperCase()}</div>
+            <div className="w-9 h-9 rounded-full bg-accent flex items-center justify-center shrink-0 text-white text-xs font-bold">{name.charAt(0).toUpperCase()}</div>
             <div className="flex-1 min-w-0">
               <p className="text-[12.5px] font-medium text-slate-800 dark:text-slate-200 truncate">{name}</p>
               <p className="text-[10.5px] text-slate-400 truncate">{u.email}</p>
@@ -128,7 +128,7 @@ export function TaskList({ items }) {
           <motion.div key={task.id || idx} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.04 }}
             className={`p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border transition-colors ${isOverdue ? 'border-red-200 dark:border-red-800/60' : isNear ? 'border-amber-200 dark:border-amber-800/60' : 'border-stone-100 dark:border-slate-700/60 hover:border-accent-soft'}`}>
             <div className="flex items-start gap-2.5">
-              <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${task.priority === 'urgent' ? 'bg-red-500' : task.priority === 'high' ? 'bg-orange-500' : task.priority === 'medium' ? 'bg-indigo-500' : 'bg-slate-400'}`} />
+              <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${task.priority === 'urgent' ? 'bg-red-500' : task.priority === 'high' ? 'bg-orange-500' : task.priority === 'medium' ? 'bg-brand-500' : 'bg-slate-400'}`} />
               <div className="flex-1 min-w-0">
                 <p className="text-[12.5px] font-medium text-slate-800 dark:text-slate-200 leading-snug">{task.title}</p>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">

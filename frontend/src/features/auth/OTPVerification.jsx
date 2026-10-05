@@ -180,14 +180,8 @@ export default function OTPVerification() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-      </div>
-
-      <div
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+            <div
         className="absolute inset-0 opacity-[0.02]"
         style={{
           backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
@@ -202,13 +196,13 @@ export default function OTPVerification() {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="w-full max-w-md relative z-10"
       >
-        <div className="bg-slate-900/80 backdrop-blur-xl rounded-3xl border border-slate-800/50 shadow-2xl shadow-black/20 overflow-hidden">
+        <div className="bg-slate-900 rounded-3xl border border-slate-800 shadow-2xl shadow-black/20 overflow-hidden">
           <div className="px-8 pt-10 pb-6 text-center">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30"
+              className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-brand-600 flex items-center justify-center"
             >
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -241,7 +235,7 @@ export default function OTPVerification() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="text-indigo-400 text-sm mt-2 font-medium"
+                className="text-brand-400 text-sm mt-2 font-medium"
               >
                 {email}
               </motion.p>
@@ -260,7 +254,7 @@ export default function OTPVerification() {
                 onClick={() => setAuthMethod("authenticator")}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
                   authMethod === "authenticator"
-                    ? "bg-indigo-600 text-white shadow-lg"
+                    ? "bg-brand-600 text-white shadow-lg"
                     : "text-slate-400 hover:text-white hover:bg-slate-700/50"
                 }`}
               >
@@ -275,7 +269,7 @@ export default function OTPVerification() {
                 onClick={() => setAuthMethod("email")}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
                   authMethod === "email"
-                    ? "bg-indigo-600 text-white shadow-lg"
+                    ? "bg-brand-600 text-white shadow-lg"
                     : "text-slate-400 hover:text-white hover:bg-slate-700/50"
                 }`}
               >
@@ -294,8 +288,8 @@ export default function OTPVerification() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center"
               >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-indigo-500/20 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-brand-500/20 flex items-center justify-center">
+                  <svg className="w-8 h-8 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
@@ -305,7 +299,7 @@ export default function OTPVerification() {
                 <button
                   onClick={handleSendEmailOTP}
                   disabled={isSendingEmail}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium transition-all duration-200 shadow-lg shadow-indigo-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isSendingEmail ? (
                     <>
@@ -348,12 +342,12 @@ export default function OTPVerification() {
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.1 * index }}
-                  className={`w-11 h-14 sm:w-12 sm:h-16 text-center text-xl sm:text-2xl font-bold rounded-xl border-2 transition-all duration-200 bg-slate-800/50 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 disabled:opacity-50 ${
+                  className={`w-11 h-14 sm:w-12 sm:h-16 text-center text-xl sm:text-2xl font-bold rounded-xl border-2 transition-all duration-200 bg-slate-800/50 text-white outline-none focus:ring-2 focus:ring-brand-500/50 disabled:opacity-50 ${
                     error 
                       ? "border-red-500/50 focus:border-red-500" 
                       : digit 
-                        ? "border-indigo-500/50 focus:border-indigo-500" 
-                        : "border-slate-700 focus:border-indigo-500"
+                        ? "border-brand-500/50 focus:border-brand-500" 
+                        : "border-slate-700 focus:border-brand-500"
                   }`}
                 />
               ))}
@@ -380,7 +374,7 @@ export default function OTPVerification() {
               disabled={isLoading || otp.some((d) => !d)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium transition-all duration-200 shadow-lg shadow-indigo-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
@@ -408,13 +402,13 @@ export default function OTPVerification() {
               >
                 {resendTimer > 0 ? (
                   <p className="text-slate-500 text-sm">
-                    {t("auth.otp.resendPrefix")} <span className="text-indigo-400 font-medium">{resendTimer}s</span>
+                    {t("auth.otp.resendPrefix")} <span className="text-brand-400 font-medium">{resendTimer}s</span>
                   </p>
                 ) : (
                   <button
                     onClick={handleResend}
                     disabled={isSendingEmail}
-                    className="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors"
+                    className="text-brand-400 hover:text-brand-300 text-sm font-medium transition-colors"
                   >
                     {t("auth.otp.resendCode")}
                   </button>
@@ -449,7 +443,7 @@ export default function OTPVerification() {
           className="text-center text-slate-500 text-sm mt-6"
         >
           {t("auth.otp.havingTrouble")}{" "}
-          <a href="/contact" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+          <a href="/contact" className="text-brand-400 hover:text-brand-300 transition-colors">
             {t("auth.otp.contactSupport")}
           </a>
         </motion.p>

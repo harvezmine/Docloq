@@ -63,7 +63,7 @@ export default function TaskDocumentPreview({ taskId, refreshKey = 0 }) {
   if (status === "loading") {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-3 text-slate-400">
-        <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
         <p className="text-sm">{t("tasks.preview.loading")}</p>
       </div>
     );
@@ -105,7 +105,7 @@ export default function TaskDocumentPreview({ taskId, refreshKey = 0 }) {
       ))}
       {pages.length < pageCount && (
         <div className="flex items-center justify-center gap-2 py-4 text-xs text-slate-400">
-          <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
           {t("tasks.preview.loadingPagePrefix")} {pages.length + 1} {t("tasks.preview.of")} {pageCount}…
         </div>
       )}

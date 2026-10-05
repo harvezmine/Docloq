@@ -18,6 +18,7 @@ import useAuthStore from "@/app/store/auth.store";
 import useFeatureFlags from "@/app/store/featureFlags.store";
 import { useTheme } from "@/app/providers/ThemeProvider";
 import { useLang } from "@/app/providers/LanguageProvider";
+import { SWATCH_COLORS, DEFAULT_SWATCH, swatch } from "@/app/providers/accent-presets";
 
 function getFileTypeFromMime(mimeType) {
   if (!mimeType) return "document";
@@ -114,7 +115,7 @@ function formatTimeAgo(dateString) {
   return new Date(dateString).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-const FOLDER_COLORS = ["#6366f1", "#ec4899", "#f59e0b", "#10b981", "#8b5cf6", "#06b6d4", "#ef4444", "#84cc16"];
+const FOLDER_COLORS = SWATCH_COLORS;
 const FILE_TYPE_OPTIONS = [
   { value: "all", label: "All Types" },
   { value: "pdf", label: "PDF" },
@@ -190,7 +191,7 @@ const IconTrash = () => (
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
   </svg>
 );
-const IconFolderSolid = ({ color = "#6366f1" }) => (
+const IconFolderSolid = ({ color = DEFAULT_SWATCH }) => (
   <svg className="w-6 h-6" style={{ color }} fill="currentColor" viewBox="0 0 24 24">
     <path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" />
   </svg>
@@ -211,17 +212,17 @@ const IconList = () => (
   </svg>
 );
 const IconShield = () => (
-  <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
   </svg>
 );
 const IconLock = () => (
-  <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
   </svg>
 );
 const IconCloud = () => (
-  <svg className="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="w-7 h-7 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
   </svg>
 );
@@ -383,7 +384,7 @@ function DownloadDropdown({ doc, variant = "icon" }) {
                 <span className="font-medium text-slate-700 dark:text-slate-200">{fmt.label}</span>
                 <span className="block text-[11px] text-slate-400 dark:text-slate-500">{fmt.desc}</span>
               </span>
-              {converting === fmt.format && <span className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />}
+              {converting === fmt.format && <span className="w-4 h-4 border-2 border-brand-400 border-t-transparent rounded-full animate-spin" />}
             </button>
           ))}
         </motion.div>
@@ -490,7 +491,7 @@ export default function Documents() {
   const [uploadResults, setUploadResults] = useState([]);
 
   const [newFolderName, setNewFolderName] = useState("");
-  const [newFolderColor, setNewFolderColor] = useState("#6366f1");
+  const [newFolderColor, setNewFolderColor] = useState(DEFAULT_SWATCH);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
 
   const [showOnlyOffice, setShowOnlyOffice] = useState(false);
@@ -589,7 +590,7 @@ export default function Documents() {
   const createDragGhost = useCallback((label, itemType = "document") => {
     if (dragGhostRef.current) { document.body.removeChild(dragGhostRef.current); dragGhostRef.current = null; }
     const ghost = document.createElement("div");
-    ghost.style.cssText = "position:fixed;top:-1000px;left:-1000px;padding:8px 14px;background:#4f46e5;color:#fff;border-radius:12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);white-space:nowrap;z-index:9999;max-width:220px;overflow:hidden;text-overflow:ellipsis;";
+    ghost.style.cssText = "position:fixed;top:-1000px;left:-1000px;padding:8px 14px;background:#226bc0;color:#fff;border-radius:12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);white-space:nowrap;z-index:9999;max-width:220px;overflow:hidden;text-overflow:ellipsis;";
     const iconSvg = itemType === "folder"
       ? '<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>'
       : '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>';
@@ -908,7 +909,7 @@ export default function Documents() {
     setIsCreatingFolder(true);
     try {
       const res = await folderService.createFolder({ name: newFolderName.trim(), parentId: currentFolderId, color: newFolderColor });
-      if (res.success) { await fetchFolders(); setShowCreateFolderModal(false); setNewFolderName(""); setNewFolderColor("#6366f1"); }
+      if (res.success) { await fetchFolders(); setShowCreateFolderModal(false); setNewFolderName(""); setNewFolderColor(DEFAULT_SWATCH); }
     } catch { setToast({ type: "error", msg: t("docs.toastCreateFolderFailed") }); }
     finally { setIsCreatingFolder(false); }
   };
@@ -1232,7 +1233,7 @@ export default function Documents() {
     return (
       <div className="relative">
         <button type="button" onClick={() => setOpenDropdown(isOpen ? null : dropdownId)}
-          className={`flex items-center justify-between gap-2 px-4 py-2.5 rounded-xl border bg-white dark:bg-slate-800 transition-all min-w-[140px] ${isOpen ? "border-indigo-500 ring-2 ring-indigo-500/20" : "border-slate-200 dark:border-slate-700 hover:border-slate-300"}`}>
+          className={`flex items-center justify-between gap-2 px-4 py-2.5 rounded-xl border bg-white dark:bg-slate-800 transition-all min-w-[140px] ${isOpen ? "border-brand-500 ring-2 ring-brand-500/20" : "border-slate-200 dark:border-slate-700 hover:border-slate-300"}`}>
           <span className="text-sm text-slate-700 dark:text-slate-200">{sel?.label}</span>
           <IconChevDown className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
         </button>
@@ -1244,7 +1245,7 @@ export default function Documents() {
                 className="absolute left-0 top-full mt-2 w-full min-w-[160px] py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl z-20">
                 {options.map((opt) => (
                   <button key={opt.value} type="button" onClick={() => { onChange(opt.value); setOpenDropdown(null); }}
-                    className={`w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors ${value === opt.value ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium" : "text-slate-600 dark:text-slate-300"}`}>
+                    className={`w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors ${value === opt.value ? "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 font-medium" : "text-slate-600 dark:text-slate-300"}`}>
                     {opt.label}
                   </button>
                 ))}
@@ -1272,7 +1273,7 @@ export default function Documents() {
                 <IconFolder /> {t("docs.newFolder")}
               </button>
               <button onClick={() => setShowUploadModal(true)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold shadow-lg shadow-accent hover:shadow-xl hover:-translate-y-0.5 transition-all text-sm">
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white font-semibold hover:shadow-xl hover:-translate-y-0.5 transition-all text-sm">
                 <IconUpload /> {t("common.upload")}
               </button>
             </>
@@ -1286,7 +1287,7 @@ export default function Documents() {
             onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setDropTargetId("root"); }}
             onDragLeave={() => setDropTargetId(null)}
             onDrop={(e) => handleDropOnBreadcrumb(null, e)}
-            className={`px-2 py-1 rounded-lg transition-all duration-200 flex items-center gap-1 ${dropTargetId === "root" ? "ring-2 ring-indigo-500 bg-indigo-100 dark:bg-indigo-500/20 scale-105" : ""} ${!currentFolderId ? "bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-medium" : "text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400"}`}>
+            className={`px-2 py-1 rounded-lg transition-all duration-200 flex items-center gap-1 ${dropTargetId === "root" ? "ring-2 ring-brand-500 bg-brand-100 dark:bg-brand-500/20 scale-105" : ""} ${!currentFolderId ? "bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400 font-medium" : "text-slate-500 hover:text-brand-600 dark:hover:text-brand-400"}`}>
             <IconHome /> {t("docs.root")}
           </button>
           {folderPath.map((fp, i) => (
@@ -1298,7 +1299,7 @@ export default function Documents() {
                 onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setDropTargetId("bc-" + fp.id); }}
                 onDragLeave={() => setDropTargetId(null)}
                 onDrop={(e) => handleDropOnBreadcrumb(fp.id, e)}
-                className={`px-2 py-1 rounded-lg transition-all duration-200 ${dropTargetId === "bc-" + fp.id ? "ring-2 ring-indigo-500 bg-indigo-100 dark:bg-indigo-500/20 scale-105" : ""} ${i === folderPath.length - 1 ? "bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-medium" : "text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400"}`}>
+                className={`px-2 py-1 rounded-lg transition-all duration-200 ${dropTargetId === "bc-" + fp.id ? "ring-2 ring-brand-500 bg-brand-100 dark:bg-brand-500/20 scale-105" : ""} ${i === folderPath.length - 1 ? "bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400 font-medium" : "text-slate-500 hover:text-brand-600 dark:hover:text-brand-400"}`}>
                 {fp.name}
               </button>
             </span>
@@ -1347,7 +1348,7 @@ export default function Documents() {
                   style={{ order: 9999 }}
                 >
                   <div
-                    className={`relative group rounded-2xl transition-all duration-200 min-h-[80px] ${dropTargetId === "back-parent" ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-slate-900 scale-[1.03] shadow-lg shadow-amber-500/20" : ""}`}
+                    className={`relative group rounded-2xl transition-all duration-200 min-h-[80px] ${dropTargetId === "back-parent" ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-slate-900 scale-[1.03]" : ""}`}
                     onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); e.dataTransfer.dropEffect = "move"; setDropTargetId("back-parent"); }}
                     onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setDropTargetId("back-parent"); }}
                     onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setDropTargetId(null); }}
@@ -1386,7 +1387,7 @@ export default function Documents() {
                   layout layoutId={`folder-${folder.id}`}
                 >
                   <div
-                    className={`relative group rounded-2xl transition-all duration-200 ${dragItem && dragItem.type === "folder" && dragItem.id === folder.id ? "opacity-40 scale-95" : ""} ${dropTargetId === folder.id ? "ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-900 scale-[1.03] shadow-lg shadow-accent" : ""}`}
+                    className={`relative group rounded-2xl transition-all duration-200 ${dragItem && dragItem.type === "folder" && dragItem.id === folder.id ? "opacity-40 scale-95" : ""} ${dropTargetId === folder.id ? "ring-2 ring-brand-500 ring-offset-2 dark:ring-offset-slate-900 scale-[1.03]" : ""}`}
                     draggable
                     onDragStart={(e) => startDrag(e, "folder", folder.id, folder)}
                     onDragEnd={handleDragEnd}
@@ -1398,11 +1399,11 @@ export default function Documents() {
                     onDrop={(e) => handleDropOnFolder(folder.id, e)}
                   >
                     <button onClick={() => navigateToFolder(folder.id)}
-                      className={`w-full p-4 rounded-2xl border text-left transition-all hover:shadow-lg bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500/50 ${dragItem ? "pointer-events-none" : ""} ${dropTargetId === folder.id ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10" : ""}`}>
+                      className={`w-full p-4 rounded-2xl border text-left transition-all hover:shadow-lg bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-brand-300 dark:hover:border-brand-500/50 ${dragItem ? "pointer-events-none" : ""} ${dropTargetId === folder.id ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10" : ""}`}>
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-all bg-slate-100 dark:bg-slate-700 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-500/10"
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-all bg-slate-100 dark:bg-slate-700 group-hover:bg-brand-50 dark:group-hover:bg-brand-500/10"
                           style={{ backgroundColor: folder.color ? `${folder.color}15` : undefined }}>
-                          <IconFolderSolid color={folder.color || "#6366f1"} />
+                          <IconFolderSolid color={swatch(folder.color)} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{folder.name}</p>
@@ -1411,8 +1412,8 @@ export default function Documents() {
                       </div>
                     </button>
                     {dragItem && dropTargetId === folder.id && !(dragItem.type === "folder" && dragItem.id === folder.id) && (
-                      <div className="absolute inset-0 rounded-2xl bg-indigo-500/10 dark:bg-indigo-500/20 border-2 border-dashed border-indigo-500 flex items-center justify-center pointer-events-none z-10">
-                        <span className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-semibold shadow-lg">
+                      <div className="absolute inset-0 rounded-2xl bg-brand-500/10 dark:bg-brand-500/20 border-2 border-dashed border-brand-500 flex items-center justify-center pointer-events-none z-10">
+                        <span className="px-3 py-1.5 rounded-lg bg-brand-600 text-white text-xs font-semibold shadow-lg">
                           {t("docs.dropHere")}
                         </span>
                       </div>
@@ -1483,17 +1484,17 @@ export default function Documents() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
-                className="absolute inset-0 z-30 rounded-2xl border-2 border-dashed border-indigo-500 bg-indigo-50/80 dark:bg-indigo-500/10 backdrop-blur-[2px] flex flex-col items-center justify-center pointer-events-none"
+                className="absolute inset-0 z-30 rounded-2xl border-2 border-dashed border-brand-500 bg-brand-50/80 dark:bg-brand-500/10 backdrop-blur-[2px] flex flex-col items-center justify-center pointer-events-none"
               >
-                <div className="w-16 h-16 rounded-2xl bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center mb-4">
-                  <svg className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-16 h-16 rounded-2xl bg-brand-100 dark:bg-brand-500/20 flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-brand-600 dark:text-brand-400 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
                 </div>
-                <p className="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-1">
+                <p className="text-lg font-semibold text-brand-700 dark:text-brand-300 mb-1">
                   {dragItem.type === "document" ? t("docs.dropToMoveDocument") : t("docs.dropToMoveFolder")}
                 </p>
-                <p className="text-sm text-indigo-500 dark:text-indigo-400">
+                <p className="text-sm text-brand-500 dark:text-brand-400">
                   {currentFolderIdRef.current ? t("docs.intoThisFolder") : t("docs.intoRootLevel")}
                 </p>
               </motion.div>
@@ -1536,7 +1537,7 @@ export default function Documents() {
 
           {isLoadingDocs ? (
             <Card className="p-16 text-center">
-              <div className="w-10 h-10 mx-auto mb-4 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+              <div className="w-10 h-10 mx-auto mb-4 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin" />
               <p className="text-sm text-slate-500">{t("docs.loadingDocuments")}</p>
             </Card>
           ) : filteredDocuments.length === 0 ? (
@@ -1548,7 +1549,7 @@ export default function Documents() {
               </div>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{t("docs.noDocumentsTitle")}</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">{t("docs.noDocumentsSubtitle")}</p>
-              <button onClick={() => setShowUploadModal(true)} className="px-5 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold text-sm transition-all">
+              <button onClick={() => setShowUploadModal(true)} className="px-5 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white font-semibold text-sm transition-all">
                 {t("docs.uploadDocuments")}
               </button>
             </Card>
@@ -1567,12 +1568,12 @@ export default function Documents() {
                       onDoubleClick={() => handlePreviewDocument(doc)}
                     >
                       <div className="flex items-start justify-between mb-4">
-                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-800/50 flex items-center justify-center group-hover:scale-110 transition-transform ring-1 ring-slate-200/40 dark:ring-slate-700/40">
+                        <div className="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:scale-110 transition-transform ring-1 ring-slate-200/40 dark:ring-slate-700/40">
                           {getFileIcon(type, "w-6 h-6")}
                         </div>
                         <div className="flex items-center gap-1.5">
                           {doc.blockchainAnchored && (
-                            <span className="p-1 rounded-md bg-violet-50 dark:bg-violet-500/10 text-violet-500" title={t("docs.titleBlockchainAnchored")}>
+                            <span className="p-1 rounded-md bg-brand-50 dark:bg-brand-500/10 text-brand-500" title={t("docs.titleBlockchainAnchored")}>
                               <IconChain className="w-3 h-3" />
                             </span>
                           )}
@@ -1581,7 +1582,7 @@ export default function Documents() {
                           </span>
                         </div>
                       </div>
-                      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1.5 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1.5 truncate group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
                         {doc.originalFilename}
                       </h3>
                       <div className="flex items-center gap-2 text-[11px] text-slate-400 dark:text-slate-500 mb-4">
@@ -1593,7 +1594,7 @@ export default function Documents() {
                         <span className="text-[11px] font-medium text-slate-400 tracking-wide">{type.toUpperCase()}</span>
                         <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button onClick={(e) => { e.stopPropagation(); openDocument(doc); }} className="p-1.5 rounded-lg hover:bg-sky-50 dark:hover:bg-sky-500/10 text-slate-400 hover:text-sky-600 transition-colors" title={t("docs.titleInfo")}><IconInfo /></button>
-                          <button onClick={(e) => { e.stopPropagation(); handleOpenComment(doc); }} className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10 text-slate-400 hover:text-blue-600 transition-colors" title={t("docs.titleComment")}><IconMessage /></button>
+                          <button onClick={(e) => { e.stopPropagation(); handleOpenComment(doc); }} className="p-1.5 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-500/10 text-slate-400 hover:text-brand-600 transition-colors" title={t("docs.titleComment")}><IconMessage /></button>
                           <DownloadDropdown doc={doc} />
                           <button onClick={(e) => { e.stopPropagation(); setMovingDocument(doc); setShowMoveModal(true); }} className="p-1.5 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-500/10 text-slate-400 hover:text-amber-600 transition-colors" title={t("docs.titleMove")}><IconFolderMove /></button>
                           <button onClick={(e) => { e.stopPropagation(); handleDeleteDocument(doc); }} className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-slate-400 hover:text-red-600 transition-colors" title={t("docs.titleDelete")}><IconTrash /></button>
@@ -1641,7 +1642,7 @@ export default function Documents() {
                                 {doc.status === "active" ? t("docs.active") : doc.status}
                               </span>
                               {doc.blockchainAnchored && (
-                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-violet-50 dark:bg-violet-500/10 text-violet-500 text-[10px] font-medium" title={t("docs.titleBlockchainAnchored")}>
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-brand-50 dark:bg-brand-500/10 text-brand-500 text-[10px] font-medium" title={t("docs.titleBlockchainAnchored")}>
                                   <IconChain className="w-3 h-3" /> {t("docs.onChain")}
                                 </span>
                               )}
@@ -1650,7 +1651,7 @@ export default function Documents() {
                           <td className="px-5 py-4">
                             <div className="flex gap-1">
                               <button onClick={(e) => { e.stopPropagation(); openDocument(doc); }} className="p-2 rounded-lg hover:bg-sky-50 text-slate-400 hover:text-sky-600 transition-colors" title={t("docs.titleInfo")}><IconInfo /></button>
-                              <button onClick={(e) => { e.stopPropagation(); handleOpenComment(doc); }} className="p-2 rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-600 transition-colors" title={t("docs.titleComment")}><IconMessage /></button>
+                              <button onClick={(e) => { e.stopPropagation(); handleOpenComment(doc); }} className="p-2 rounded-lg hover:bg-brand-50 text-slate-400 hover:text-brand-600 transition-colors" title={t("docs.titleComment")}><IconMessage /></button>
                               <DownloadDropdown doc={doc} />
                               <button onClick={(e) => { e.stopPropagation(); handleDeleteDocument(doc); }} className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 transition-colors" title={t("docs.titleDelete")}><IconTrash /></button>
                             </div>
@@ -1677,7 +1678,7 @@ export default function Documents() {
               <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-4 min-w-0">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-800/50 flex items-center justify-center shrink-0 ring-1 ring-slate-200/50 dark:ring-slate-700/50">
+                    <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 ring-1 ring-slate-200/50 dark:ring-slate-700/50">
                       {getFileIcon(getFileTypeFromMime(selectedDocument.mimeType), "w-8 h-8")}
                     </div>
                     <div className="min-w-0">
@@ -1688,9 +1689,9 @@ export default function Documents() {
                             value={renameDocValue}
                             onChange={(e) => setRenameDocValue(e.target.value)}
                             onKeyDown={(e) => { if (e.key === "Enter") handleRenameDocument(); if (e.key === "Escape") setRenamingDoc(false); }}
-                            className="text-lg font-bold bg-transparent border-b-2 border-indigo-400 focus:outline-none text-slate-900 dark:text-white min-w-0 flex-1"
+                            className="text-lg font-bold bg-transparent border-b-2 border-brand-400 focus:outline-none text-slate-900 dark:text-white min-w-0 flex-1"
                           />
-                          <button onClick={handleRenameDocument} className="shrink-0 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">{t("common.save")}</button>
+                          <button onClick={handleRenameDocument} className="shrink-0 text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline">{t("common.save")}</button>
                           <button onClick={() => setRenamingDoc(false)} className="shrink-0 text-sm text-slate-400 hover:text-slate-600">{t("common.cancel")}</button>
                         </div>
                       ) : (
@@ -1698,7 +1699,7 @@ export default function Documents() {
                           <h2 className="text-lg font-bold text-slate-900 dark:text-white truncate">{selectedDocument.originalFilename}</h2>
                           <button
                             onClick={() => { setRenameDocValue(selectedDocument.originalFilename); setRenamingDoc(true); }}
-                            className="shrink-0 p-1 rounded-md text-slate-400 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            className="shrink-0 p-1 rounded-md text-slate-400 hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                             title={t("docs.renameTitle")}>
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                           </button>
@@ -1712,7 +1713,7 @@ export default function Documents() {
                           {selectedDocument.status === "active" ? t("docs.active") : selectedDocument.status}
                         </span>
                         {selectedDocument.blockchainAnchored && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-violet-100 dark:bg-violet-500/15 text-violet-700 dark:text-violet-400">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-brand-100 dark:bg-brand-500/15 text-brand-700 dark:text-brand-400">
                             <IconChain className="w-3 h-3" /> {t("docs.onChain")}
                           </span>
                         )}
@@ -1744,7 +1745,7 @@ export default function Documents() {
                 </div>
 
                 <div className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                  <div className="w-9 h-9 rounded-lg bg-indigo-100 dark:bg-indigo-500/15 flex items-center justify-center text-indigo-600 dark:text-indigo-400 flex-shrink-0"><IconUpload /></div>
+                  <div className="w-9 h-9 rounded-lg bg-brand-100 dark:bg-brand-500/15 flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0"><IconUpload /></div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">{t("docs.uploadedLabel")}</p>
                     <p className="text-[11px] text-slate-400">
@@ -1758,8 +1759,8 @@ export default function Documents() {
                   <button onClick={() => setShowSecurityDetails(!showSecurityDetails)}
                     className="w-full flex items-center justify-between px-4 py-3.5 bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-md bg-indigo-100 dark:bg-indigo-500/15 flex items-center justify-center">
-                        <IconShield className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                      <div className="w-7 h-7 rounded-md bg-brand-100 dark:bg-brand-500/15 flex items-center justify-center">
+                        <IconShield className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
                       </div>
                       <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("docs.securityDetails")}</span>
                     </div>
@@ -1790,9 +1791,9 @@ export default function Documents() {
                           {!selectedDocument.contentHash && !selectedDocument.ssdeepHash && (
                             <p className="text-xs text-slate-400 text-center py-3">{t("docs.noHashData")}</p>
                           )}
-                          <div className="flex items-center gap-2 p-3 rounded-lg bg-indigo-50 dark:bg-indigo-500/5 border border-indigo-100 dark:border-indigo-500/15">
-                            <IconLock className="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" />
-                            <span className="text-[11px] font-medium text-indigo-700 dark:text-indigo-300">{t("docs.e2ee")}</span>
+                          <div className="flex items-center gap-2 p-3 rounded-lg bg-brand-50 dark:bg-brand-500/5 border border-brand-100 dark:border-brand-500/15">
+                            <IconLock className="w-3.5 h-3.5 text-brand-500 flex-shrink-0" />
+                            <span className="text-[11px] font-medium text-brand-700 dark:text-brand-300">{t("docs.e2ee")}</span>
                           </div>
                         </div>
                       </motion.div>
@@ -1805,8 +1806,8 @@ export default function Documents() {
                     <button onClick={() => setShowBlockchainDetails(!showBlockchainDetails)}
                       className="w-full flex items-center justify-between px-4 py-3.5 bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-md bg-violet-100 dark:bg-violet-500/15 flex items-center justify-center">
-                          <IconChain className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
+                        <div className="w-7 h-7 rounded-md bg-brand-100 dark:bg-brand-500/15 flex items-center justify-center">
+                          <IconChain className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
                         </div>
                         <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{t("docs.blockchainAnchoring")}</span>
                         {selectedDocument.blockchainAnchored && (
@@ -1875,7 +1876,7 @@ export default function Documents() {
                                 role="switch"
                                 aria-checked={selectedDocument.autoAnchorOnEdit}
                                 aria-label={t("docs.autoAnchor")}
-                                className={`relative shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900 ${selectedDocument.autoAnchorOnEdit ? 'bg-violet-600' : 'bg-slate-300 dark:bg-slate-700'}`}>
+                                className={`relative shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900 ${selectedDocument.autoAnchorOnEdit ? 'bg-brand-600' : 'bg-slate-300 dark:bg-slate-700'}`}>
                                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${selectedDocument.autoAnchorOnEdit ? 'translate-x-6' : 'translate-x-1'}`} />
                               </button>
                             </div>
@@ -1883,7 +1884,7 @@ export default function Documents() {
                             <div className="flex gap-2">
                               {!selectedDocument.blockchainAnchored ? (
                                 <button onClick={handleAnchorDocument} disabled={blockchainLoading}
-                                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 disabled:opacity-50 text-white text-xs font-semibold transition-colors">
+                                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-accent hover:brightness-110 disabled:opacity-50 text-white text-xs font-semibold transition-colors">
                                   {blockchainAction === 'anchor' ? (
                                     <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                   ) : (
@@ -1893,9 +1894,9 @@ export default function Documents() {
                                 </button>
                               ) : (
                                 <button onClick={handleAnchorDocument} disabled={blockchainLoading}
-                                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-violet-300 dark:border-violet-600 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-500/10 disabled:opacity-50 text-xs font-semibold transition-colors">
+                                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-brand-300 dark:border-brand-600 text-brand-600 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-500/10 disabled:opacity-50 text-xs font-semibold transition-colors">
                                   {blockchainAction === 'anchor' ? (
-                                    <span className="w-3.5 h-3.5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+                                    <span className="w-3.5 h-3.5 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
                                   ) : (
                                     <IconChain className="w-3.5 h-3.5" />
                                   )}
@@ -1943,7 +1944,7 @@ export default function Documents() {
                       onClick={handleTrackingToggle}
                       disabled={trackingLoading}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        selectedDocument.trackingEnabled ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-700'
+                        selectedDocument.trackingEnabled ? 'bg-brand-600' : 'bg-slate-300 dark:bg-slate-700'
                       } disabled:opacity-50`}
                       aria-label={t("docs.toggleOsint")}
                     >
@@ -1966,7 +1967,7 @@ export default function Documents() {
                       onClick={handleQrDownloadToggle}
                       disabled={qrDownloadLoading}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        selectedDocument.qrOnDownload ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-700'
+                        selectedDocument.qrOnDownload ? 'bg-brand-600' : 'bg-slate-300 dark:bg-slate-700'
                       } disabled:opacity-50`}
                       aria-label={t("docs.toggleQr")}
                     >
@@ -1992,7 +1993,7 @@ export default function Documents() {
                           {t("docs.preview")}
                         </button>
                         <button onClick={() => handleEditPdf(selectedDocument)}
-                          className="flex-1 px-4 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white text-sm font-semibold shadow-lg shadow-accent transition-all flex items-center justify-center gap-2">
+                          className="flex-1 px-4 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white text-sm font-semibold transition-all flex items-center justify-center gap-2">
                           <IconEdit /> {t("common.edit")}
                         </button>
                       </>
@@ -2000,14 +2001,14 @@ export default function Documents() {
                   }
                   return (
                     <button onClick={() => { openDocumentSmart(selectedDocument); setShowDocumentModal(false); }}
-                      className="flex-1 px-4 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white text-sm font-semibold shadow-lg shadow-accent transition-all flex items-center justify-center gap-2">
+                      className="flex-1 px-4 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white text-sm font-semibold transition-all flex items-center justify-center gap-2">
                       <IconEdit /> {isOffice ? t("docs.editInOnlyOffice") : t("docs.openLabel")}
                     </button>
                   );
                 })()}
                 <DownloadDropdown doc={selectedDocument} variant="button" />
                 <button onClick={() => setShowShareModal(true)} title={t("docs.shareTitle")}
-                  className="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-indigo-600 hover:border-indigo-300 dark:hover:border-indigo-500/40 text-sm font-semibold transition-all flex items-center justify-center gap-2">
+                  className="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-brand-600 hover:border-brand-300 dark:hover:border-brand-500/40 text-sm font-semibold transition-all flex items-center justify-center gap-2">
                   <Share2 className="w-4 h-4" /> {t("docs.share")}
                 </button>
               </div>
@@ -2029,7 +2030,7 @@ export default function Documents() {
               <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white ${uploadStep === 2 ? "bg-emerald-500" : "bg-indigo-600"}`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white ${uploadStep === 2 ? "bg-emerald-500" : "bg-brand-600"}`}>
                       {uploadStep === 2 ? <IconCheck /> : <IconUpload />}
                     </div>
                     <div>
@@ -2057,12 +2058,12 @@ export default function Documents() {
                   {uploadStep === 0 && (
                     <motion.div key="select" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
                       <label
-                        className="block border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center hover:border-indigo-400 transition-colors cursor-pointer group"
-                        onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); e.currentTarget.classList.add("border-indigo-500", "bg-indigo-50", "dark:bg-indigo-500/10"); }}
-                        onDragLeave={(e) => { e.currentTarget.classList.remove("border-indigo-500", "bg-indigo-50", "dark:bg-indigo-500/10"); }}
+                        className="block border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center hover:border-brand-400 transition-colors cursor-pointer group"
+                        onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); e.currentTarget.classList.add("border-brand-500", "bg-brand-50", "dark:bg-brand-500/10"); }}
+                        onDragLeave={(e) => { e.currentTarget.classList.remove("border-brand-500", "bg-brand-50", "dark:bg-brand-500/10"); }}
                         onDrop={(e) => {
                           e.preventDefault(); e.stopPropagation();
-                          e.currentTarget.classList.remove("border-indigo-500", "bg-indigo-50", "dark:bg-indigo-500/10");
+                          e.currentTarget.classList.remove("border-brand-500", "bg-brand-50", "dark:bg-brand-500/10");
                           const files = Array.from(e.dataTransfer.files);
                           if (files.length) {
                             setRealFiles((p) => [...p, ...files]);
@@ -2074,7 +2075,7 @@ export default function Documents() {
                         }}
                       >
                         <input type="file" multiple className="hidden" onChange={handleFileSelect} accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.png,.jpg,.jpeg,.gif,.txt,.csv" />
-                        <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                           <IconCloud />
                         </div>
                         <p className="text-sm font-semibold text-slate-900 dark:text-white mb-1">{t("docs.dragOrClick")}</p>
@@ -2109,7 +2110,7 @@ export default function Documents() {
                   {uploadStep === 1 && (
                     <motion.div key="uploading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center py-8">
                       <div className="w-20 h-20 mx-auto mb-6 relative">
-                        <svg className="w-20 h-20 animate-spin text-indigo-200" viewBox="0 0 24 24" fill="none">
+                        <svg className="w-20 h-20 animate-spin text-brand-200" viewBox="0 0 24 24" fill="none">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                         </svg>
@@ -2118,7 +2119,7 @@ export default function Documents() {
                       <p className="text-base font-semibold text-slate-900 dark:text-white mb-2">{t("docs.processingSecurely")}</p>
                       <p className="text-sm text-slate-500 mb-4">{t("docs.encryptingHashingStoring")}</p>
                       <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                        <div className="bg-indigo-600 h-2 rounded-full transition-all duration-300" style={{ width: `${Math.max(uploadProgress, 10)}%` }} />
+                        <div className="bg-brand-600 h-2 rounded-full transition-all duration-300" style={{ width: `${Math.max(uploadProgress, 10)}%` }} />
                       </div>
                     </motion.div>
                   )}
@@ -2157,14 +2158,14 @@ export default function Documents() {
                   <>
                     <button onClick={resetUploadModal} className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors">{t("common.cancel")}</button>
                     <button onClick={handleUploadFiles} disabled={!uploadedFiles.length}
-                      className="flex-1 px-4 py-3 rounded-xl bg-accent-gradient hover:brightness-110 text-white text-sm font-semibold shadow-lg shadow-accent transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                      className="flex-1 px-4 py-3 rounded-xl bg-accent hover:brightness-110 text-white text-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                       <IconUpload /> {t("common.upload")} {uploadedFiles.length > 0 ? `(${uploadedFiles.length})` : ""}
                     </button>
                   </>
                 )}
                 {uploadStep === 1 && (
                   <div className="flex-1 flex items-center justify-center gap-3 py-2">
-                    <svg className="w-5 h-5 text-indigo-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-brand-500 animate-spin" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
@@ -2172,7 +2173,7 @@ export default function Documents() {
                   </div>
                 )}
                 {uploadStep === 2 && (
-                  <button onClick={resetUploadModal} className="flex-1 px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2">
+                  <button onClick={resetUploadModal} className="flex-1 px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold transition-all flex items-center justify-center gap-2">
                     <IconCheck /> {t("common.done")}
                   </button>
                 )}
@@ -2191,7 +2192,7 @@ export default function Documents() {
               <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white"><IconFolder /></div>
+                    <div className="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white"><IconFolder /></div>
                     <div>
                       <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t("docs.newFolder")}</h2>
                       <p className="text-xs text-slate-500">{currentFolderId ? `${t("docs.inside")} ${getFolderName(currentFolderId)}` : t("docs.atRootLevel")}</p>
@@ -2214,7 +2215,7 @@ export default function Documents() {
                   <div className="flex gap-2">
                     {FOLDER_COLORS.map((c) => (
                       <button key={c} onClick={() => setNewFolderColor(c)}
-                        className={`w-8 h-8 rounded-lg transition-all ${newFolderColor === c ? "ring-2 ring-offset-2 ring-indigo-500 scale-110" : "hover:scale-105"}`}
+                        className={`w-8 h-8 rounded-lg transition-all ${newFolderColor === c ? "ring-2 ring-offset-2 ring-brand-500 scale-110" : "hover:scale-105"}`}
                         style={{ backgroundColor: c }} />
                     ))}
                   </div>
@@ -2223,7 +2224,7 @@ export default function Documents() {
               <div className="px-6 py-5 border-t border-slate-100 dark:border-slate-800 flex gap-3">
                 <button onClick={() => setShowCreateFolderModal(false)} className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 font-medium hover:bg-slate-50 transition-colors">{t("common.cancel")}</button>
                 <button onClick={handleCreateFolder} disabled={!newFolderName.trim() || isCreatingFolder}
-                  className="flex-1 px-4 py-3 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold shadow-lg shadow-accent transition-all disabled:opacity-50">
+                  className="flex-1 px-4 py-3 rounded-xl bg-accent hover:brightness-110 text-white font-semibold transition-all disabled:opacity-50">
                   {isCreatingFolder ? t("docs.creating") : t("common.create")}
                 </button>
               </div>
@@ -2244,14 +2245,14 @@ export default function Documents() {
               </div>
               <div className="p-6 max-h-64 overflow-y-auto space-y-2">
                 <button onClick={() => handleMoveDocument(null)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors ${!movingDocument.folderId ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10" : "border-slate-200 dark:border-slate-700 hover:border-indigo-300"}`}>
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors ${!movingDocument.folderId ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10" : "border-slate-200 dark:border-slate-700 hover:border-brand-300"}`}>
                   <IconHome />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("docs.rootUnfiled")}</span>
                 </button>
                 {folders.map((f) => (
                   <button key={f.id} onClick={() => handleMoveDocument(f.id)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors ${movingDocument.folderId === f.id ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10" : "border-slate-200 dark:border-slate-700 hover:border-indigo-300"}`}>
-                    <IconFolderSolid color={f.color || "#6366f1"} />
+                    className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors ${movingDocument.folderId === f.id ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10" : "border-slate-200 dark:border-slate-700 hover:border-brand-300"}`}>
+                    <IconFolderSolid color={swatch(f.color)} />
                     <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{f.path || f.name}</span>
                   </button>
                 ))}
@@ -2281,7 +2282,7 @@ export default function Documents() {
       {pdfConverting && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/70 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-3 px-6 py-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl">
-            <svg className="w-8 h-8 animate-spin text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 animate-spin text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
@@ -2344,7 +2345,7 @@ export default function Documents() {
                   </button>
                   <button onClick={handleRenameFolder}
                     disabled={!renameFolderName.trim() || renameFolderName.trim() === renamingFolder.name}
-                    className="flex-1 px-4 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                     {t("common.rename")}
                   </button>
                 </div>
@@ -2365,8 +2366,8 @@ export default function Documents() {
             <div className="px-4 py-3 flex items-center gap-3">
               {isDirectUploading ? (
                 <>
-                  <div className="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center shrink-0">
-                    <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <div className="w-9 h-9 rounded-xl bg-brand-100 dark:bg-brand-500/20 flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5 text-brand-600 dark:text-brand-400 animate-spin" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
@@ -2375,7 +2376,7 @@ export default function Documents() {
                     <p className="text-sm font-semibold text-slate-900 dark:text-white">{t("docs.uploadingFiles")}</p>
                     <p className="text-xs text-slate-500">{t("docs.encryptingProcessingShort")}</p>
                   </div>
-                  <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{directUploadProgress}%</span>
+                  <span className="text-sm font-bold text-brand-600 dark:text-brand-400">{directUploadProgress}%</span>
                 </>
               ) : (
                 <>
@@ -2408,7 +2409,7 @@ export default function Documents() {
             {isDirectUploading && (
               <div className="h-1 bg-slate-100 dark:bg-slate-800">
                 <motion.div
-                  className="h-full bg-indigo-600 rounded-r-full"
+                  className="h-full bg-brand-600 rounded-r-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${directUploadProgress}%` }}
                   transition={{ duration: 0.3 }}
@@ -2443,7 +2444,7 @@ export default function Documents() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 px-5 py-3 rounded-xl bg-indigo-600 text-white text-sm font-medium shadow-2xl flex items-center gap-2 pointer-events-none"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 px-5 py-3 rounded-xl bg-brand-600 text-white text-sm font-medium shadow-2xl flex items-center gap-2 pointer-events-none"
           >
             <svg className="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
             {dropTargetId
@@ -2499,7 +2500,7 @@ export default function Documents() {
                 <div className="flex items-center gap-2 shrink-0">
                   {getFileTypeFromMime(viewerDoc.mimeType) === "pdf" && (
                     <button onClick={() => { const d = viewerDoc; setViewerDoc(null); handleEditPdf(d); }}
-                      className="min-h-[40px] px-3.5 rounded-xl text-sm font-semibold bg-accent-gradient hover:brightness-110 text-white shadow-lg shadow-accent transition-colors inline-flex items-center gap-1.5">
+                      className="min-h-[40px] px-3.5 rounded-xl text-sm font-semibold bg-accent hover:brightness-110 text-white transition-colors inline-flex items-center gap-1.5">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                       {t("common.edit")}
                     </button>

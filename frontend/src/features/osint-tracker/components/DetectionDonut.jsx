@@ -3,11 +3,12 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useLang } from "@/app/providers/LanguageProvider";
 import { countByMatchType } from "../lib/osint-metrics";
 
+// Same vocabulary as the leaks table dots (brand / light brand / amber / slate).
 const SEGMENTS = [
-  { key: "visible_code", label: "visible-code", color: "#10b981" },
-  { key: "watermark", label: "watermark", color: "#6366f1" },
+  { key: "visible_code", label: "visible-code", color: "var(--brand-600)" },
+  { key: "watermark", label: "watermark", color: "var(--brand-300)" },
   { key: "honeytoken", label: "honeytoken", color: "#f59e0b" },
-  { key: "other", label: "other", color: "#64748b" },
+  { key: "other", label: "other", color: "#94a3b8" },
 ];
 
 const R = 15.915;
@@ -31,14 +32,8 @@ export default function DetectionDonut({ leaks }) {
   const summary = `${t("osint.donut.summaryLabel")}: ${counts.visible_code} visible-code, ${counts.watermark} watermark, ${counts.honeytoken} honeytoken`;
 
   return (
-    <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm">
-      <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2 mb-4">
-        <svg className="w-4 h-4 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9 9 0 1020.945 13H11V3.055z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-        </svg>
-        {t("osint.donut.title")}
-      </h3>
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5">
+      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">{t("osint.donut.title")}</h3>
 
       <div className="flex items-center gap-5">
         <svg width="96" height="96" viewBox="0 0 42 42" role="img" aria-label={summary}>

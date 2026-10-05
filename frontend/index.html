@@ -2,12 +2,80 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%231d4ed8'/><stop offset='100%25' stop-color='%236d28d9'/></linearGradient></defs><rect width='24' height='24' rx='6' fill='url(%23g)'/><g transform='translate(3.6 3.6) scale(0.7)'><path fill-rule='evenodd' clip-rule='evenodd' fill='white' d='M11.63 2.09a1 1 0 0 1 .74 0l7 2.8A1 1 0 0 1 20 5.82v5.4c0 4.98-3.08 9.1-7.62 10.94a1 1 0 0 1-.76 0C7.08 20.32 4 16.2 4 11.22v-5.4a1 1 0 0 1 .63-.93l7-2.8ZM8.6 8.4a.9.9 0 0 0 0 1.8h6.8a.9.9 0 0 0 0-1.8H8.6Zm0 3.5a.9.9 0 0 0 0 1.8h5.1a.9.9 0 0 0 0-1.8H8.6Zm0 3.5a.9.9 0 0 0 0 1.8h3.4a.9.9 0 0 0 0-1.8H8.6Z'/></g></svg>" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%23226bc0'/><g transform='translate(3.6 3.6) scale(0.7)'><path fill-rule='evenodd' clip-rule='evenodd' fill='white' d='M11.63 2.09a1 1 0 0 1 .74 0l7 2.8A1 1 0 0 1 20 5.82v5.4c0 4.98-3.08 9.1-7.62 10.94a1 1 0 0 1-.76 0C7.08 20.32 4 16.2 4 11.22v-5.4a1 1 0 0 1 .63-.93l7-2.8ZM8.6 8.4a.9.9 0 0 0 0 1.8h6.8a.9.9 0 0 0 0-1.8H8.6Zm0 3.5a.9.9 0 0 0 0 1.8h5.1a.9.9 0 0 0 0-1.8H8.6Zm0 3.5a.9.9 0 0 0 0 1.8h3.4a.9.9 0 0 0 0-1.8H8.6Z'/></g></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DocLoq</title>
+    <style>
+      /* Landing splash: covers the bundle download on a first visit, then fades away. */
+      #dl-splash { position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center; background: #041029; color: #fff; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; transition: opacity .6s cubic-bezier(.22,1,.36,1), visibility .6s; }
+      #dl-splash::before { content: ""; position: absolute; inset: 0; background: repeating-radial-gradient(circle at 50% 50%, rgba(100,162,240,.08) 0 1px, transparent 1px 44px); -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0, transparent 60%); mask-image: radial-gradient(circle at 50% 50%, #000 0, transparent 60%); }
+      #dl-splash.dl-out { opacity: 0; visibility: hidden; }
+      #dl-splash .dl-stage { position: relative; display: flex; flex-direction: column; align-items: center; gap: 20px; transition: transform .6s cubic-bezier(.22,1,.36,1); }
+      #dl-splash.dl-out .dl-stage { transform: scale(1.04); }
+      #dl-splash svg { width: 132px; height: 132px; overflow: visible; }
+      #dl-splash .dl-ring { fill: none; stroke: #64a2f0; stroke-linecap: round; }
+      #dl-splash .dl-ring-a { stroke-width: 1.5; stroke-dasharray: 327; stroke-dashoffset: 327; animation: dl-draw 1.1s cubic-bezier(.65,0,.35,1) forwards; }
+      #dl-splash .dl-ring-b { stroke-width: .75; opacity: 0; animation: dl-fade .6s .35s ease-out forwards; }
+      #dl-splash .dl-ticks { fill: none; stroke: #3d84db; stroke-width: 4; stroke-dasharray: 1.2 6.39; opacity: 0; animation: dl-fade .8s .5s ease-out forwards; }
+      #dl-splash .dl-tile { transform-origin: 66px 66px; opacity: 0; transform: scale(.86); animation: dl-pop .7s .2s cubic-bezier(.22,1,.36,1) forwards; }
+      #dl-splash .dl-word { font-size: 20px; font-weight: 600; letter-spacing: -.01em; opacity: 0; transform: translateY(6px); animation: dl-pop .6s .45s cubic-bezier(.22,1,.36,1) forwards; }
+      @keyframes dl-draw { to { stroke-dashoffset: 0; } }
+      @keyframes dl-fade { to { opacity: 1; } }
+      @keyframes dl-pop { to { opacity: 1; transform: none; } }
+      @media (prefers-reduced-motion: reduce) {
+        #dl-splash *, #dl-splash .dl-stage { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; stroke-dashoffset: 0 !important; }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <div id="dl-splash" aria-hidden="true">
+      <div class="dl-stage">
+        <svg viewBox="0 0 132 132">
+          <circle class="dl-ticks" cx="66" cy="66" r="62" />
+          <circle class="dl-ring dl-ring-a" cx="66" cy="66" r="52" transform="rotate(-90 66 66)" />
+          <circle class="dl-ring dl-ring-b" cx="66" cy="66" r="44" />
+          <g class="dl-tile">
+            <rect x="42" y="42" width="48" height="48" rx="12" fill="#1559a4" />
+            <path transform="translate(49.2 49.2) scale(1.4)" fill="#fff" fill-rule="evenodd" clip-rule="evenodd" d="M11.63 2.09a1 1 0 0 1 .74 0l7 2.8A1 1 0 0 1 20 5.82v5.4c0 4.98-3.08 9.1-7.62 10.94a1 1 0 0 1-.76 0C7.08 20.32 4 16.2 4 11.22v-5.4a1 1 0 0 1 .63-.93l7-2.8ZM8.6 8.4a.9.9 0 0 0 0 1.8h6.8a.9.9 0 0 0 0-1.8H8.6Zm0 3.5a.9.9 0 0 0 0 1.8h5.1a.9.9 0 0 0 0-1.8H8.6Zm0 3.5a.9.9 0 0 0 0 1.8h3.4a.9.9 0 0 0 0-1.8H8.6Z" />
+          </g>
+        </svg>
+        <div class="dl-word">DocLoq</div>
+      </div>
+    </div>
+    <script>
+      // Splash runs once per session, on the landing page only, and leaves as soon as the
+      // app has rendered (never sooner than its short draw-in, so it does not flicker).
+      (function () {
+        var el = document.getElementById('dl-splash');
+        if (!el) return;
+        var seen = false;
+        try { seen = sessionStorage.getItem('docloq:splash') === '1'; } catch (e) { /* storage blocked */ }
+        if (location.pathname !== '/' || seen) { el.parentNode.removeChild(el); window.__docloqSplashDone = true; return; }
+        try { sessionStorage.setItem('docloq:splash', '1'); } catch (e) { /* storage blocked */ }
+        var start = Date.now(), MIN_MS = 900, finished = false;
+        function finish() {
+          if (finished) return;
+          finished = true;
+          setTimeout(function () {
+            el.className += ' dl-out';
+            window.__docloqSplashDone = true;
+            window.dispatchEvent(new Event('docloq:splash-done'));
+            setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 650);
+          }, Math.max(0, MIN_MS - (Date.now() - start)));
+        }
+        function whenPainted() {
+          if (document.fonts && document.fonts.ready) document.fonts.ready.then(finish, finish);
+          else finish();
+        }
+        var root = document.getElementById('root');
+        var observer = new MutationObserver(function () {
+          if (root.firstChild) { observer.disconnect(); requestAnimationFrame(whenPainted); }
+        });
+        observer.observe(root, { childList: true });
+        setTimeout(finish, 5000);
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

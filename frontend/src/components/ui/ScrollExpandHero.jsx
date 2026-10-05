@@ -152,7 +152,7 @@ const ScrollExpandHero = ({
               >
                 {subtitle && (
                   <motion.p
-                    className="text-sm md:text-base text-violet-300/80 font-medium tracking-wide"
+                    className="text-sm md:text-base text-brand-300/80 font-medium tracking-wide"
                     style={{ transform: `translateX(-${textTranslateX}vw)` }}
                     animate={{ opacity: 1 - scrollProgress * 1.5 }}
                   >

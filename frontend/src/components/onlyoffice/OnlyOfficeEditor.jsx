@@ -503,7 +503,7 @@ export default function OnlyOfficeEditor({
           <div className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl backdrop-blur-xl shadow-lg border ${
             isDark ? 'bg-slate-900/70 border-slate-700/60' : 'bg-white/85 border-slate-200/80'
           }`}>
-            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center shadow-sm shadow-blue-500/30">
+            <div className="w-6 h-6 rounded-md bg-brand-600 flex items-center justify-center">
               <span className="text-white text-[10px] font-bold">D</span>
             </div>
 
@@ -524,9 +524,9 @@ export default function OnlyOfficeEditor({
               )}
               {recovering && (
                 <motion.div key="recover" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-blue-500/15 border border-blue-500/30">
-                  <div className="w-2.5 h-2.5 border-[1.5px] border-blue-500 border-t-transparent rounded-full animate-spin" />
-                  <span className="text-[10px] text-blue-600 dark:text-blue-400 font-medium">{t('misc.oo.status.reconnecting')}</span>
+                  className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-brand-500/15 border border-brand-500/30">
+                  <div className="w-2.5 h-2.5 border-[1.5px] border-brand-500 border-t-transparent rounded-full animate-spin" />
+                  <span className="text-[10px] text-brand-600 dark:text-brand-400 font-medium">{t('misc.oo.status.reconnecting')}</span>
                 </motion.div>
               )}
               {lockInfo && !isSaving && !recovering && (
@@ -543,14 +543,14 @@ export default function OnlyOfficeEditor({
                 {presence.slice(0, 2).map((p) => (
                   <div key={p.userId}
                     title={`${p.name} (${p.mode === 'edit' ? t('misc.oo.presence.editing') : t('misc.oo.presence.viewing')})`}
-                    className={`relative w-5 h-5 rounded-full border-2 ${isDark ? 'border-slate-900' : 'border-white'} bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-[9px] font-bold`}
+                    className={`relative w-5 h-5 rounded-full border-2 ${isDark ? 'border-slate-900' : 'border-white'} bg-brand-600 flex items-center justify-center text-white text-[9px] font-bold`}
                   >
                     {p.avatarUrl ? (
                       <img src={p.avatarUrl} alt={p.name} className="w-full h-full rounded-full object-cover" />
                     ) : (
                       (p.name || '?').charAt(0).toUpperCase()
                     )}
-                    <span className={`absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 rounded-full ${p.mode === 'edit' ? 'bg-emerald-500' : 'bg-blue-500'}`} />
+                    <span className={`absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 rounded-full ${p.mode === 'edit' ? 'bg-emerald-500' : 'bg-brand-500'}`} />
                   </div>
                 ))}
                 {presence.length > 2 && (
@@ -590,7 +590,7 @@ export default function OnlyOfficeEditor({
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all text-xs font-semibold active:scale-95 ${
                   lockInfo
                     ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30 cursor-pointer'
-                    : 'bg-blue-600 hover:bg-blue-500 text-white shadow shadow-blue-500/30'
+                    : 'bg-brand-600 hover:bg-brand-500 text-white shadow '
                 }`}
                 title={lockInfo ? `${t('misc.oo.tooltip.editedBy')} ${lockInfo.lockedByName}` : t('misc.oo.tooltip.openEdit')}
               >
@@ -637,7 +637,7 @@ export default function OnlyOfficeEditor({
               <h3 className={`text-lg font-semibold ${titleColor} mb-2`}>{t('misc.oo.error.title')}</h3>
               <p className={`${subTextColor} mb-6`}>{error}</p>
               <div className="flex gap-2 justify-center">
-                <button onClick={doReload} className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium">{t('common.retry')}</button>
+                <button onClick={doReload} className="px-5 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium">{t('common.retry')}</button>
                 <button onClick={onClose} className={`px-5 py-2 rounded-lg font-medium ${isDark ? 'bg-slate-800 hover:bg-slate-700 text-slate-200' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'}`}>{t('common.close')}</button>
               </div>
             </div>
@@ -655,7 +655,7 @@ export default function OnlyOfficeEditor({
             transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
             className={`fixed bottom-6 right-6 z-30 flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold text-sm shadow-2xl backdrop-blur-sm transition-colors disabled:opacity-60 disabled:cursor-wait ${
               hasChanges
-                ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-500/40'
+                ? 'bg-emerald-600 hover:bg-emerald-500 text-white '
                 : 'bg-slate-700/90 hover:bg-slate-600 text-white shadow-slate-900/40'
             }`}
           >
@@ -691,7 +691,7 @@ export default function OnlyOfficeEditor({
                 toast.type === 'success' ? 'bg-emerald-50/95 dark:bg-emerald-500/15 border-emerald-200 dark:border-emerald-500/30 text-emerald-900 dark:text-emerald-200' :
                 toast.type === 'error' ? 'bg-red-50/95 dark:bg-red-500/15 border-red-200 dark:border-red-500/30 text-red-900 dark:text-red-200' :
                 toast.type === 'warning' ? 'bg-amber-50/95 dark:bg-amber-500/15 border-amber-200 dark:border-amber-500/30 text-amber-900 dark:text-amber-200' :
-                'bg-blue-50/95 dark:bg-blue-500/15 border-blue-200 dark:border-blue-500/30 text-blue-900 dark:text-blue-200'
+                'bg-brand-50/95 dark:bg-brand-500/15 border-brand-200 dark:border-brand-500/30 text-brand-900 dark:text-brand-200'
               }`}>
                 {toast.type === 'success' && <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>}
                 {toast.type === 'error' && <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>}
@@ -716,7 +716,7 @@ export default function OnlyOfficeEditor({
               } backdrop-blur-xl`}
             >
               <div className="flex items-start gap-3 p-4">
-                <div className="shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/30">
+                <div className="shrink-0 w-11 h-11 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold">
                   {(pingRequest.senderName || '?').split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -735,7 +735,7 @@ export default function OnlyOfficeEditor({
                         setPingRequest(null);
                         setTimeout(() => doReload(), 600);
                       }}
-                      className="flex-1 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors"
+                      className="flex-1 px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold transition-colors"
                     >
                       {t('misc.oo.ping.release')}
                     </button>
@@ -756,13 +756,13 @@ export default function OnlyOfficeEditor({
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
-              <div className="h-1 bg-blue-500/20 overflow-hidden">
+              <div className="h-1 bg-brand-500/20 overflow-hidden">
                 <motion.div
                   initial={{ width: '100%' }}
                   animate={{ width: 0 }}
                   transition={{ duration: 15, ease: 'linear' }}
                   onAnimationComplete={() => setPingRequest(null)}
-                  className="h-full bg-blue-500"
+                  className="h-full bg-brand-500"
                 />
               </div>
             </motion.div>
@@ -786,12 +786,11 @@ export default function OnlyOfficeEditor({
                 className={`relative max-w-md w-full rounded-3xl overflow-hidden shadow-[0_20px_70px_-15px_rgba(0,0,0,0.6)] ${
                   isDark ? 'bg-slate-900/95 ring-1 ring-white/10' : 'bg-white ring-1 ring-slate-200'
                 }`}>
-                <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-amber-500/15 via-amber-500/5 to-transparent pointer-events-none" />
 
                 <div className="relative px-7 pt-7 pb-5">
                   <div className="flex flex-col items-center text-center">
                     <div className="relative">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-amber-500/30">
+                      <div className="w-16 h-16 rounded-2xl bg-amber-600 flex items-center justify-center text-white text-xl font-bold">
                         {(lockInfo.lockedByName || '?').split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase()}
                       </div>
                       <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-[3px] ${isDark ? 'border-slate-900' : 'border-white'} flex items-center justify-center`}>
@@ -834,7 +833,7 @@ export default function OnlyOfficeEditor({
                           showToast('error', msg);
                         }
                       }}
-                      className="w-full px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-lg shadow-blue-500/30 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                      className="w-full px-4 py-3 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
                       {t('misc.oo.lock.requestAccess')}
@@ -891,7 +890,7 @@ export default function OnlyOfficeEditor({
                   <p className={`text-sm ${subTextColor}`}>{t('misc.oo.eject.body')}</p>
                 </div>
                 <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800">
-                  <button onClick={handleForceEject} className="w-full px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm">{t('misc.oo.eject.ok')}</button>
+                  <button onClick={handleForceEject} className="w-full px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm">{t('misc.oo.eject.ok')}</button>
                 </div>
               </motion.div>
             </motion.div>

@@ -131,17 +131,20 @@ const ActivityIcons = {
   ),
 };
 
+// Color only where the action carries meaning (created/verified, changed, removed);
+// routine actions stay neutral so the feed reads calmly.
+const NEUTRAL_ACTIVITY = 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300';
 const ACTIVITY_ICON_STYLES = {
-  create: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
-  upload: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
-  update: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
-  delete: 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400',
-  download: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400',
-  share: 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400',
-  verify: 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400',
-  restore: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400',
-  archive: 'bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-400',
-  read: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
+  create: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
+  upload: NEUTRAL_ACTIVITY,
+  update: 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400',
+  delete: 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400',
+  download: NEUTRAL_ACTIVITY,
+  share: NEUTRAL_ACTIVITY,
+  verify: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
+  restore: NEUTRAL_ACTIVITY,
+  archive: NEUTRAL_ACTIVITY,
+  read: NEUTRAL_ACTIVITY,
 };
 
 function timeAgo(dateStr, t) {
@@ -172,8 +175,8 @@ function daysUntil(dateStr, t) {
 
 const TYPE_COLORS = {
   PDF: { bg: 'bg-red-50 dark:bg-red-900/20', text: 'text-red-600 dark:text-red-400', bar: 'bg-red-500', hex: '#ef4444' },
-  DOCX: { bg: 'bg-blue-50 dark:bg-blue-900/20', text: 'text-blue-600 dark:text-blue-400', bar: 'bg-blue-500', hex: '#3b82f6' },
-  DOC: { bg: 'bg-blue-50 dark:bg-blue-900/20', text: 'text-blue-600 dark:text-blue-400', bar: 'bg-blue-500', hex: '#3b82f6' },
+  DOCX: { bg: 'bg-brand-50 dark:bg-brand-900/20', text: 'text-brand-600 dark:text-brand-400', bar: 'bg-brand-500', hex: '#3d84db' },
+  DOC: { bg: 'bg-brand-50 dark:bg-brand-900/20', text: 'text-brand-600 dark:text-brand-400', bar: 'bg-brand-500', hex: '#3d84db' },
   XLSX: { bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-600 dark:text-emerald-400', bar: 'bg-emerald-500', hex: '#10b981' },
   XLS: { bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-600 dark:text-emerald-400', bar: 'bg-emerald-500', hex: '#10b981' },
   PPTX: { bg: 'bg-orange-50 dark:bg-orange-900/20', text: 'text-orange-600 dark:text-orange-400', bar: 'bg-orange-500', hex: '#f97316' },
@@ -255,24 +258,16 @@ function TaskBarChart({ data }) {
   const max = Math.max(...data.map(d => d.value), 1);
   const total = data.reduce((sum, d) => sum + d.value, 0);
 
-  const barColors = {
-    'bg-amber-500': { bar: 'from-amber-400 to-amber-500', glow: 'bg-amber-500/20' },
-    'bg-blue-500': { bar: 'from-blue-400 to-blue-500', glow: 'bg-blue-500/20' },
-    'bg-emerald-500': { bar: 'from-emerald-400 to-emerald-500', glow: 'bg-emerald-500/20' },
-    'bg-red-500': { bar: 'from-red-400 to-red-500', glow: 'bg-red-500/20' },
-  };
-
   return (
     <div className="space-y-4">
       {total > 0 && (
         <div className="flex items-center gap-0.5 h-2.5 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800/60">
           {data.filter(d => d.value > 0).map((bar, i) => {
             const pct = (bar.value / total) * 100;
-            const colors = barColors[bar.color] || { bar: 'from-slate-400 to-slate-500' };
             return (
               <motion.div
                 key={i}
-                className={`h-full bg-linear-to-r ${colors.bar}`}
+                className={`h-full ${bar.color}`}
                 initial={{ width: 0 }}
                 animate={{ width: `${pct}%` }}
                 transition={{ duration: 0.8, delay: 0.2 + i * 0.1, ease: "easeOut" }}
@@ -285,7 +280,6 @@ function TaskBarChart({ data }) {
       <div className="grid grid-cols-2 gap-3">
         {data.map((bar, i) => {
           const pct = max > 0 ? (bar.value / max) * 100 : 0;
-          const colors = barColors[bar.color] || { bar: 'from-slate-400 to-slate-500', glow: 'bg-slate-500/20' };
           return (
             <motion.div
               key={i}
@@ -300,7 +294,7 @@ function TaskBarChart({ data }) {
               </div>
               <div className="relative h-2 rounded-full bg-slate-100 dark:bg-slate-800/60 overflow-hidden">
                 <motion.div
-                  className={`absolute inset-y-0 left-0 rounded-full bg-linear-to-r ${colors.bar}`}
+                  className={`absolute inset-y-0 left-0 rounded-full ${bar.color}`}
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.max(pct, bar.value > 0 ? 8 : 0)}%` }}
                   transition={{ duration: 0.8, delay: 0.4 + i * 0.1, ease: "easeOut" }}
@@ -374,16 +368,12 @@ export default function Dashboard() {
         value: s.totalDocuments,
         sub: `${s.totalFolders} ${t("dashboard.stats.foldersSuffix")}`,
         icon: Icons.document,
-        color: 'from-blue-500 to-indigo-500',
-        iconBg: 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
       },
       {
         label: t("dashboard.stats.tasks"),
         value: s.totalTasks,
         sub: `${s.pendingTasks} ${t("dashboard.stats.pendingSuffix")}`,
         icon: Icons.task,
-        color: 'from-emerald-500 to-teal-500',
-        iconBg: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
         alert: s.overdueTasks > 0 ? `${s.overdueTasks} ${t("dashboard.stats.overdueSuffix")}` : null,
       },
       {
@@ -391,16 +381,12 @@ export default function Dashboard() {
         value: s.totalStorage,
         sub: `${s.totalDocuments} ${t("dashboard.stats.filesSuffix")}`,
         icon: Icons.storage,
-        color: 'from-purple-500 to-pink-500',
-        iconBg: 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
       },
       {
         label: t("dashboard.stats.forms"),
         value: s.totalFormInstances,
         sub: `${s.totalTemplates} ${t("dashboard.stats.templatesSuffix")}`,
         icon: Icons.folder,
-        color: 'from-amber-500 to-orange-500',
-        iconBg: 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
       },
     ];
 
@@ -416,7 +402,7 @@ export default function Dashboard() {
     const s = data.stats;
     return [
       { label: t("dashboard.taskChart.pending"), value: s.pendingTasks, color: 'bg-amber-500' },
-      { label: t("dashboard.taskChart.inProgress"), value: s.inProgressTasks, color: 'bg-blue-500' },
+      { label: t("dashboard.taskChart.inProgress"), value: s.inProgressTasks, color: 'bg-brand-500' },
       { label: t("dashboard.taskChart.completed"), value: s.completedTasks, color: 'bg-emerald-500' },
       { label: t("dashboard.taskChart.overdue"), value: s.overdueTasks, color: 'bg-red-500' },
     ];
@@ -441,14 +427,14 @@ export default function Dashboard() {
   }, [data, debouncedSearch]);
 
   const quickActions = [
-    { name: t("dashboard.quickActions.upload.name"), desc: t("dashboard.quickActions.upload.desc"), icon: Icons.upload, href: "/documents", color: "from-blue-500 to-indigo-600" },
+    { name: t("dashboard.quickActions.upload.name"), desc: t("dashboard.quickActions.upload.desc"), icon: Icons.upload, href: "/documents", primary: true },
     isOwner
-      ? { name: t("dashboard.quickActions.verify.name"), desc: t("dashboard.quickActions.verify.desc"), icon: Icons.verify, href: "/verification", color: "from-emerald-500 to-teal-600" }
-      : { name: t("dashboard.quickActions.tasks.name"), desc: t("dashboard.quickActions.tasks.desc"), icon: Icons.task, href: "/tasks", color: "from-emerald-500 to-teal-600" },
-    { name: t("dashboard.quickActions.ai.name"), desc: t("dashboard.quickActions.ai.desc"), icon: Icons.ai, href: "/ai-analysis", color: "from-violet-500 to-purple-600" },
+      ? { name: t("dashboard.quickActions.verify.name"), desc: t("dashboard.quickActions.verify.desc"), icon: Icons.verify, href: "/verification" }
+      : { name: t("dashboard.quickActions.tasks.name"), desc: t("dashboard.quickActions.tasks.desc"), icon: Icons.task, href: "/tasks" },
+    { name: t("dashboard.quickActions.ai.name"), desc: t("dashboard.quickActions.ai.desc"), icon: Icons.ai, href: "/ai-analysis" },
     isOwner
-      ? { name: t("dashboard.quickActions.osint.name"), desc: t("dashboard.quickActions.osint.desc"), icon: Icons.osint, href: "/osint-tracker", color: "from-amber-500 to-orange-600" }
-      : { name: t("dashboard.quickActions.forms.name"), desc: t("dashboard.quickActions.forms.desc"), icon: Icons.folder, href: "/forms", color: "from-amber-500 to-orange-600" },
+      ? { name: t("dashboard.quickActions.osint.name"), desc: t("dashboard.quickActions.osint.desc"), icon: Icons.osint, href: "/osint-tracker" }
+      : { name: t("dashboard.quickActions.forms.name"), desc: t("dashboard.quickActions.forms.desc"), icon: Icons.folder, href: "/forms" },
   ];
 
   if (loading) {
@@ -495,97 +481,92 @@ export default function Dashboard() {
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 mb-6"
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="flex items-end justify-between gap-4 mb-6"
       >
-        <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-accent-wash blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-28 -left-16 w-64 h-64 rounded-full bg-linear-to-tr from-blue-500/10 to-transparent blur-3xl pointer-events-none" />
-        <div className="relative flex items-center justify-between gap-4 p-5 sm:p-6">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-accent mb-1">
-              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-            </p>
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
-              {t("dashboard.header.welcome")}{' '}
-              <span className="bg-accent-gradient bg-clip-text text-transparent">{firstName}</span>
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">
-              {t("dashboard.header.subtitle")}
-            </p>
-          </div>
-          <button
-            onClick={fetchDashboard}
-            className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
-            title={t("dashboard.header.refresh")}
-          >
-            {Icons.refresh}
-            <span className="hidden sm:inline">{t("dashboard.header.refresh")}</span>
-          </button>
+        <div>
+          <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
+            {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+          </p>
+          <h1 className="text-2xl sm:text-[28px] font-bold tracking-tight text-slate-900 dark:text-white">
+            {t("dashboard.header.welcome")} {firstName}
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
+            {t("dashboard.header.subtitle")}
+          </p>
         </div>
+        <button
+          onClick={fetchDashboard}
+          className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
+          title={t("dashboard.header.refresh")}
+        >
+          {Icons.refresh}
+          <span className="hidden sm:inline">{t("dashboard.header.refresh")}</span>
+        </button>
       </motion.div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05, duration: 0.3, ease: "easeOut" }}
+        className="grid grid-cols-2 lg:grid-cols-4 mb-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden [&>*]:border-slate-200 dark:[&>*]:border-slate-800"
+      >
         {stats.map((stat, i) => (
-          <motion.div
+          <div
             key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.06, duration: 0.4 }}
+            className={`p-4 sm:p-5 ${i % 2 === 1 ? 'border-l' : ''} ${i >= 2 ? 'border-t lg:border-t-0' : ''} ${i === 2 ? 'lg:border-l' : ''}`}
           >
-            <Card className="p-4 sm:p-5 relative overflow-hidden group" hover>
-              <div className={`absolute -top-10 -right-10 w-28 h-28 rounded-full bg-linear-to-br ${stat.color} opacity-[0.08] group-hover:opacity-[0.16] blur-2xl transition-opacity duration-300 pointer-events-none`} />
-              <div className="relative">
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${stat.iconBg} ring-1 ring-inset ring-black/5 dark:ring-white/10 flex items-center justify-center`}>
-                    {stat.icon}
-                  </div>
-                  {stat.alert && (
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center gap-1">
-                      {Icons.warning}
-                      {stat.alert}
-                    </span>
-                  )}
-                </div>
-                <p className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tabular-nums">
-                  {typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}
-                </p>
-                <div className="flex items-center justify-between mt-1">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{stat.label}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">{stat.sub}</p>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <p className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                <span className="text-slate-400 dark:text-slate-500 [&>svg]:w-4 [&>svg]:h-4">{stat.icon}</span>
+                {stat.label}
+              </p>
+              {stat.alert && (
+                <span className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 flex items-center gap-1">
+                  {Icons.warning}
+                  {stat.alert}
+                </span>
+              )}
+            </div>
+            <p className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white tabular-nums">
+              {typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}
+            </p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{stat.sub}</p>
+          </div>
         ))}
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         {quickActions.map((action, i) => (
           <motion.button
             key={action.name}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 + i * 0.05, duration: 0.4 }}
+            transition={{ delay: 0.1 + i * 0.04, duration: 0.3, ease: "easeOut" }}
             onClick={() => navigate(action.href)}
-            className="group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-5 text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99]"
+            className={`group rounded-2xl p-4 sm:p-5 text-left border transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+              action.primary
+                ? "bg-accent border-transparent hover:bg-brand-700 text-white"
+                : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-brand-300 dark:hover:border-brand-500/40"
+            }`}
           >
-            <div className={`absolute inset-0 bg-linear-to-br ${action.color} opacity-0 group-hover:opacity-[0.07] transition-opacity duration-300`} />
-            <div className={`absolute inset-x-0 bottom-0 h-0.5 bg-linear-to-r ${action.color} scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300`} />
-            <div className="relative z-10">
-              <div className="flex items-start justify-between mb-3">
-                <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-linear-to-br ${action.color} flex items-center justify-center text-white shadow-sm`}>
-                  {action.icon}
-                </div>
-                <svg
-                  className="w-4 h-4 text-slate-400 dark:text-slate-500 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200"
-                  fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+            <div className="flex items-start justify-between mb-4">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                action.primary
+                  ? "bg-white/15 text-white"
+                  : "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-300"
+              }`}>
+                {action.icon}
               </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-0.5">{action.name}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{action.desc}</p>
+              <svg
+                className={`w-4 h-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 ${action.primary ? "text-white/80" : "text-slate-400"}`}
+                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
             </div>
+            <h3 className={`text-sm sm:text-[15px] font-semibold mb-0.5 ${action.primary ? "text-white" : "text-slate-900 dark:text-white"}`}>{action.name}</h3>
+            <p className={`text-xs ${action.primary ? "text-brand-100" : "text-slate-500 dark:text-slate-400"}`}>{action.desc}</p>
           </motion.button>
         ))}
       </div>
@@ -697,7 +678,7 @@ export default function Dashboard() {
               <Card className="p-4 sm:p-5 h-full" animate={false}>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+                    <div className="p-2 rounded-lg bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400">
                       {Icons.ai}
                     </div>
                     <div>
@@ -726,7 +707,7 @@ export default function Dashboard() {
                         className={`h-full rounded-full transition-all duration-700 ${
                           data.aiQuota.analysesUsed / data.aiQuota.analysesLimit > 0.9
                             ? 'bg-red-500' : data.aiQuota.analysesUsed / data.aiQuota.analysesLimit > 0.7
-                            ? 'bg-amber-500' : 'bg-indigo-500'
+                            ? 'bg-amber-500' : 'bg-brand-500'
                         }`}
                         style={{ width: `${Math.min(100, (data.aiQuota.analysesUsed / data.aiQuota.analysesLimit) * 100)}%` }}
                       />
@@ -742,7 +723,7 @@ export default function Dashboard() {
                         className={`h-full rounded-full transition-all duration-700 ${
                           data.aiQuota.pagesUsed / data.aiQuota.pagesLimit > 0.9
                             ? 'bg-red-500' : data.aiQuota.pagesUsed / data.aiQuota.pagesLimit > 0.7
-                            ? 'bg-amber-500' : 'bg-violet-500'
+                            ? 'bg-amber-500' : 'bg-brand-500'
                         }`}
                         style={{ width: `${Math.min(100, (data.aiQuota.pagesUsed / data.aiQuota.pagesLimit) * 100)}%` }}
                       />
@@ -750,7 +731,7 @@ export default function Dashboard() {
                   </div>
                   <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                     <span className="text-xs text-slate-400">{t("dashboard.aiQuota.lifetime")}: {data.aiQuota.totalAnalysesAllTime ?? 0} {t("dashboard.aiQuota.analysesWord")}</span>
-                    <Link to="/ai-analysis" className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors">
+                    <Link to="/ai-analysis" className="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">
                       {t("dashboard.aiQuota.open")}
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -814,7 +795,7 @@ export default function Dashboard() {
                         </span>
                         <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${
                           task.status === 'in_progress'
-                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                            ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300'
                             : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                         }`}>
                           {task.status === 'in_progress' ? t("dashboard.urgentTasks.statusInProgress") : task.status === 'pending' ? t("dashboard.urgentTasks.statusPending") : task.status}

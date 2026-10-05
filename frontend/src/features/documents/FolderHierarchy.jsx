@@ -9,6 +9,7 @@ import folderService from "@/services/folder.service";
 import documentService from "@/services/document.service";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { useLang } from "@/app/providers/LanguageProvider";
+import { SWATCH_COLORS, DEFAULT_SWATCH, swatch } from "@/app/providers/accent-presets";
 
 function buildTree(flat) {
   const map = {};
@@ -64,10 +65,10 @@ function getFileTypeLabel(mimeType, filename) {
 function getFileTypeColor(label) {
   const map = {
     PDF: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
-    DOCX: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
+    DOCX: "bg-brand-100 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400",
     XLSX: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
     PPTX: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400",
-    IMG: "bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400",
+    IMG: "bg-brand-100 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400",
   };
   return map[label] || "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400";
 }
@@ -124,14 +125,14 @@ function FolderTreeItem({ folder, depth = 0, expanded, onToggle, onAddSub, onDel
   const hasChildren = folder.children?.length > 0;
   const isExpanded = expanded.has(folder.id);
   const docCount = folder.documentCount || 0;
-  const color = folder.color || "#6366f1";
+  const color = swatch(folder.color);
   const isDragging = dragItem && dragItem.id === folder.id;
   const isDropTarget = dropTargetId === folder.id;
 
   return (
     <div className={`transition-all duration-200 ${isDragging ? "opacity-40 scale-[0.97]" : ""}`}>
       <div
-        className={`relative group flex items-center gap-2 py-2.5 pr-3 rounded-xl transition-all duration-200 cursor-grab active:cursor-grabbing ${isDropTarget ? "bg-indigo-50 dark:bg-indigo-500/10 ring-2 ring-indigo-500 ring-inset shadow-md shadow-accent" : "hover:bg-slate-50 dark:hover:bg-slate-800/50"} ${isExpanded && !isDropTarget ? "bg-slate-50/50 dark:bg-slate-800/30" : ""}`}
+        className={`relative group flex items-center gap-2 py-2.5 pr-3 rounded-xl transition-all duration-200 cursor-grab active:cursor-grabbing ${isDropTarget ? "bg-brand-50 dark:bg-brand-500/10 ring-2 ring-brand-500 ring-inset" : "hover:bg-slate-50 dark:hover:bg-slate-800/50"} ${isExpanded && !isDropTarget ? "bg-slate-50/50 dark:bg-slate-800/30" : ""}`}
         style={{ paddingLeft: `${depth * 24 + 12}px` }}
         draggable
         onDragStart={(e) => {
@@ -164,7 +165,7 @@ function FolderTreeItem({ folder, depth = 0, expanded, onToggle, onAddSub, onDel
         </div>
 
         {docCount > 0 && (
-          <span className="px-2 py-0.5 text-[11px] rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 font-semibold flex-shrink-0" title={`${docCount} ${docCount > 1 ? t("folders.docCountTitlePlural") : t("folders.docCountTitleSingular")}`}>
+          <span className="px-2 py-0.5 text-[11px] rounded-full bg-brand-100 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400 font-semibold flex-shrink-0" title={`${docCount} ${docCount > 1 ? t("folders.docCountTitlePlural") : t("folders.docCountTitleSingular")}`}>
             {docCount}
           </span>
         )}
@@ -176,13 +177,13 @@ function FolderTreeItem({ folder, depth = 0, expanded, onToggle, onAddSub, onDel
         )}
 
         <div draggable="false" className={`flex items-center gap-0.5 transition-opacity flex-shrink-0 ${dragItem ? "opacity-0 pointer-events-none" : "opacity-0 group-hover:opacity-100"}`}>
-          <button draggable="false" onClick={(e) => { e.stopPropagation(); onViewDocs(folder); }} className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" title={t("folders.titleViewDocuments")}>
+          <button draggable="false" onClick={(e) => { e.stopPropagation(); onViewDocs(folder); }} className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors" title={t("folders.titleViewDocuments")}>
             <DocIcon />
           </button>
           <button draggable="false" onClick={(e) => { e.stopPropagation(); onOpenInDocuments(folder.id); }} className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors" title={t("folders.titleOpenInDocuments")}>
             <ExternalLinkIcon />
           </button>
-          <button draggable="false" onClick={(e) => { e.stopPropagation(); onAddSub(folder.id); }} className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" title={t("folders.titleAddSubfolder")}>
+          <button draggable="false" onClick={(e) => { e.stopPropagation(); onAddSub(folder.id); }} className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors" title={t("folders.titleAddSubfolder")}>
             <PlusIcon className="w-3.5 h-3.5" />
           </button>
           <button draggable="false" onClick={(e) => { e.stopPropagation(); onRename(folder); }} className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors" title={t("folders.titleRename")}>
@@ -194,7 +195,7 @@ function FolderTreeItem({ folder, depth = 0, expanded, onToggle, onAddSub, onDel
         </div>
 
         {isDropTarget && dragItem && dragItem.id !== folder.id && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[11px] font-semibold shadow-lg pointer-events-none z-10">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg bg-brand-600 text-white text-[11px] font-semibold shadow-lg pointer-events-none z-10">
             {t("folders.dropHere")}
           </div>
         )}
@@ -251,7 +252,7 @@ export default function FolderHierarchy() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [addParentId, setAddParentId] = useState(null);
   const [newFolderName, setNewFolderName] = useState("");
-  const [newFolderColor, setNewFolderColor] = useState("#6366f1");
+  const [newFolderColor, setNewFolderColor] = useState(DEFAULT_SWATCH);
 
   // Custom modal, replaces native window.confirm().
   const [confirmState, setConfirmState] = useState(null);
@@ -274,7 +275,7 @@ export default function FolderHierarchy() {
 
   const [actionLoading, setActionLoading] = useState(false);
 
-  const FOLDER_COLORS = ["#6366f1", "#ec4899", "#f59e0b", "#10b981", "#8b5cf6", "#06b6d4", "#ef4444", "#84cc16"];
+  const FOLDER_COLORS = SWATCH_COLORS;
 
   const fetchFolders = useCallback(async () => {
     try {
@@ -323,7 +324,7 @@ export default function FolderHierarchy() {
       setShowAddModal(false);
       setAddParentId(null);
       setNewFolderName("");
-      setNewFolderColor("#6366f1");
+      setNewFolderColor(DEFAULT_SWATCH);
       await fetchFolders();
     } catch (err) {
       console.error("Create folder error:", err);
@@ -416,7 +417,7 @@ export default function FolderHierarchy() {
   const createDragGhost = useCallback((label) => {
     if (dragGhostRef.current) { document.body.removeChild(dragGhostRef.current); dragGhostRef.current = null; }
     const ghost = document.createElement("div");
-    ghost.style.cssText = "position:fixed;top:-1000px;left:-1000px;padding:8px 14px;background:#4f46e5;color:#fff;border-radius:12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);white-space:nowrap;z-index:9999;max-width:220px;overflow:hidden;text-overflow:ellipsis;";
+    ghost.style.cssText = "position:fixed;top:-1000px;left:-1000px;padding:8px 14px;background:#226bc0;color:#fff;border-radius:12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);white-space:nowrap;z-index:9999;max-width:220px;overflow:hidden;text-overflow:ellipsis;";
     ghost.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg><span style="overflow:hidden;text-overflow:ellipsis">${label}</span>`;
     document.body.appendChild(ghost);
     dragGhostRef.current = ghost;
@@ -501,16 +502,16 @@ export default function FolderHierarchy() {
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         {[
-          { label: t("folders.statRootFolders"), value: stats.rootFolders, color: "from-indigo-500 to-purple-600", icon: <FolderIcon className="w-5 h-5" /> },
-          { label: t("folders.statTotalFolders"), value: stats.totalFolders, color: "from-emerald-500 to-teal-600", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg> },
-          { label: t("folders.statMaxDepth"), value: stats.maxDepth, color: "from-amber-500 to-orange-600", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg> },
-          { label: t("folders.statEmptyFolders"), value: stats.emptyFolders, color: "from-rose-500 to-pink-600", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg> },
-          { label: t("folders.statTotalDocuments"), value: stats.totalDocs, color: "from-cyan-500 to-blue-600", icon: <DocIcon className="w-5 h-5" /> },
+          { label: t("folders.statRootFolders"), value: stats.rootFolders, icon: <FolderIcon className="w-5 h-5" /> },
+          { label: t("folders.statTotalFolders"), value: stats.totalFolders, icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg> },
+          { label: t("folders.statMaxDepth"), value: stats.maxDepth, icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg> },
+          { label: t("folders.statEmptyFolders"), value: stats.emptyFolders, icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg> },
+          { label: t("folders.statTotalDocuments"), value: stats.totalDocs, icon: <DocIcon className="w-5 h-5" /> },
         ].map((stat, i) => (
           <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
             <Card className="p-4" hover>
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center text-white flex-shrink-0`}>
+                <div className={`w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center flex-shrink-0`}>
                   {stat.icon}
                 </div>
                 <div>
@@ -548,7 +549,7 @@ export default function FolderHierarchy() {
           )}
           <button
             onClick={() => { setAddParentId(null); setShowAddModal(true); }}
-            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-accent-gradient hover:from-indigo-700 hover:via-purple-700 hover:to-indigo-700 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-accent hover:shadow-accent transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-accent hover:bg-brand-700 text-white text-xs sm:text-sm font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
           >
             <PlusIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span className="hidden sm:inline">{t("folders.addRootFolder")}</span>
@@ -568,7 +569,7 @@ export default function FolderHierarchy() {
 
           {loading ? (
             <div className="flex items-center justify-center py-16">
-              <SpinnerIcon className="w-8 h-8 text-indigo-500" />
+              <SpinnerIcon className="w-8 h-8 text-brand-500" />
             </div>
           ) : error ? (
             <div className="text-center py-12">
@@ -589,7 +590,7 @@ export default function FolderHierarchy() {
               {!searchQuery && (
                 <button
                   onClick={() => { setAddParentId(null); setShowAddModal(true); }}
-                  className="px-4 py-2 rounded-xl bg-accent-gradient hover:brightness-110 text-white text-sm font-medium transition-colors"
+                  className="px-4 py-2 rounded-xl bg-accent hover:brightness-110 text-white text-sm font-medium transition-colors"
                 >
                   {t("folders.createFirstFolder")}
                 </button>
@@ -599,7 +600,7 @@ export default function FolderHierarchy() {
             <div className="space-y-0.5">
               {dragItem && (
                 <div
-                  className={`flex items-center gap-2 py-2 px-3 rounded-xl border-2 border-dashed mb-2 transition-all duration-200 ${dropTargetId === "root" ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10" : "border-slate-300 dark:border-slate-600"}`}
+                  className={`flex items-center gap-2 py-2 px-3 rounded-xl border-2 border-dashed mb-2 transition-all duration-200 ${dropTargetId === "root" ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10" : "border-slate-300 dark:border-slate-600"}`}
                   onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); e.dataTransfer.dropEffect = "move"; }}
                   onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setDropTargetId("root"); }}
                   onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setDropTargetId(null); }}
@@ -681,7 +682,7 @@ export default function FolderHierarchy() {
                   <div className="flex gap-2 flex-wrap">
                     {FOLDER_COLORS.map((c) => (
                       <button key={c} onClick={() => setNewFolderColor(c)}
-                        className={`w-8 h-8 rounded-lg transition-all ${newFolderColor === c ? "ring-2 ring-offset-2 ring-indigo-500 dark:ring-offset-slate-900 scale-110" : "hover:scale-105"}`}
+                        className={`w-8 h-8 rounded-lg transition-all ${newFolderColor === c ? "ring-2 ring-offset-2 ring-brand-500 dark:ring-offset-slate-900 scale-110" : "hover:scale-105"}`}
                         style={{ backgroundColor: c }} />
                     ))}
                   </div>
@@ -753,8 +754,8 @@ export default function FolderHierarchy() {
 
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${selectedFolder.color || "#6366f1"}20` }}>
-                    <FolderIcon className="w-5 h-5" style={{ color: selectedFolder.color || "#6366f1" }} />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${swatch(selectedFolder.color)}20` }}>
+                    <FolderIcon className="w-5 h-5" style={{ color: swatch(selectedFolder.color) }} />
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{selectedFolder.name}</h2>
@@ -765,7 +766,7 @@ export default function FolderHierarchy() {
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => openInDocuments(selectedFolder.id)}
-                    className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-indigo-600 transition-colors" title={t("folders.openInDocumentsPageTitle")}>
+                    className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-brand-600 transition-colors" title={t("folders.openInDocumentsPageTitle")}>
                     <ExternalLinkIcon className="w-4 h-4" />
                   </button>
                   <button onClick={() => { setShowDocsModal(false); setSelectedFolder(null); setFolderDocs([]); }}
@@ -778,7 +779,7 @@ export default function FolderHierarchy() {
               <div className="flex-1 overflow-y-auto">
                 {docsLoading ? (
                   <div className="flex items-center justify-center py-12">
-                    <SpinnerIcon className="w-6 h-6 text-indigo-500" />
+                    <SpinnerIcon className="w-6 h-6 text-brand-500" />
                   </div>
                 ) : folderDocs.length === 0 ? (
                   <div className="text-center py-12">
@@ -788,7 +789,7 @@ export default function FolderHierarchy() {
                     <p className="text-sm font-medium text-slate-900 dark:text-white mb-1">{t("folders.noDocuments")}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">{t("folders.folderEmpty")}</p>
                     <button onClick={() => openInDocuments(selectedFolder.id)}
-                      className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+                      className="text-xs text-brand-600 dark:text-brand-400 hover:underline font-medium">
                       {t("folders.openInDocumentsToUpload")}
                     </button>
                   </div>
@@ -819,7 +820,7 @@ export default function FolderHierarchy() {
 
                           <button
                             onClick={() => handleDownload(doc)}
-                            className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 hover:text-indigo-600 transition-all"
+                            className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 hover:text-brand-600 transition-all"
                             title={t("folders.titleDownload")}
                           >
                             <DownloadIcon />
@@ -868,7 +869,7 @@ export default function FolderHierarchy() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 px-5 py-3 rounded-xl bg-indigo-600 text-white text-sm font-medium shadow-2xl flex items-center gap-2 pointer-events-none"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 px-5 py-3 rounded-xl bg-brand-600 text-white text-sm font-medium shadow-2xl flex items-center gap-2 pointer-events-none"
           >
             <svg className="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
             {t("folders.dropOnFolderToMove")} "{dragItem.data?.name || t("folders.folderFallback")}"

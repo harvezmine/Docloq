@@ -24,7 +24,7 @@ export default function NotFound() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/dashboard"
-              className="px-6 py-3 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold text-sm shadow-lg shadow-accent transition-all"
+              className="px-6 py-3 rounded-xl bg-accent hover:brightness-110 text-white font-semibold text-sm transition-all"
             >
               {t("errors.notFound.backToDashboard")}
             </Link>

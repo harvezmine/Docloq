@@ -64,7 +64,7 @@ export default function AddYouTubeModal({ projectId, open, onClose, onAdded }) {
               </div>
               <div className="px-5 py-4 mt-2 flex justify-end gap-2 border-t border-stone-100 dark:border-slate-800/60">
                 <button type="button" onClick={onClose} className="min-h-[44px] px-4 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-stone-100 dark:hover:bg-slate-800">{t('common.cancel')}</button>
-                <button type="submit" disabled={!url.trim() || saving} className="min-h-[44px] px-4 rounded-xl text-sm font-medium bg-accent-gradient hover:brightness-110 disabled:bg-stone-200 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white">
+                <button type="submit" disabled={!url.trim() || saving} className="min-h-[44px] px-4 rounded-xl text-sm font-medium bg-accent hover:brightness-110 disabled:bg-stone-200 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white">
                   {saving ? t('aiSources.adding') : t('aiSources.addAction')}
                 </button>
               </div>

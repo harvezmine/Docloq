@@ -67,18 +67,21 @@ const IconCheck = () => (
 );
 
 const TYPE_COLORS = {
-  document: { bg: "bg-blue-100 dark:bg-blue-500/20", text: "text-blue-600 dark:text-blue-400" },
-  template: { bg: "bg-violet-100 dark:bg-violet-500/20", text: "text-violet-600 dark:text-violet-400" },
+  document: { bg: "bg-brand-100 dark:bg-brand-500/20", text: "text-brand-600 dark:text-brand-400" },
+  template: { bg: "bg-brand-100 dark:bg-brand-500/20", text: "text-brand-600 dark:text-brand-400" },
 };
+// File-type tiles: soft tint + colored glyph. The hue carries the type, the tint keeps
+// a long list calm.
 const EXT_COLORS = {
-  pdf: "from-red-500 to-rose-600",
-  docx: "from-blue-500 to-blue-600",
-  doc: "from-blue-500 to-blue-600",
-  xlsx: "from-emerald-500 to-emerald-600",
-  xls: "from-emerald-500 to-emerald-600",
-  pptx: "from-orange-500 to-orange-600",
-  ppt: "from-orange-500 to-orange-600",
+  pdf: "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400",
+  docx: "bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-300",
+  doc: "bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-300",
+  xlsx: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
+  xls: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
+  pptx: "bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400",
+  ppt: "bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400",
 };
+const NEUTRAL_TILE = "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300";
 
 const Checkbox = ({ checked, onChange, className = "" }) => (
   <button
@@ -87,8 +90,8 @@ const Checkbox = ({ checked, onChange, className = "" }) => (
     className={
       "w-4 h-4 rounded flex items-center justify-center border transition-all shrink-0 " +
       (checked
-        ? "bg-indigo-500 border-indigo-500 dark:bg-indigo-400 dark:border-indigo-400"
-        : "border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-indigo-400") +
+        ? "bg-brand-500 border-brand-500 dark:bg-brand-400 dark:border-brand-400"
+        : "border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-brand-400") +
       " " +
       className
     }
@@ -108,11 +111,11 @@ function getItemName(item, t) {
 function getItemSize(item) {
   return item.itemMetadata?.fileSize ? formatBytes(item.itemMetadata.fileSize) : "\u2014";
 }
-function getItemGradient(item) {
-  if (item.itemType === "template") return "from-violet-500 to-violet-600";
+function getItemTile(item) {
+  if (item.itemType === "template") return EXT_COLORS.docx;
   const name = item.itemMetadata?.originalFilename || "";
   const ext = name.includes(".") ? name.split(".").pop().toLowerCase() : "";
-  return EXT_COLORS[ext] || "from-slate-500 to-slate-600";
+  return EXT_COLORS[ext] || NEUTRAL_TILE;
 }
 
 export default function Trash() {
@@ -251,7 +254,6 @@ export default function Trash() {
         eyebrow={t("trash.eyebrow")}
         title={t("trash.title")}
         subtitle={<>{t("trash.subtitle")}</>}
-        accent="from-rose-500 to-red-600"
         icon={
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -284,12 +286,12 @@ export default function Trash() {
           {
             label: t("trash.statDocuments"),
             value: docCount,
-            color: "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400",
+            color: "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400",
           },
           {
             label: t("trash.statTemplates"),
             value: templateCount,
-            color: "bg-violet-50 dark:bg-violet-500/10 text-violet-700 dark:text-violet-400",
+            color: "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400",
           },
           {
             label: t("trash.statExpiringSoon"),
@@ -410,7 +412,7 @@ export default function Trash() {
       >
         {loading ? (
           <Card className="p-16 text-center">
-            <div className="w-10 h-10 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+            <div className="w-10 h-10 border-3 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
             <p className="text-sm text-slate-500">{t("trash.loadingTrash")}</p>
           </Card>
         ) : filtered.length === 0 ? (
@@ -489,9 +491,9 @@ export default function Trash() {
                           <div className="flex items-center gap-3">
                             <div
                               className={
-                                "w-9 h-9 rounded-xl bg-gradient-to-br " +
-                                getItemGradient(item) +
-                                " flex items-center justify-center text-white shadow-sm shrink-0"
+                                "w-9 h-9 rounded-xl " +
+                                getItemTile(item) +
+                                " flex items-center justify-center shrink-0"
                               }
                             >
                               {item.itemType === "template" ? <IconTemplate /> : <IconDoc />}
@@ -570,9 +572,9 @@ export default function Trash() {
                         <div className="flex items-center gap-2.5 mb-2">
                           <div
                             className={
-                              "w-9 h-9 rounded-xl bg-gradient-to-br " +
-                              getItemGradient(item) +
-                              " flex items-center justify-center text-white shadow-sm shrink-0"
+                              "w-9 h-9 rounded-xl " +
+                              getItemTile(item) +
+                              " flex items-center justify-center shrink-0"
                             }
                           >
                             {item.itemType === "template" ? <IconTemplate /> : <IconDoc />}
@@ -715,8 +717,8 @@ export default function Trash() {
                   className={
                     "flex-1 px-4 py-2.5 rounded-xl text-white text-sm font-semibold transition-all flex items-center justify-center gap-2 " +
                     (actionModal.type === "restore"
-                      ? "bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-500/25"
-                      : "bg-red-600 hover:bg-red-500 shadow-lg shadow-red-500/25")
+                      ? "bg-emerald-600 hover:bg-emerald-500"
+                      : "bg-red-600 hover:bg-red-500")
                   }
                 >
                   {actionLoading ? (

@@ -39,7 +39,7 @@ function LinkRow({ link, onCopy, copiedId, onRevoke }) {
       </div>
       {!dead && (
         <button onClick={() => onCopy(link)} title={t('share.copyLink')}
-          className="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors">
+          className="p-2 rounded-lg text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-500/10 transition-colors">
           {copiedId === link.id ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
         </button>
       )}
@@ -137,8 +137,8 @@ export default function ShareModal({ document: doc, onClose }) {
         >
           {/* Header */}
           <div className="px-6 pt-6 pb-4 border-b border-stone-100 dark:border-slate-800 flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center shrink-0">
-              <Share2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <div className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center shrink-0">
+              <Share2 className="w-5 h-5 text-brand-600 dark:text-brand-400" />
             </div>
             <div className="min-w-0 flex-1">
               <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{t('share.title')}</h2>
@@ -167,8 +167,8 @@ export default function ShareModal({ document: doc, onClose }) {
                   <button key={String(opt.value)} onClick={() => setExpiry(opt.value)}
                     className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all border ${
                       expiry === opt.value
-                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm shadow-accent'
-                        : 'bg-white dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border-stone-200 dark:border-slate-700 hover:border-indigo-300'
+                        ? 'bg-brand-600 text-white border-brand-600 '
+                        : 'bg-white dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border-stone-200 dark:border-slate-700 hover:border-brand-300'
                     }`}>
                     {opt.label}
                   </button>
@@ -179,7 +179,7 @@ export default function ShareModal({ document: doc, onClose }) {
             <div>
               <label className="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="checkbox" checked={limitOn} onChange={(e) => setLimitOn(e.target.checked)}
-                  className="w-4 h-4 rounded border-stone-300 text-indigo-600 focus:ring-accent" />
+                  className="w-4 h-4 rounded border-stone-300 text-brand-600 focus:ring-accent" />
                 <span className="text-sm text-slate-700 dark:text-slate-300">{t('share.limitViews')}</span>
               </label>
               {limitOn && (
@@ -189,7 +189,7 @@ export default function ShareModal({ document: doc, onClose }) {
             </div>
 
             <button onClick={handleCreate} disabled={creating}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-accent-gradient hover:brightness-110 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow-md shadow-accent disabled:shadow-none transition-all">
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-accent hover:brightness-110 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl disabled:shadow-none transition-all">
               {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <LinkIcon className="w-4 h-4" />}
               {t('share.createPreviewLink')}
             </button>

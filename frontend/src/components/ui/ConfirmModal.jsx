@@ -64,7 +64,7 @@ export default function ConfirmModal({
               <div className="flex items-start gap-4">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${
                   danger ? "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-400"
-                         : "bg-indigo-100 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400"
+                         : "bg-brand-100 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400"
                 }`}>
                   {danger ? <IconWarning /> : <IconQuestion />}
                 </div>
@@ -88,8 +88,8 @@ export default function ConfirmModal({
                 onClick={() => !loading && onConfirm?.()}
                 disabled={loading}
                 className={`min-h-[44px] px-5 rounded-xl text-sm font-semibold text-white shadow-lg transition-colors disabled:opacity-50 inline-flex items-center justify-center gap-2 ${
-                  danger ? "bg-red-600 hover:bg-red-700 shadow-red-500/20"
-                         : "bg-accent-gradient hover:brightness-110 shadow-accent"
+                  danger ? "bg-red-600 hover:bg-red-700"
+                         : "bg-accent hover:brightness-110"
                 }`}
               >
                 {loading && (

@@ -16,7 +16,7 @@ function Centered({ icon: Icon, title, message, tone = 'slate' }) {
     red: 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400',
   }[tone];
   return (
-    <div className="min-h-dvh flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-dvh flex items-center justify-center p-6 bg-slate-100 dark:bg-slate-950">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}
         className="w-full max-w-md text-center bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-stone-200 dark:border-slate-800 px-8 py-10">
         <div className={`w-14 h-14 rounded-2xl ${ring} flex items-center justify-center mx-auto mb-4`}>
@@ -73,7 +73,7 @@ export default function SharePreview() {
 
   if (state.status === 'loading') {
     return (
-      <div className="min-h-dvh flex items-center justify-center bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="min-h-dvh flex items-center justify-center bg-slate-100 dark:bg-slate-950">
         <div className="flex items-center gap-2 text-slate-400"><Loader2 className="w-5 h-5 animate-spin" /> {t('share.loading')}</div>
       </div>
     );
@@ -85,14 +85,14 @@ export default function SharePreview() {
   const pageCount = manifest?.pageCount || 1;
 
   return (
-    <div className="min-h-dvh bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-dvh bg-slate-100 dark:bg-slate-950">
       {/* Top bar */}
       <header className="sticky top-0 z-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-stone-200/70 dark:border-slate-800">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center gap-3">
           <span className="font-bold text-slate-900 dark:text-white tracking-tight">DocLoq</span>
           <span className="text-stone-300 dark:text-slate-700">/</span>
           <p className="text-sm text-slate-600 dark:text-slate-300 truncate flex-1">{manifest?.docName}</p>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-medium shrink-0">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-medium shrink-0">
             <Eye className="w-3.5 h-3.5" /> {t('share.previewBadge')}
           </span>
           {manifest?.previewable && (
@@ -101,7 +101,7 @@ export default function SharePreview() {
         </div>
         {manifest?.previewable && pageCount > 1 && (
           <div className="h-0.5 bg-stone-100 dark:bg-slate-800">
-            <div className="h-full bg-indigo-500 transition-all" style={{ width: `${(current / pageCount) * 100}%` }} />
+            <div className="h-full bg-brand-500 transition-all" style={{ width: `${(current / pageCount) * 100}%` }} />
           </div>
         )}
       </header>

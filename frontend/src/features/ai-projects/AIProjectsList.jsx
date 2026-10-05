@@ -35,9 +35,9 @@ function NotebookIcon({ className = 'w-5 h-5' }) {
 
 function StatCard({ icon, label, value, sub, accent = 'indigo' }) {
   const accentMap = {
-    indigo: { bg: 'bg-indigo-500/10 dark:bg-indigo-400/15', fg: 'text-indigo-600 dark:text-indigo-300' },
+    indigo: { bg: 'bg-brand-500/10 dark:bg-brand-400/15', fg: 'text-brand-600 dark:text-brand-300' },
     emerald: { bg: 'bg-emerald-500/10 dark:bg-emerald-400/15', fg: 'text-emerald-600 dark:text-emerald-300' },
-    violet: { bg: 'bg-violet-500/10 dark:bg-violet-400/15', fg: 'text-violet-600 dark:text-violet-300' },
+    violet: { bg: 'bg-brand-500/10 dark:bg-brand-400/15', fg: 'text-brand-600 dark:text-brand-300' },
     amber: { bg: 'bg-amber-500/10 dark:bg-amber-400/15', fg: 'text-amber-600 dark:text-amber-300' },
   };
   const a = accentMap[accent] || accentMap.indigo;
@@ -86,7 +86,7 @@ function SortDropdown({ value, onChange }) {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox" aria-expanded={open}
-        className="inline-flex items-center gap-2 px-3.5 py-2.5 min-h-[44px] rounded-xl border border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-900/60 text-sm text-slate-900 dark:text-white hover:border-indigo-400/60 dark:hover:border-indigo-500/50 focus:outline-none focus:ring-2 focus:ring-accent transition-colors"
+        className="inline-flex items-center gap-2 px-3.5 py-2.5 min-h-[44px] rounded-xl border border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-900/60 text-sm text-slate-900 dark:text-white hover:border-brand-400/60 dark:hover:border-brand-500/50 focus:outline-none focus:ring-2 focus:ring-accent transition-colors"
       >
         <span>{t(current.labelKey)}</span>
         <svg className={`w-4 h-4 text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,7 +111,7 @@ function SortDropdown({ value, onChange }) {
                     onClick={() => { onChange(o.key); setOpen(false); }}
                     className={`w-full flex items-center justify-between gap-3 px-3.5 py-2.5 text-sm text-left transition-colors ${
                       selected
-                        ? 'bg-indigo-50 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-300'
+                        ? 'bg-brand-50 dark:bg-brand-500/15 text-brand-700 dark:text-brand-300'
                         : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60'
                     }`}
                   >
@@ -228,7 +228,7 @@ export default function AIProjectsList() {
               actions={
                 <button
                   onClick={() => setShowCreate(true)}
-                  className="shrink-0 flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-accent-gradient hover:brightness-110 text-white text-sm font-semibold rounded-xl shadow-md shadow-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 transition-colors"
+                  className="shrink-0 flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-accent hover:brightness-110 text-white text-sm font-semibold rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
@@ -316,7 +316,7 @@ export default function AIProjectsList() {
 
           {!loading && activeProjects.length === 0 && (
             <div className="text-center py-16 max-w-lg mx-auto">
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-indigo-50 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 flex items-center justify-center mb-4">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-brand-50 dark:bg-brand-500/15 text-brand-700 dark:text-brand-300 flex items-center justify-center mb-4">
                 <SectionIcon className="w-8 h-8" strokeWidth={1.5} />
               </div>
               <h2 className="text-base font-semibold tracking-tight text-slate-900 dark:text-white mb-2">{t('aiProjects.list.empty.title')}</h2>
@@ -325,7 +325,7 @@ export default function AIProjectsList() {
               </p>
               <button
                 onClick={() => setShowCreate(true)}
-                className="px-5 py-2.5 min-h-[44px] bg-accent-gradient hover:brightness-110 text-white text-sm font-semibold rounded-xl shadow-md shadow-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 transition-colors"
+                className="px-5 py-2.5 min-h-[44px] bg-accent hover:brightness-110 text-white text-sm font-semibold rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 transition-colors"
               >
                 {t('aiProjects.list.empty.cta')}
               </button>
@@ -337,7 +337,7 @@ export default function AIProjectsList() {
               <p className="text-sm text-slate-500 dark:text-slate-400">{t('aiProjects.list.noMatch')}</p>
               <button
                 onClick={() => setSearch('')}
-                className="mt-2 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
+                className="mt-2 text-xs font-medium text-brand-600 dark:text-brand-400 hover:underline"
               >
                 {t('aiProjects.list.resetSearch')}
               </button>

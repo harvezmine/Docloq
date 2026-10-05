@@ -7,7 +7,7 @@ export default function HeroShutterText({
   className = '',
   autoReplay = false,
   interval = 6000,
-  accentColor = 'text-violet-500',
+  accentColor = 'text-brand-500',
 }) {
   const [count, setCount] = useState(0);
   const characters = text.split('');

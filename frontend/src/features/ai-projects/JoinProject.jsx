@@ -30,7 +30,7 @@ export default function JoinProject() {
         <div className="text-center max-w-sm">
           {!error ? (
             <>
-              <div className="w-8 h-8 mx-auto mb-3 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 mx-auto mb-3 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
               <p className="text-sm text-slate-500 dark:text-slate-400">{t('aiProjects.join.opening')}</p>
             </>
           ) : (
@@ -39,7 +39,7 @@ export default function JoinProject() {
               <p className="text-[12.5px] text-slate-500 dark:text-slate-400 leading-relaxed">{error}</p>
               <button
                 onClick={() => navigate('/ai-projects')}
-                className="mt-4 min-h-[40px] px-4 rounded-xl bg-accent-gradient hover:brightness-110 text-white text-sm font-medium"
+                className="mt-4 min-h-[40px] px-4 rounded-xl bg-accent hover:brightness-110 text-white text-sm font-medium"
               >
                 {t('aiProjects.join.goToProjects')}
               </button>

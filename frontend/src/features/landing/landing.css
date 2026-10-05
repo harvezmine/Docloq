@@ -1,0 +1,17 @@
+/* Landing scroll reveals. AOS (initialised in App.jsx) drives timing; these rules keep the
+   travel short so sections settle in quietly instead of flying 100px. */
+.lp-root [data-aos='fade-up']:not(.aos-animate) {
+  transform: translate3d(0, 24px, 0);
+}
+
+.lp-root [data-aos='zoom-in']:not(.aos-animate) {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-root [data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

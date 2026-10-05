@@ -5,6 +5,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import useAuthStore from "../../app/store/auth.store";
 import authService from "../../services/auth.service";
 import { useLang } from "@/app/providers/LanguageProvider";
+import DocLoqMark from "@/components/brand/DocLoqMark";
 
 const GOOGLE_ERROR_KEYS = {
   unregistered_email: "auth.googleError.unregistered_email",
@@ -192,15 +193,13 @@ export default function Login() {
         className="absolute inset-0 opacity-20"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px)
+            linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px)
           `,
           backgroundSize: '60px 60px',
         }}
       />
 
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] animate-pulse-slow" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-slate-600/20 rounded-full blur-[120px] animate-pulse-slow animation-delay-1000" />
 
       <div className="w-full max-w-md relative z-10">
         <motion.div
@@ -209,20 +208,11 @@ export default function Login() {
           animate="visible"
           className="relative"
         >
-          <div className="relative bg-slate-900/80 backdrop-blur-2xl rounded-3xl border border-slate-800/50 shadow-2xl shadow-black/50 overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
-
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-800/20 to-transparent pointer-events-none" />
-
+          <div className="relative bg-slate-900 rounded-3xl border border-slate-800 shadow-2xl shadow-black/50 overflow-hidden">
             <div className="relative p-8 lg:p-10">
               <motion.div variants={itemVariants} className="text-center mb-10">
-                <div className="relative w-16 h-16 mx-auto mb-6">
-                  <div className="absolute inset-0 bg-indigo-500/20 rounded-2xl blur-xl" />
-                  <div className="relative w-full h-full rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 flex items-center justify-center shadow-lg">
-                    <svg className="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
+                <div className="w-14 h-14 mx-auto mb-6 rounded-2xl bg-brand-600 flex items-center justify-center text-white">
+                  <DocLoqMark className="w-8 h-8" variant="current" />
                 </div>
 
                 <h1 className="text-2xl font-semibold text-white mb-2 tracking-tight">
@@ -274,7 +264,7 @@ export default function Login() {
                       {t("common.email")}
                     </label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-brand-400 transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                         </svg>
@@ -287,7 +277,7 @@ export default function Login() {
                         className={`w-full pl-12 pr-4 py-3.5 bg-slate-800/50 border rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-all duration-200 ${
                           formErrors.email
                             ? 'border-red-500/50 focus:border-red-500/50 focus:ring-red-500/20'
-                            : 'border-slate-700/50 focus:border-indigo-500/50 focus:ring-indigo-500/20'
+                            : 'border-slate-700/50 focus:border-brand-500/50 focus:ring-brand-500/20'
                         }`}
                       />
                     </div>
@@ -301,7 +291,7 @@ export default function Login() {
                       {t("common.password")}
                     </label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-brand-400 transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
@@ -314,7 +304,7 @@ export default function Login() {
                         className={`w-full pl-12 pr-12 py-3.5 bg-slate-800/50 border rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-all duration-200 ${
                           formErrors.password
                             ? 'border-red-500/50 focus:border-red-500/50 focus:ring-red-500/20'
-                            : 'border-slate-700/50 focus:border-indigo-500/50 focus:ring-indigo-500/20'
+                            : 'border-slate-700/50 focus:border-brand-500/50 focus:ring-brand-500/20'
                         }`}
                       />
                       <button
@@ -349,7 +339,7 @@ export default function Login() {
                         onChange={handleRememberMeChange}
                         className="peer sr-only"
                       />
-                      <div className="w-5 h-5 rounded-md border border-slate-600 bg-slate-800/50 peer-checked:bg-indigo-600 peer-checked:border-indigo-600 transition-all duration-200 flex items-center justify-center">
+                      <div className="w-5 h-5 rounded-md border border-slate-600 bg-slate-800/50 peer-checked:bg-brand-600 peer-checked:border-brand-600 transition-all duration-200 flex items-center justify-center">
                       </div>
                       <svg className="w-3 h-3 text-white absolute left-1 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -361,7 +351,7 @@ export default function Login() {
                   </label>
                   <Link
                     to="/forgot-password"
-                    className="text-sm text-slate-400 hover:text-indigo-400 transition-colors"
+                    className="text-sm text-slate-400 hover:text-brand-400 transition-colors"
                   >
                     {t("auth.login.forgotPassword")}
                   </Link>
@@ -391,9 +381,8 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={isSubmitDisabled}
-                  className="relative w-full py-3.5 px-6 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition-all duration-200 overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
+                  className="relative w-full py-3.5 px-6 bg-brand-600 hover:bg-brand-500 text-white font-medium rounded-xl transition-all duration-200 overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
 
                   <span className="relative flex items-center justify-center gap-2">
                     {isSubmitDisabled ? (
@@ -421,7 +410,7 @@ export default function Login() {
                   <div className="w-full border-t border-slate-700/50" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="px-4 bg-slate-900/80 text-xs text-slate-500 uppercase tracking-wider">
+                  <span className="px-4 bg-slate-900 text-xs text-slate-500 uppercase tracking-wider">
                     {t("auth.login.orContinueWith")}
                   </span>
                 </div>
@@ -460,7 +449,7 @@ export default function Login() {
                 {t("auth.login.needAccount")}{" "}
                 <Link
                   to="/contact"
-                  className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+                  className="text-brand-400 hover:text-brand-300 font-medium transition-colors"
                 >
                   {t("auth.login.contactUs")}
                 </Link>

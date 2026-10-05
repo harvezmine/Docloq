@@ -89,7 +89,7 @@ export default function AIProjectWorkspace() {
     return (
       <DashboardLayout fullBleed>
         <div className="h-full flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
         </div>
       </DashboardLayout>
     );
@@ -102,7 +102,7 @@ export default function AIProjectWorkspace() {
           <div className="text-center max-w-sm">
             <h2 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white mb-2">{t('aiProjects.workspace.cannotOpen')}</h2>
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">{error || t('aiProjects.workspace.notFound')}</p>
-            <Link to="/ai-projects" className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+            <Link to="/ai-projects" className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline">
               <ArrowLeft className="w-4 h-4 shrink-0" strokeWidth={1.8} aria-hidden="true" />
               {t('aiProjects.workspace.backToList')}
             </Link>
@@ -165,7 +165,7 @@ export default function AIProjectWorkspace() {
             )}
             <button
               onClick={() => setShowShare(true)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-brand-600 dark:hover:text-brand-300 hover:bg-brand-50 dark:hover:bg-brand-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors"
               title={t('aiProjects.workspace.share')}
               aria-label={t('aiProjects.workspace.share')}
             >
@@ -254,7 +254,7 @@ export default function AIProjectWorkspace() {
               onClick={() => setActiveMobilePanel(t.key)}
               className={`py-3 min-h-[44px] flex flex-col items-center gap-0.5 text-[10px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset transition-colors ${
                 activeMobilePanel === t.key
-                  ? 'text-indigo-600 dark:text-indigo-400 border-t-2 border-indigo-600 -mt-px'
+                  ? 'text-brand-600 dark:text-brand-400 border-t-2 border-brand-600 -mt-px'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'
               }`}
               aria-current={activeMobilePanel === t.key ? 'page' : undefined}

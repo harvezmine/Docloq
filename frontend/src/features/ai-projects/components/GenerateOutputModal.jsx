@@ -52,7 +52,7 @@ export default function GenerateOutputModal({ open, kind, title, onGenerate, onC
               </div>
               <div className="px-5 py-4 mt-2 flex justify-end gap-2 border-t border-stone-100 dark:border-slate-800/60">
                 <button type="button" onClick={onClose} className="min-h-[44px] px-4 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-stone-100 dark:hover:bg-slate-800">{t('common.cancel')}</button>
-                <button type="submit" className="min-h-[44px] px-4 rounded-xl text-sm font-medium bg-accent-gradient hover:brightness-110 text-white">{t('aiStudio.modal.generate')}</button>
+                <button type="submit" className="min-h-[44px] px-4 rounded-xl text-sm font-medium bg-accent hover:brightness-110 text-white">{t('aiStudio.modal.generate')}</button>
               </div>
             </form>
           </motion.div>

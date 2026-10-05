@@ -42,7 +42,7 @@ export default function CitationMarker({ n, citation, onClick }) {
         onFocus={showPopover}
         onBlur={hidePopover}
         onClick={() => onClick?.(citation)}
-        className="inline-flex items-center justify-center px-1.5 py-0 mx-0.5 text-[10px] font-semibold rounded border border-indigo-600/40 dark:border-indigo-400/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-colors align-baseline cursor-pointer"
+        className="inline-flex items-center justify-center px-1.5 py-0 mx-0.5 text-[10px] font-semibold rounded border border-brand-600/40 dark:border-brand-400/40 text-brand-700 dark:text-brand-300 hover:bg-brand-600 hover:text-white hover:border-brand-600 transition-colors align-baseline cursor-pointer"
       >
         {/* Label the SOURCE, not the raw marker: `n` indexes chunks, so a 3-source project
             can emit [17] while this citation's own popover reads "Sumber 2". `n` stays the
@@ -62,7 +62,7 @@ export default function CitationMarker({ n, citation, onClick }) {
             className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 z-50 pointer-events-auto"
           >
             <div className="bg-slate-900 dark:bg-slate-800 text-white rounded-lg shadow-xl p-3 text-xs leading-relaxed">
-              <div className="flex items-center gap-1.5 mb-1.5 text-[10px] uppercase tracking-wider text-indigo-300 font-semibold">
+              <div className="flex items-center gap-1.5 mb-1.5 text-[10px] uppercase tracking-wider text-brand-300 font-semibold">
                 {/* n indexes the chunk list; sourceNumber is the human-facing source.
                     Fallback keeps pre-chunking messages (no sourceNumber stored) correct. */}
                 <span>{t('aiProjects.citation.source')} {citation.sourceNumber ?? n}</span>
@@ -72,7 +72,7 @@ export default function CitationMarker({ n, citation, onClick }) {
               {citation.quote && (
                 <p className="text-slate-300 line-clamp-3 italic">"{citation.quote}"</p>
               )}
-              <p className="mt-2 flex items-center gap-1 text-[10px] text-indigo-300">
+              <p className="mt-2 flex items-center gap-1 text-[10px] text-brand-300">
                 {t('aiProjects.citation.clickForDetail')}
                 <ArrowRight className="w-3 h-3 shrink-0" strokeWidth={1.8} aria-hidden="true" />
               </p>

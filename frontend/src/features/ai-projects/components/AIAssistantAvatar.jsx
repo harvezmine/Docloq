@@ -7,7 +7,7 @@ export default function AIAssistantAvatar({ size = 32, className = '' }) {
     return (
       <div
         style={s}
-        className={`rounded-full bg-accent-gradient-br flex items-center justify-center text-white shadow-sm shadow-accent shrink-0 ${className}`}
+        className={`rounded-full bg-accent flex items-center justify-center text-white shrink-0 ${className}`}
         aria-hidden="true"
       >
         <svg style={{ width: size * 0.5, height: size * 0.5 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">

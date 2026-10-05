@@ -25,7 +25,7 @@ function LineField({ label, value, onChange, type = "text", placeholder, autoFoc
         onChange={onChange}
         placeholder={placeholder}
         autoFocus={autoFocus}
-        className="w-full bg-transparent border-0 border-b border-slate-700/70 py-2.5 text-[17px] text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-400 transition-colors duration-300"
+        className="w-full bg-transparent border-0 border-b border-slate-700/70 py-2.5 text-[17px] text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-400 transition-colors duration-300"
       />
     </div>
   );
@@ -83,14 +83,14 @@ export default function RegisterTenant() {
 
   return (
     <div className="min-h-dvh bg-slate-950 text-white flex flex-col">
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
+      <div className="h-px w-full bg-slate-800" />
 
       <div className="flex-1 flex items-center justify-center px-6 py-16">
         <div className="w-full max-w-sm">
 
           <motion.div custom={0} variants={fade} initial="hidden" animate="visible" className="mb-12">
             <div className="flex items-center gap-2.5 mb-10">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-indigo-400" />
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-brand-400" />
               <span className="text-xs font-medium tracking-[0.25em] text-slate-400 uppercase">{t("auth.register.brandLabel")}</span>
             </div>
             <h1 className="text-[28px] leading-tight font-semibold tracking-tight">
@@ -107,7 +107,7 @@ export default function RegisterTenant() {
                 <LineField label={t("auth.register.fields.password")} type="password" autoFocus placeholder="••••••••" value={gateInput}
                   onChange={(e) => { setGateInput(e.target.value); setGateError(false); }} />
                 {gateError && <p className="text-xs text-red-400 -mt-5">{t("auth.register.passwordWrong")}</p>}
-                <button type="submit" className="group inline-flex items-center gap-2 text-sm font-medium text-indigo-300 hover:text-indigo-200 transition-colors">
+                <button type="submit" className="group inline-flex items-center gap-2 text-sm font-medium text-brand-300 hover:text-brand-200 transition-colors">
                   {t("auth.register.unlock")}
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={1.8} aria-hidden="true" />
                 </button>
@@ -126,14 +126,14 @@ export default function RegisterTenant() {
                   <div className="space-y-2">
                     <p className="text-[11px] uppercase tracking-[0.15em] text-slate-500">{t("auth.register.companyCode")}</p>
                     <div className="flex items-center justify-between border-b border-slate-700/70 pb-2.5">
-                      <code className="text-2xl font-mono font-semibold tracking-[0.3em] text-indigo-300">{result.companyCode}</code>
+                      <code className="text-2xl font-mono font-semibold tracking-[0.3em] text-brand-300">{result.companyCode}</code>
                       <button onClick={copyCode} className="text-xs text-slate-400 hover:text-white transition-colors">{copied ? t("auth.register.copied") : t("auth.register.copy")}</button>
                     </div>
                     <p className="text-xs text-slate-600">{t("auth.register.shareWithTeam")}</p>
                   </div>
                 )}
 
-                <button onClick={() => setResult(null)} className="group inline-flex items-center gap-2 text-sm font-medium text-indigo-300 hover:text-indigo-200 transition-colors">
+                <button onClick={() => setResult(null)} className="group inline-flex items-center gap-2 text-sm font-medium text-brand-300 hover:text-brand-200 transition-colors">
                   {t("auth.register.registerAnother")}
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={1.8} aria-hidden="true" />
                 </button>
@@ -154,15 +154,15 @@ export default function RegisterTenant() {
                 {error && <motion.p variants={fade} className="text-sm text-red-400">{error}</motion.p>}
 
                 <motion.button variants={fade} type="submit" disabled={loading}
-                  className="group w-full mt-2 flex items-center justify-between border-b border-indigo-400/60 hover:border-indigo-300 py-3 text-left transition-colors disabled:opacity-50">
+                  className="group w-full mt-2 flex items-center justify-between border-b border-brand-400/60 hover:border-brand-300 py-3 text-left transition-colors disabled:opacity-50">
                   <span className="text-base font-medium text-white">{loading ? t("auth.register.processing") : t("auth.register.submit")}</span>
                   {loading ? (
-                    <svg className="w-4 h-4 animate-spin text-indigo-300" fill="none" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 animate-spin text-brand-300" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
                   ) : (
-                    <ArrowRight className="w-4 h-4 text-indigo-300 transition-transform group-hover:translate-x-1" strokeWidth={1.8} aria-hidden="true" />
+                    <ArrowRight className="w-4 h-4 text-brand-300 transition-transform group-hover:translate-x-1" strokeWidth={1.8} aria-hidden="true" />
                   )}
                 </motion.button>
               </motion.form>

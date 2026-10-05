@@ -19,8 +19,8 @@ const POLL_TIMEOUT_MS = 60_000;
 
 const TYPE_STYLES = {
   document: {
-    bg: 'bg-indigo-500/10 dark:bg-indigo-400/15',
-    fg: 'text-indigo-600 dark:text-indigo-300',
+    bg: 'bg-brand-500/10 dark:bg-brand-400/15',
+    fg: 'text-brand-600 dark:text-brand-300',
     label: 'Dokumen',
   },
   url: {
@@ -34,8 +34,8 @@ const TYPE_STYLES = {
     label: 'Teks',
   },
   note: {
-    bg: 'bg-violet-500/10 dark:bg-violet-400/15',
-    fg: 'text-violet-600 dark:text-violet-300',
+    bg: 'bg-brand-500/10 dark:bg-brand-400/15',
+    fg: 'text-brand-600 dark:text-brand-300',
     label: 'Catatan',
   },
   youtube: {
@@ -245,7 +245,7 @@ export default function SourcesPanel({ project, onChanged, selectedIds, onSelect
             className={`w-full flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-sm font-medium min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 transition-all ${
               limitHit
                 ? 'bg-stone-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
-                : 'bg-accent-gradient hover:brightness-110 text-white shadow-sm shadow-accent'
+                : 'bg-accent hover:brightness-110 text-white '
             }`}
             title={limitHit ? `${t('aiSources.panel.maxTitlePrefix')}${MAX_SOURCES}${t('aiSources.panel.maxTitleSuffix')}` : t('aiSources.panel.addSourceTitle')}
           >
@@ -328,7 +328,7 @@ export default function SourcesPanel({ project, onChanged, selectedIds, onSelect
                 type="checkbox"
                 checked={allSelected}
                 onChange={toggleAll}
-                className="w-4 h-4 rounded border-stone-300 dark:border-slate-600 text-indigo-600 focus:ring-2 focus:ring-accent cursor-pointer"
+                className="w-4 h-4 rounded border-stone-300 dark:border-slate-600 text-brand-600 focus:ring-2 focus:ring-accent cursor-pointer"
                 aria-label={allSelected ? t('aiSources.panel.deselectAll') : t('aiSources.panel.selectAllSources')}
               />
               <span className="text-[11px] text-slate-500 dark:text-slate-400">
@@ -361,7 +361,7 @@ export default function SourcesPanel({ project, onChanged, selectedIds, onSelect
 
         {sources.length === 0 && !loading && (
           <div className="text-center py-12 px-4">
-            <div className="mx-auto w-12 h-12 rounded-2xl bg-indigo-500/10 dark:bg-indigo-400/15 flex items-center justify-center mb-3 text-indigo-600 dark:text-indigo-300">
+            <div className="mx-auto w-12 h-12 rounded-2xl bg-brand-500/10 dark:bg-brand-400/15 flex items-center justify-center mb-3 text-brand-600 dark:text-brand-300">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
@@ -396,7 +396,7 @@ export default function SourcesPanel({ project, onChanged, selectedIds, onSelect
                       type="checkbox"
                       checked={isSelected(src.id)}
                       onChange={() => toggleSource(src.id)}
-                      className="mt-3 shrink-0 w-4 h-4 rounded border-stone-300 dark:border-slate-600 text-indigo-600 focus:ring-2 focus:ring-accent cursor-pointer"
+                      className="mt-3 shrink-0 w-4 h-4 rounded border-stone-300 dark:border-slate-600 text-brand-600 focus:ring-2 focus:ring-accent cursor-pointer"
                       aria-label={`${isSelected(src.id) ? t('aiSources.panel.exclude') : t('aiSources.panel.include')} ${src.title} ${t('aiSources.panel.fromChat')}`}
                     />
                   )}

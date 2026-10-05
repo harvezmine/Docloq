@@ -2,7 +2,7 @@ import { motion, useReducedMotion } from "framer-motion";
 
 // Mini trend line. Renders nothing unless there is a real >=2-point series, so no
 // stat card ever shows a fabricated trend.
-export default function StatSparkline({ series, color = "#818cf8" }) {
+export default function StatSparkline({ series, color = "var(--brand-500)" }) {
   const reduce = useReducedMotion();
   if (!Array.isArray(series) || series.length < 2) return null;
 

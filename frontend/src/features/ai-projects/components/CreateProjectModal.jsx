@@ -130,7 +130,7 @@ export default function CreateProjectModal({ onClose, onCreated }) {
             <button
               type="submit"
               disabled={submitting || !name.trim()}
-              className="flex items-center gap-2 px-4 py-2 bg-accent-gradient hover:brightness-110 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-md shadow-accent disabled:shadow-none transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-accent hover:brightness-110 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg disabled:shadow-none transition-all"
             >
               {submitting && <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />}
               {t('aiProjects.create.submit')}

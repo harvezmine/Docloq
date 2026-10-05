@@ -133,7 +133,7 @@ export default function AIAssistant() {
         className={`fixed z-50 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 ${
           isOpen 
             ? "bottom-4 right-4 w-12 h-12 md:bottom-6 md:right-6 md:w-14 md:h-14 bg-slate-800 dark:bg-slate-700" 
-            : "bottom-6 right-6 w-14 h-14 bg-accent-gradient-br hover:scale-110 shadow-accent"
+            : "bottom-6 right-6 w-14 h-14 bg-accent hover:scale-110"
         }`}
         whileTap={{ scale: 0.95 }}
       >
@@ -173,7 +173,7 @@ export default function AIAssistant() {
         
         {/* Pulse animation when closed */}
         {!isOpen && (
-          <span className="absolute inset-0 rounded-full bg-accent-gradient-br animate-ping opacity-20" />
+          <span className="absolute inset-0 rounded-full bg-accent animate-ping opacity-20" />
         )}
       </motion.button>
 
@@ -196,7 +196,7 @@ export default function AIAssistant() {
               flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="relative bg-accent-gradient px-5 py-5 md:py-4">
+            <div className="relative bg-accent px-5 py-5 md:py-4">
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
@@ -246,7 +246,7 @@ export default function AIAssistant() {
                   className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
                 >
                   {message.type === "bot" && (
-                    <div className="w-8 h-8 rounded-xl bg-accent-gradient-br flex items-center justify-center mr-2 mt-1 shrink-0">
+                    <div className="w-8 h-8 rounded-xl bg-accent flex items-center justify-center mr-2 mt-1 shrink-0">
                       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
                       </svg>
@@ -255,7 +255,7 @@ export default function AIAssistant() {
                   <div
                     className={`max-w-[75%] ${
                       message.type === "user"
-                        ? "bg-accent-gradient-br text-white rounded-2xl rounded-br-md shadow-lg shadow-accent"
+                        ? "bg-accent text-white rounded-2xl rounded-br-md"
                         : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-2xl rounded-bl-md shadow-sm border border-slate-100 dark:border-slate-700"
                     } px-4 py-3`}
                   >
@@ -273,16 +273,16 @@ export default function AIAssistant() {
                   animate={{ opacity: 1 }}
                   className="flex justify-start"
                 >
-                  <div className="w-8 h-8 rounded-xl bg-accent-gradient-br flex items-center justify-center mr-2 shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-accent flex items-center justify-center mr-2 shrink-0">
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
                     </svg>
                   </div>
                   <div className="bg-white dark:bg-slate-800 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm border border-slate-100 dark:border-slate-700">
                     <div className="flex gap-1.5">
-                      <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      <span className="w-2 h-2 bg-brand-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="w-2 h-2 bg-brand-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="w-2 h-2 bg-brand-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                     </div>
                   </div>
                 </motion.div>
@@ -300,7 +300,7 @@ export default function AIAssistant() {
                     <button
                       key={index}
                       onClick={() => handleQuickAction(action.query)}
-                      className="flex items-center gap-2 text-sm px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition-all border border-transparent hover:border-purple-200 dark:hover:border-purple-800"
+                      className="flex items-center gap-2 text-sm px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:text-brand-600 dark:hover:text-brand-400 transition-all border border-transparent hover:border-brand-200 dark:hover:border-brand-800"
                     >
                       <span className="text-slate-400">{action.icon}</span>
                       <span className="text-xs font-medium">{action.label}</span>
@@ -326,7 +326,7 @@ export default function AIAssistant() {
                 <button
                   type="submit"
                   disabled={!input.trim() || isTyping}
-                  className="w-12 h-12 md:w-11 md:h-11 rounded-2xl bg-accent-gradient-br text-white flex items-center justify-center hover:shadow-lg hover:shadow-accent disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none transition-all active:scale-95"
+                  className="w-12 h-12 md:w-11 md:h-11 rounded-2xl bg-accent text-white flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none transition-all active:scale-95"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />

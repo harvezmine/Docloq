@@ -79,8 +79,8 @@ function PermissionDropdown({ value, onChange, compact = false }) {
   const getPermissionStyle = (level) => {
     switch (level) {
       case "viewer": return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
-      case "editor": return "bg-blue-500/10 text-blue-400 border-blue-500/30";
-      case "admin":  return "bg-violet-500/10 text-violet-400 border-violet-500/30";
+      case "editor": return "bg-brand-500/10 text-brand-400 border-brand-500/30";
+      case "admin": return "bg-brand-500/10 text-brand-400 border-brand-500/30";
       default:       return "bg-slate-500/10 text-slate-400 border-slate-500/30";
     }
   };
@@ -118,7 +118,7 @@ function PermissionDropdown({ value, onChange, compact = false }) {
               } ${
                 perm.id === "none"   ? "text-slate-500 dark:text-slate-400" :
                 perm.id === "viewer" ? "text-emerald-600 dark:text-emerald-400" :
-                perm.id === "editor" ? "text-blue-600 dark:text-blue-400" : "text-violet-600 dark:text-violet-400"
+                perm.id === "editor" ? "text-brand-600 dark:text-brand-400" : "text-brand-600 dark:text-brand-400"
               }`}
             >
               <span className="flex-shrink-0">{PermissionIcons[perm.id]}</span>
@@ -212,13 +212,15 @@ export default function RoleManagement() {
     setIsLoading(false);
   };
 
+  // Role identity colors: solid 600 fills (white icon >= 4.5:1). Ids are persisted on
+  // roles, so they stay stable; "violet" is a legacy id that now renders as slate.
   const colorOptions = [
-    { id: "indigo", bg: "bg-indigo-500", gradient: "from-indigo-500 to-indigo-600", light: "bg-indigo-500/10", text: "text-indigo-400", border: "border-indigo-500/30" },
-    { id: "violet", bg: "bg-violet-500", gradient: "from-violet-500 to-violet-600", light: "bg-violet-500/10", text: "text-violet-400", border: "border-violet-500/30" },
-    { id: "emerald", bg: "bg-emerald-500", gradient: "from-emerald-500 to-emerald-600", light: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/30" },
-    { id: "amber", bg: "bg-amber-500", gradient: "from-amber-500 to-amber-600", light: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/30" },
-    { id: "rose", bg: "bg-rose-500", gradient: "from-rose-500 to-rose-600", light: "bg-rose-500/10", text: "text-rose-400", border: "border-rose-500/30" },
-    { id: "cyan", bg: "bg-cyan-500", gradient: "from-cyan-500 to-cyan-600", light: "bg-cyan-500/10", text: "text-cyan-400", border: "border-cyan-500/30" },
+    { id: "indigo", fill: "bg-brand-600" },
+    { id: "emerald", fill: "bg-emerald-600" },
+    { id: "amber", fill: "bg-amber-600" },
+    { id: "rose", fill: "bg-rose-600" },
+    { id: "cyan", fill: "bg-teal-600" },
+    { id: "violet", fill: "bg-slate-600" },
   ];
 
   const getColorClasses = useCallback((colorId) => {
@@ -412,8 +414,8 @@ export default function RoleManagement() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-indigo-500/10 flex items-center justify-center animate-pulse">
-              <svg className="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-brand-500/10 flex items-center justify-center animate-pulse">
+              <svg className="w-6 h-6 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
@@ -446,7 +448,6 @@ export default function RoleManagement() {
             style={{ animationDelay: `${index * 50}ms` }}
           >
             <div className="relative overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 p-5 hover:border-slate-600/50 transition-all group">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-accent-wash rounded-full -translate-y-1/2 translate-x-1/2" />
               <div className="relative">
                 <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">{stat.label}</p>
                 <p className="text-3xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
@@ -471,7 +472,7 @@ export default function RoleManagement() {
         </div>
         <button
           onClick={handleCreateRole}
-          className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-accent-gradient text-white font-semibold text-sm hover:opacity-90 transition-all shadow-lg shadow-accent"
+          className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-accent text-white font-semibold text-sm hover:opacity-90 transition-all"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -492,12 +493,11 @@ export default function RoleManagement() {
               style={{ animationDelay: `${150 + index * 50}ms` }}
             >
               <div className={`group relative overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 hover:border-slate-600/50 transition-all hover:shadow-xl hover:shadow-black/20`}>
-                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colors.gradient}`} />
 
                 <div className="p-5">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${colors.gradient} flex items-center justify-center shadow-lg`}>
+                      <div className={`w-11 h-11 rounded-xl ${colors.fill} flex items-center justify-center`}>
                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
@@ -529,13 +529,13 @@ export default function RoleManagement() {
                       </span>
                     )}
                     {permCounts.editor > 0 && (
-                      <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg bg-brand-500/10 text-brand-400 border border-brand-500/20">
                         {PermissionIcons.editor}
                         <span>{permCounts.editor}</span>
                       </span>
                     )}
                     {permCounts.admin > 0 && (
-                      <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg bg-violet-500/10 text-violet-400 border border-violet-500/20">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg bg-brand-500/10 text-brand-400 border border-brand-500/20">
                         {PermissionIcons.admin}
                         <span>{permCounts.admin}</span>
                       </span>
@@ -551,7 +551,7 @@ export default function RoleManagement() {
                     </span>
                     <button
                       onClick={() => handleEditRole(role)}
-                      className={`text-sm font-medium ${colors.text} hover:underline flex items-center gap-1.5 transition-all`}
+                      className="text-sm font-medium text-accent hover:underline flex items-center gap-1.5 transition-all"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -580,7 +580,7 @@ export default function RoleManagement() {
               {!searchQuery && (
                 <button
                   onClick={handleCreateRole}
-                  className="px-5 py-2.5 rounded-xl bg-accent-gradient text-white font-semibold text-sm hover:opacity-90 transition-all"
+                  className="px-5 py-2.5 rounded-xl bg-accent text-white font-semibold text-sm hover:opacity-90 transition-all"
                 >
                   {t("roles.createRole")}
                 </button>
@@ -596,7 +596,7 @@ export default function RoleManagement() {
             <div className="px-6 py-5 border-b border-slate-200 dark:border-slate-700/50 shrink-0 bg-slate-100 dark:bg-slate-800/50">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${getColorClasses(formData.color).gradient} flex items-center justify-center shadow-lg`}>
+                  <div className={`w-12 h-12 rounded-xl ${getColorClasses(formData.color).fill} flex items-center justify-center`}>
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
@@ -660,7 +660,7 @@ export default function RoleManagement() {
                           key={color.id}
                           type="button"
                           onClick={() => setFormData(prev => ({ ...prev, color: color.id }))}
-                          className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color.gradient} transition-all ${
+                          className={`w-9 h-9 rounded-xl ${color.fill} transition-all ${
                             formData.color === color.id 
                               ? "ring-2 ring-offset-2 ring-offset-slate-900 ring-white scale-110 shadow-lg" 
                               : "hover:scale-105 opacity-70 hover:opacity-100"
@@ -681,7 +681,7 @@ export default function RoleManagement() {
                           key={user.id}
                           className={`flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-all ${
                             formData.assignedUsers.includes(user.id) 
-                              ? "bg-indigo-500/10 border border-indigo-500/30" 
+                              ? "bg-brand-500/10 border border-brand-500/30" 
                               : "hover:bg-slate-700/30 border border-transparent"
                           }`}
                         >
@@ -689,9 +689,9 @@ export default function RoleManagement() {
                             type="checkbox"
                             checked={formData.assignedUsers.includes(user.id)}
                             onChange={() => toggleUserAssignment(user.id)}
-                            className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-indigo-500 focus:ring-accent focus:ring-offset-0"
+                            className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-brand-500 focus:ring-accent focus:ring-offset-0"
                           />
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-xs font-semibold text-slate-900 dark:text-white">
+                          <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-semibold text-slate-700 dark:text-white">
                             {user.avatar}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -710,7 +710,7 @@ export default function RoleManagement() {
                         <div key={perm.id} className="flex items-center gap-3">
                           <span className={`w-7 h-7 rounded-lg flex items-center justify-center ${
                             perm.id === "viewer" ? "bg-emerald-500/10 text-emerald-400" :
-                            perm.id === "editor" ? "bg-blue-500/10 text-blue-400" : "bg-violet-500/10 text-violet-400"
+                            perm.id === "editor" ? "bg-brand-500/10 text-brand-400" : "bg-brand-500/10 text-brand-400"
                           }`}>
                             {PermissionIcons[perm.id]}
                           </span>
@@ -832,10 +832,10 @@ export default function RoleManagement() {
                           <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400">
                             {PermissionIcons.viewer} {counts.viewer} {t("roles.legend.viewer")}
                           </span>
-                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-400">
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-400">
                             {PermissionIcons.editor} {counts.editor} {t("roles.legend.editor")}
                           </span>
-                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-violet-400">
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-400">
                             {PermissionIcons.admin} {counts.admin} {t("roles.legend.admin")}
                           </span>
                         </>
@@ -856,7 +856,7 @@ export default function RoleManagement() {
               <button
                 onClick={handleSaveRole}
                 disabled={!formData.name.trim() || isSaving}
-                className="flex-1 px-4 py-3 rounded-xl bg-accent-gradient text-white font-semibold transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-accent"
+                className="flex-1 px-4 py-3 rounded-xl bg-accent text-white font-semibold transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSaving ? t("common.saving") : modalMode === "create" ? t("roles.save.createRole") : t("roles.save.saveChanges")}
               </button>

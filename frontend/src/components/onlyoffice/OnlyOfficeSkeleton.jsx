@@ -37,7 +37,7 @@ export default function OnlyOfficeSkeleton({ stage = 'script', progressPct = 15,
       <div className="absolute bottom-12 inset-x-0 flex flex-col items-center gap-3">
         <div className={`w-64 h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`}>
           <div
-            className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 ease-out"
+            className="h-full bg-brand-600 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${Math.max(15, Math.min(100, progressPct))}%` }}
           />
         </div>

@@ -22,19 +22,19 @@ export default function AccessDenied() {
           </p>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-8">
             {t("errors.accessDenied.contactIntro")}{" "}
-            <span className="font-semibold text-indigo-500">{t("errors.accessDenied.companyAdmin")}</span>{" "}
+            <span className="font-semibold text-brand-500">{t("errors.accessDenied.companyAdmin")}</span>{" "}
             {t("errors.accessDenied.contactOutro")}
           </p>
 
           {/* Contact admin hint */}
-          <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 mb-6">
-            <div className="flex items-center justify-center gap-2 text-indigo-600 dark:text-indigo-400 mb-2">
+          <div className="p-4 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/20 mb-6">
+            <div className="flex items-center justify-center gap-2 text-brand-600 dark:text-brand-400 mb-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span className="text-sm font-semibold">{t("errors.accessDenied.needAccess")}</span>
             </div>
-            <p className="text-xs text-indigo-600/80 dark:text-indigo-400/80">
+            <p className="text-xs text-brand-600/80 dark:text-brand-400/80">
               {t("errors.accessDenied.needAccessHint")}
             </p>
           </div>
@@ -42,7 +42,7 @@ export default function AccessDenied() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/dashboard"
-              className="px-6 py-3 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold text-sm shadow-lg shadow-accent transition-all"
+              className="px-6 py-3 rounded-xl bg-accent hover:brightness-110 text-white font-semibold text-sm transition-all"
             >
               {t("errors.accessDenied.backToDashboard")}
             </Link>

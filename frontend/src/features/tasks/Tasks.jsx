@@ -17,9 +17,9 @@ const taskTypeConfig = {
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
       </svg>
     ),
-    bg: "bg-violet-50 dark:bg-violet-500/10",
-    border: "border-violet-100 dark:border-violet-500/20",
-    text: "text-violet-600 dark:text-violet-400",
+    bg: "bg-brand-50 dark:bg-brand-500/10",
+    border: "border-brand-100 dark:border-brand-500/20",
+    text: "text-brand-600 dark:text-brand-400",
   },
   fill: {
     label: "Fill", action: "Edit Document", color: "blue", mode: "edit",
@@ -28,9 +28,9 @@ const taskTypeConfig = {
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
       </svg>
     ),
-    bg: "bg-blue-50 dark:bg-blue-500/10",
-    border: "border-blue-100 dark:border-blue-500/20",
-    text: "text-blue-600 dark:text-blue-400",
+    bg: "bg-brand-50 dark:bg-brand-500/10",
+    border: "border-brand-100 dark:border-brand-500/20",
+    text: "text-brand-600 dark:text-brand-400",
   },
   review: {
     label: "Review", action: "Review Document", color: "amber", mode: "view",
@@ -77,7 +77,7 @@ const priorityConfig = {
 
 const statusConfig = {
   pending: { label: "Waiting", dot: "bg-slate-400", bg: "bg-slate-100 dark:bg-slate-800", text: "text-slate-600 dark:text-slate-400" },
-  in_progress: { label: "Active", dot: "bg-indigo-500", bg: "bg-indigo-50 dark:bg-indigo-500/10", text: "text-indigo-600 dark:text-indigo-400" },
+  in_progress: { label: "Active", dot: "bg-brand-500", bg: "bg-brand-50 dark:bg-brand-500/10", text: "text-brand-600 dark:text-brand-400" },
   completed: { label: "Done", dot: "bg-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-500/10", text: "text-emerald-600 dark:text-emerald-400" },
   cancelled: { label: "Rejected", dot: "bg-rose-500", bg: "bg-rose-50 dark:bg-rose-500/10", text: "text-rose-600 dark:text-rose-400" },
 };
@@ -112,7 +112,7 @@ function WorkflowProgress({ steps, currentStepOrder }) {
               <div className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border-2 ${
                 isDone ? "bg-emerald-500 border-emerald-500 text-white"
                 : isSkipped ? "bg-rose-100 dark:bg-rose-500/20 border-rose-300 dark:border-rose-500/50 text-rose-500"
-                : isActive ? "bg-indigo-500 border-indigo-500 text-white animate-pulse"
+                : isActive ? "bg-brand-500 border-brand-500 text-white animate-pulse"
                 : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-400"
               }`}>
                 {isDone ? (
@@ -125,11 +125,11 @@ function WorkflowProgress({ steps, currentStepOrder }) {
               </div>
               <div className={`pb-5 flex-1 min-w-0 ${isActive ? "" : "opacity-70"}`}>
                 <div className="flex items-center gap-2">
-                  <span className={`text-sm font-semibold ${isActive ? "text-indigo-600 dark:text-indigo-400" : isDone ? "text-emerald-600 dark:text-emerald-400" : isSkipped ? "text-rose-500" : "text-slate-600 dark:text-slate-300"}`}>
+                  <span className={`text-sm font-semibold ${isActive ? "text-brand-600 dark:text-brand-400" : isDone ? "text-emerald-600 dark:text-emerald-400" : isSkipped ? "text-rose-500" : "text-slate-600 dark:text-slate-300"}`}>
                     {t(`tasks.taskType.${cfgKey}`)}
                   </span>
                   {isActive && (
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400">
                       {t("tasks.workflow.current")}
                     </span>
                   )}
@@ -453,7 +453,7 @@ export default function Tasks() {
                   <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center flex-shrink-0">
-                        <svg className="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        <svg className="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate">
@@ -469,18 +469,18 @@ export default function Tasks() {
 
                     <div className="flex items-center gap-2">
                       {docConfigLoading && (
-                        <div className="w-7 h-7 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-7 h-7 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
                       )}
                       {isActive && cfg.mode === "edit" && taskDocConfig && (
                         <button onClick={() => openEditor(false)}
-                          className="px-4 py-2.5 rounded-xl text-sm font-semibold shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl flex items-center gap-2 bg-accent-gradient hover:brightness-110 text-white shadow-accent">
+                          className="px-4 py-2.5 rounded-xl text-sm font-semibold shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl flex items-center gap-2 bg-accent hover:brightness-110 text-white">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                           {t("tasks.detail.editFill")}
                         </button>
                       )}
                       {isDone && selectedTask.taskType === "sign" && signedDocumentInfo && taskDocConfig && (
                         <button onClick={() => openEditor(true)}
-                          className="px-4 py-2.5 rounded-xl text-sm font-semibold shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl flex items-center gap-2 bg-accent-gradient hover:brightness-110 text-white shadow-accent">
+                          className="px-4 py-2.5 rounded-xl text-sm font-semibold shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl flex items-center gap-2 bg-accent hover:brightness-110 text-white">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                           {t("tasks.detail.viewSigned")}
                         </button>
@@ -490,7 +490,7 @@ export default function Tasks() {
 
                   {isDone && selectedTask.taskType === "sign" && signedDocumentInfo && taskDocConfig && (
                     <button onClick={() => openEditor(false)}
-                      className="mb-3 text-xs text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors underline">
+                      className="mb-3 text-xs text-slate-400 hover:text-brand-500 dark:hover:text-brand-400 transition-colors underline">
                       {t("tasks.detail.viewOriginal")}
                     </button>
                   )}
@@ -537,19 +537,19 @@ export default function Tasks() {
                       {/* Show Open & Edit button directly here if doc config is available */}
                       {taskDocConfig && !showEditor && (
                         <button onClick={() => openEditor(false)}
-                          className="w-full px-4 py-3 rounded-xl bg-accent-gradient hover:brightness-110 text-white font-semibold shadow-lg shadow-accent transition-all flex items-center justify-center gap-2 mb-2">
+                          className="w-full px-4 py-3 rounded-xl bg-accent hover:brightness-110 text-white font-semibold transition-all flex items-center justify-center gap-2 mb-2">
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                           Open & Edit Document
                         </button>
                       )}
                       {docConfigLoading && (
                         <div className="flex items-center justify-center gap-2 py-3 text-sm text-slate-500">
-                          <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                          <div className="w-5 h-5 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
                           Loading document...
                         </div>
                       )}
                       <button onClick={handleSubmitFill} disabled={submitting}
-                        className="w-full px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2">
+                        className="w-full px-4 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white font-semibold transition-all flex items-center justify-center gap-2">
                         {submitting ? (
                           <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         ) : (
@@ -597,7 +597,7 @@ export default function Tasks() {
                         className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
                       />
                       <button onClick={handleSubmitReview} disabled={submitting}
-                        className="w-full px-4 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white font-semibold shadow-lg shadow-amber-500/25 transition-all flex items-center justify-center gap-2">
+                        className="w-full px-4 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white font-semibold transition-all flex items-center justify-center gap-2">
                         {submitting ? (
                           <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         ) : (
@@ -623,7 +623,7 @@ export default function Tasks() {
                       />
                       <div className="flex gap-3">
                         <button onClick={handleReject} disabled={submitting || !reviewNotes.trim()}
-                          className="flex-1 px-4 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-semibold shadow-lg shadow-rose-500/25 transition-all flex items-center justify-center gap-2">
+                          className="flex-1 px-4 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-semibold transition-all flex items-center justify-center gap-2">
                           {submitting ? (
                             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                           ) : (
@@ -632,7 +632,7 @@ export default function Tasks() {
                           Reject
                         </button>
                         <button onClick={handleApprove} disabled={submitting}
-                          className="flex-1 px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-semibold shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2">
+                          className="flex-1 px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-semibold transition-all flex items-center justify-center gap-2">
                           {submitting ? (
                             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                           ) : (
@@ -711,8 +711,8 @@ export default function Tasks() {
 
                 {selectedTask.assignee && (
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center">
-                      <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                    <div className="w-9 h-9 rounded-lg bg-brand-100 dark:bg-brand-500/20 flex items-center justify-center">
+                      <span className="text-xs font-bold text-brand-600 dark:text-brand-400">
                         {selectedTask.assignee.avatar || selectedTask.assignee.name?.charAt(0)?.toUpperCase() || "?"}
                       </span>
                     </div>
@@ -738,9 +738,9 @@ export default function Tasks() {
                 )}
 
                 {selectedTask.formName && (
-                  <div className="flex items-center gap-2 p-3 rounded-lg bg-violet-50 dark:bg-violet-500/10 border border-violet-200 dark:border-violet-500/20">
-                    <svg className="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    <span className="text-sm font-medium text-violet-600 dark:text-violet-400">{selectedTask.formName}</span>
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-brand-50 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/20">
+                    <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    <span className="text-sm font-medium text-brand-600 dark:text-brand-400">{selectedTask.formName}</span>
                   </div>
                 )}
               </Card>
@@ -818,7 +818,7 @@ export default function Tasks() {
                     {tab.label}
                     <span className={`ml-1.5 sm:ml-2 px-1.5 sm:px-2 py-0.5 rounded-full text-xs ${
                       activeTab === tab.key
-                        ? "bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400"
+                        ? "bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400"
                         : "bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400"
                     }`}>
                       {tab.count}
@@ -831,7 +831,7 @@ export default function Tasks() {
               <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                 {selectedCalendarDate && (
                   <button onClick={() => setSelectedCalendarDate(null)}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-sm text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition-colors">
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/20 text-sm text-brand-600 dark:text-brand-400 hover:bg-brand-100 transition-colors">
                     <span className="text-xs sm:text-sm">{formatDate(selectedCalendarDate)}</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                   </button>
@@ -856,8 +856,8 @@ export default function Tasks() {
                           {typeFilterOptions.map((option) => (
                             <button key={option.value}
                               onClick={() => { setFilterType(option.value); setShowTypeDropdown(false); }}
-                              className={`w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors ${filterType === option.value ? "bg-indigo-50 dark:bg-indigo-500/10" : ""}`}>
-                              <span className={`text-sm ${filterType === option.value ? "font-medium text-indigo-600 dark:text-indigo-400" : "text-slate-600 dark:text-slate-300"}`}>{option.label}</span>
+                              className={`w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors ${filterType === option.value ? "bg-brand-50 dark:bg-brand-500/10" : ""}`}>
+                              <span className={`text-sm ${filterType === option.value ? "font-medium text-brand-600 dark:text-brand-400" : "text-slate-600 dark:text-slate-300"}`}>{option.label}</span>
                             </button>
                           ))}
                         </motion.div>
@@ -871,7 +871,7 @@ export default function Tasks() {
             {/* Loading */}
             {loading && (
               <div className="flex items-center justify-center py-20">
-                <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
               </div>
             )}
 
@@ -908,7 +908,7 @@ export default function Tasks() {
                           : isDueSoon ? "border-l-amber-500 bg-amber-50/30 dark:bg-amber-500/5"
                           : task.status === "completed" ? "border-l-emerald-500"
                           : task.status === "cancelled" ? "border-l-rose-400"
-                          : task.status === "in_progress" ? "border-l-indigo-500"
+                          : task.status === "in_progress" ? "border-l-brand-500"
                           : "border-l-slate-300 dark:border-l-slate-600"
                         }`}>
                           <div className="flex items-start gap-4">
@@ -921,7 +921,7 @@ export default function Tasks() {
                             <div className="flex-1 min-w-0">
                               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-3 mb-1.5">
                                 <div className="flex items-center gap-2 min-w-0">
-                                  <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">
+                                  <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors truncate">
                                     {task.title}
                                   </h3>
                                   <span className={`w-2 h-2 rounded-full ring-3 flex-shrink-0 ${(priorityConfig[task.priority] || priorityConfig.medium).color} ${(priorityConfig[task.priority] || priorityConfig.medium).ring}`} />
@@ -947,7 +947,7 @@ export default function Tasks() {
 
                                 {/* Form */}
                                 {task.formName && (
-                                  <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-500/20">
+                                  <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-500/20">
                                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                     {task.formName}
                                   </span>
@@ -964,7 +964,7 @@ export default function Tasks() {
                             </div>
 
                             {/* Arrow */}
-                            <svg className="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                            <svg className="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-brand-500 group-hover:translate-x-1 transition-all flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                           </div>
                         </Card>
                       </motion.div>
@@ -1008,16 +1008,16 @@ export default function Tasks() {
                     onClick={() => dayData.date && setSelectedCalendarDate(selectedCalendarDate === dayData.date ? null : dayData.date)}
                     className={`relative aspect-square rounded-lg flex flex-col items-center justify-center text-xs sm:text-sm transition-all ${
                       !dayData.day ? "cursor-default"
-                      : dayData.isToday ? "bg-indigo-600 text-white font-bold"
-                      : selectedCalendarDate === dayData.date ? "bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-semibold"
-                      : dayData.tasks?.length > 0 ? "bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-indigo-50 dark:hover:bg-indigo-500/10"
+                      : dayData.isToday ? "bg-brand-600 text-white font-bold"
+                      : selectedCalendarDate === dayData.date ? "bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400 font-semibold"
+                      : dayData.tasks?.length > 0 ? "bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-brand-50 dark:hover:bg-brand-500/10"
                       : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                     }`}>
                     {dayData.day}
                     {dayData.tasks?.length > 0 && (
                       <div className="absolute bottom-0.5 sm:bottom-1 flex gap-0.5">
                         {dayData.tasks.slice(0, 3).map((t, i) => (
-                          <span key={i} className={`w-1 h-1 rounded-full ${dayData.isToday ? "bg-white/70" : (priorityConfig[t.priority]?.color || "bg-indigo-500")}`} />
+                          <span key={i} className={`w-1 h-1 rounded-full ${dayData.isToday ? "bg-white/70" : (priorityConfig[t.priority]?.color || "bg-brand-500")}`} />
                         ))}
                       </div>
                     )}

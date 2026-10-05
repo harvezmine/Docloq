@@ -121,9 +121,9 @@ function Stepper({ current, total = 3 }) {
               <div
                 className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold transition-all duration-300 ${
                   done
-                    ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/30"
+                    ? "bg-emerald-500 text-white"
                     : active
-                    ? "bg-accent-gradient-br text-white shadow-lg shadow-accent ring-4 ring-indigo-500/15"
+                    ? "bg-accent text-white ring-4 ring-brand-500/15"
                     : "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500"
                 }`}
               >
@@ -241,7 +241,7 @@ function BlockchainTrust({ result }) {
                   )}
                   <div className="flex justify-between items-center gap-3">
                     <span className="text-xs text-slate-500 dark:text-slate-400 flex-shrink-0">{t("verify.txHashLabel")}</span>
-                    <button onClick={copyTx} className="flex items-center gap-1 min-w-0 font-mono text-xs text-indigo-600 dark:text-indigo-400 hover:underline" title={t("verify.copyTitle")}>
+                    <button onClick={copyTx} className="flex items-center gap-1 min-w-0 font-mono text-xs text-brand-600 dark:text-brand-400 hover:underline" title={t("verify.copyTitle")}>
                       {copied ? (
                         <>
                           <IconCheck className="w-3.5 h-3.5 shrink-0" />
@@ -254,7 +254,7 @@ function BlockchainTrust({ result }) {
                   </div>
                   {result.blockchainExplorerUrl && (
                     <a href={result.blockchainExplorerUrl} target="_blank" rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline pt-1">
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 dark:text-brand-400 hover:underline pt-1">
                       {t("verify.viewOnExplorer")}
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                     </a>
@@ -337,25 +337,22 @@ function normalizeVerdict(r, t) {
 
 const toneStyles = {
   green: {
-    heroBg: "bg-gradient-to-b from-emerald-50 via-emerald-50/40 to-transparent dark:from-emerald-500/10 dark:via-emerald-500/[0.04] dark:to-transparent",
-    glow: "bg-emerald-400/20 dark:bg-emerald-500/15",
-    iconBg: "bg-gradient-to-br from-emerald-500 to-teal-500 shadow-emerald-500/40",
+    heroBg: "bg-emerald-50/70 dark:bg-emerald-500/[0.06]",
+    iconBg: "bg-emerald-600",
     titleText: "text-emerald-700 dark:text-emerald-400",
     badge: "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 ring-emerald-500/20",
     icon: <IconShield className="w-9 h-9 text-white" />,
   },
   amber: {
-    heroBg: "bg-gradient-to-b from-amber-50 via-amber-50/40 to-transparent dark:from-amber-500/10 dark:via-amber-500/[0.04] dark:to-transparent",
-    glow: "bg-amber-400/20 dark:bg-amber-500/15",
-    iconBg: "bg-gradient-to-br from-amber-500 to-orange-500 shadow-amber-500/40",
+    heroBg: "bg-amber-50/70 dark:bg-amber-500/[0.06]",
+    iconBg: "bg-amber-600",
     titleText: "text-amber-700 dark:text-amber-400",
     badge: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 ring-amber-500/20",
     icon: <IconWarning className="w-9 h-9 text-white" />,
   },
   red: {
-    heroBg: "bg-gradient-to-b from-red-50 via-red-50/40 to-transparent dark:from-red-500/10 dark:via-red-500/[0.04] dark:to-transparent",
-    glow: "bg-red-400/20 dark:bg-red-500/15",
-    iconBg: "bg-gradient-to-br from-red-500 to-rose-500 shadow-red-500/40",
+    heroBg: "bg-red-50/70 dark:bg-red-500/[0.06]",
+    iconBg: "bg-red-600",
     titleText: "text-red-700 dark:text-red-400",
     badge: "bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-400 ring-red-500/20",
     icon: <IconX className="w-9 h-9 text-white" />,
@@ -413,8 +410,8 @@ function CameraScanner({ scanner, isVerifying, onUseUpload, onStart }) {
             onClick={onStart}
             className="absolute inset-0 w-full h-full flex flex-col items-center justify-center gap-3 text-center px-6 active:bg-slate-900/60 transition-colors"
           >
-            <span className="w-16 h-16 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center">
-              <IconQR className="w-8 h-8 text-indigo-400" />
+            <span className="w-16 h-16 rounded-2xl bg-brand-500/15 border border-brand-500/30 flex items-center justify-center">
+              <IconQR className="w-8 h-8 text-brand-400" />
             </span>
             <span className="text-sm font-semibold text-white">{t("verify.openCamera")}</span>
             <span className="text-xs text-slate-400 max-w-[15rem]">
@@ -436,7 +433,7 @@ function CameraScanner({ scanner, isVerifying, onUseUpload, onStart }) {
                     initial={{ top: "8%" }}
                     animate={{ top: ["8%", "92%", "8%"] }}
                     transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute left-2 right-2 h-0.5 rounded-full bg-indigo-400/90 shadow-[0_0_8px_2px_rgba(99,102,241,0.55)]"
+                    className="absolute left-2 right-2 h-0.5 rounded-full bg-brand-400/90 shadow-[0_0_8px_2px_rgba(99,102,241,0.55)]"
                   />
                 )}
                 {phase === "locked" && (
@@ -446,7 +443,7 @@ function CameraScanner({ scanner, isVerifying, onUseUpload, onStart }) {
                     transition={{ type: "spring", stiffness: 300, damping: 18 }}
                     className="absolute inset-0 flex items-center justify-center"
                   >
-                    <div className="w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/40">
+                    <div className="w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center">
                       <IconCheck className="w-8 h-8 text-white" />
                     </div>
                   </motion.div>
@@ -474,7 +471,7 @@ function CameraScanner({ scanner, isVerifying, onUseUpload, onStart }) {
               <button
                 type="button"
                 onClick={onStart}
-                className="mt-2 px-4 py-2 rounded-xl bg-accent-gradient hover:brightness-110 text-white text-xs font-semibold transition-colors"
+                className="mt-2 px-4 py-2 rounded-xl bg-accent hover:brightness-110 text-white text-xs font-semibold transition-colors"
               >
                 {t("verify.tryOpenCameraAgain")}
               </button>
@@ -851,15 +848,14 @@ export default function Verification({ public: isPublic = false }) {
 
             <div className={`grid grid-cols-1 gap-5 ${fileMethodAvailable ? "sm:grid-cols-2" : ""}`}>
               <motion.button whileHover={{ y: -5 }} whileTap={{ scale: 0.98 }} onClick={() => handleSelectMethod("qr")}
-                className="group relative overflow-hidden p-7 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left transition-all duration-200 hover:shadow-xl hover:shadow-accent hover:border-indigo-300 dark:hover:border-indigo-500/40"
+                className="group relative overflow-hidden p-7 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left transition-all duration-200 hover:border-brand-300 dark:hover:border-brand-500/40"
               >
-                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-indigo-500/5 dark:bg-indigo-500/10 blur-2xl transition-opacity opacity-0 group-hover:opacity-100" />
                 <div className="relative">
                   <div className="flex items-start justify-between mb-5">
-                    <div className="w-14 h-14 rounded-2xl bg-accent-gradient-br flex items-center justify-center shadow-lg shadow-accent">
+                    <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center">
                       <IconQR className="w-7 h-7 text-white" />
                     </div>
-                    <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                    <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-brand-600 group-hover:text-white transition-all">
                       <IconArrowRight />
                     </div>
                   </div>
@@ -870,23 +866,22 @@ export default function Verification({ public: isPublic = false }) {
                       : t("verify.scanQrDescDesktop")}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    <span className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-[11px] font-medium text-indigo-600 dark:text-indigo-400">{t("verify.badgeSignedQr")}</span>
-                    <span className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-[11px] font-medium text-indigo-600 dark:text-indigo-400">{t("verify.badgeBlockchainAutoCheck")}</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-brand-500/10 text-[11px] font-medium text-brand-600 dark:text-brand-400">{t("verify.badgeSignedQr")}</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-brand-500/10 text-[11px] font-medium text-brand-600 dark:text-brand-400">{t("verify.badgeBlockchainAutoCheck")}</span>
                   </div>
                 </div>
               </motion.button>
 
               {fileMethodAvailable && (
                 <motion.button whileHover={{ y: -5 }} whileTap={{ scale: 0.98 }} onClick={() => handleSelectMethod("file")}
-                  className="group relative overflow-hidden p-7 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left transition-all duration-200 hover:shadow-xl hover:shadow-accent hover:border-violet-300 dark:hover:border-violet-500/40"
+                  className="group relative overflow-hidden p-7 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left transition-all duration-200 hover:border-brand-300 dark:hover:border-brand-500/40"
                 >
-                  <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-violet-500/5 dark:bg-violet-500/10 blur-2xl transition-opacity opacity-0 group-hover:opacity-100" />
                   <div className="relative">
                     <div className="flex items-start justify-between mb-5">
-                      <div className="w-14 h-14 rounded-2xl bg-accent-gradient-br flex items-center justify-center shadow-lg shadow-accent">
+                      <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center">
                         <IconUpload className="w-7 h-7 text-white" />
                       </div>
-                      <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-violet-600 group-hover:text-white transition-all">
+                      <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-brand-600 group-hover:text-white transition-all">
                         <IconArrowRight />
                       </div>
                     </div>
@@ -895,8 +890,8 @@ export default function Verification({ public: isPublic = false }) {
                       {t("verify.uploadFileDesc")}
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      <span className="px-2.5 py-1 rounded-lg bg-violet-50 dark:bg-violet-500/10 text-[11px] font-medium text-violet-600 dark:text-violet-400">{t("verify.badgeExactFuzzy")}</span>
-                      <span className="px-2.5 py-1 rounded-lg bg-violet-50 dark:bg-violet-500/10 text-[11px] font-medium text-violet-600 dark:text-violet-400">{t("verify.badgeSha256")}</span>
+                      <span className="px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-brand-500/10 text-[11px] font-medium text-brand-600 dark:text-brand-400">{t("verify.badgeExactFuzzy")}</span>
+                      <span className="px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-brand-500/10 text-[11px] font-medium text-brand-600 dark:text-brand-400">{t("verify.badgeSha256")}</span>
                     </div>
                   </div>
                 </motion.button>
@@ -930,7 +925,7 @@ export default function Verification({ public: isPublic = false }) {
             <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
               <div className="px-6 sm:px-7 py-5 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-3.5">
-                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg ${method === "qr" ? "bg-accent-gradient-br shadow-accent" : "bg-accent-gradient-br shadow-accent"}`}>
+                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg ${method === "qr" ? "bg-accent" : "bg-accent"}`}>
                     {method === "qr" ? <IconQR className="w-5 h-5 text-white" /> : <IconUpload className="w-5 h-5 text-white" />}
                   </div>
                   <div>
@@ -951,7 +946,7 @@ export default function Verification({ public: isPublic = false }) {
                       <button
                         key={m}
                         onClick={() => setQrMode(m)}
-                        className={`py-2.5 rounded-xl text-sm font-semibold transition-colors ${qrMode === m ? "bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-sm" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}`}
+                        className={`py-2.5 rounded-xl text-sm font-semibold transition-colors ${qrMode === m ? "bg-white dark:bg-slate-700 text-brand-600 dark:text-white shadow-sm" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}`}
                       >
                         {label}
                       </button>
@@ -971,11 +966,11 @@ export default function Verification({ public: isPublic = false }) {
                   className={`border-2 border-dashed rounded-2xl p-10 sm:p-12 text-center cursor-pointer transition-all duration-200 ${
                     isDragging
                       ? method === "qr"
-                        ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-500/5 scale-[1.01]"
-                        : "border-violet-500 bg-violet-50 dark:bg-violet-500/5 scale-[1.01]"
+                        ? "border-brand-500 bg-brand-50 dark:bg-brand-500/5 scale-[1.01]"
+                        : "border-brand-500 bg-brand-50 dark:bg-brand-500/5 scale-[1.01]"
                       : uploadedFile
                       ? "border-emerald-300 dark:border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-500/5"
-                      : "border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500/40 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                      : "border-slate-200 dark:border-slate-700 hover:border-brand-400 dark:hover:border-brand-500/40 hover:bg-slate-50 dark:hover:bg-slate-800/50"
                   }`}
                 >
                   <input ref={fileInputRef} type="file" accept={acceptForMethod} onChange={(e) => handleFileSelect(e.target.files?.[0])} className="hidden" />
@@ -989,15 +984,15 @@ export default function Verification({ public: isPublic = false }) {
                       <p className="text-xs text-slate-400 mb-3">{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</p>
                       <button
                         onClick={(e) => { e.stopPropagation(); setUploadedFile(null); }}
-                        className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+                        className="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors"
                       >
                         {t("verify.removeChooseAnother")}
                       </button>
                     </div>
                   ) : (
                     <div>
-                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 ${method === "qr" ? "bg-indigo-100 dark:bg-indigo-500/15" : "bg-violet-100 dark:bg-violet-500/15"}`}>
-                        {method === "qr" ? <IconQR className="w-8 h-8 text-indigo-600 dark:text-indigo-400" /> : <IconUpload className="w-8 h-8 text-violet-600 dark:text-violet-400" />}
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 ${method === "qr" ? "bg-brand-100 dark:bg-brand-500/15" : "bg-brand-100 dark:bg-brand-500/15"}`}>
+                        {method === "qr" ? <IconQR className="w-8 h-8 text-brand-600 dark:text-brand-400" /> : <IconUpload className="w-8 h-8 text-brand-600 dark:text-brand-400" />}
                       </div>
                       <p className="text-base font-semibold text-slate-900 dark:text-white mb-1">
                         {method === "qr" ? t("verify.dragDropQr") : t("verify.dragDropDoc")}
@@ -1032,7 +1027,7 @@ export default function Verification({ public: isPublic = false }) {
                 <button
                   onClick={handleVerify}
                   disabled={!uploadedFile || isVerifying}
-                  className={`w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-2xl text-white text-sm font-semibold shadow-lg transition-all disabled:opacity-50 ${method === "qr" ? "bg-accent-gradient hover:brightness-110 disabled:hover:bg-indigo-600 shadow-accent" : "bg-accent-gradient hover:brightness-110 disabled:hover:bg-violet-600 shadow-accent"}`}
+                  className={`w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-2xl text-white text-sm font-semibold shadow-lg transition-all disabled:opacity-50 ${method === "qr" ? "bg-accent hover:brightness-110 disabled:hover:bg-brand-600" : "bg-accent hover:brightness-110 disabled:hover:bg-brand-600"}`}
                 >
                   {isVerifying ? <><Spinner className="w-4 h-4" /> {t("verify.verifyingBtn")}</> : <><IconShield className="w-4 h-4" /> {t("verify.verifyDocumentBtn")}</>}
                 </button>
@@ -1047,10 +1042,9 @@ export default function Verification({ public: isPublic = false }) {
           <motion.div key="step2" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -24 }} transition={{ duration: 0.35, ease: "easeOut" }}>
             <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
               <div className={`relative px-6 pt-10 pb-8 text-center overflow-hidden ${tone.heroBg}`}>
-                <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/3 w-56 h-56 rounded-full blur-3xl ${tone.glow}`} />
                 <div className="relative">
                   <motion.div initial={{ scale: 0, rotate: -8 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200, damping: 14 }}>
-                    <div className={`w-20 h-20 mx-auto rounded-3xl flex items-center justify-center mb-5 shadow-xl ${tone.iconBg}`}>
+                    <div className={`w-20 h-20 mx-auto rounded-3xl flex items-center justify-center mb-5 ${tone.iconBg}`}>
                       {tone.icon}
                     </div>
                   </motion.div>
@@ -1123,9 +1117,9 @@ export default function Verification({ public: isPublic = false }) {
                               animate={{ width: `${verificationResult.similarity}%` }}
                               transition={{ duration: 1.2, ease: "easeOut" }}
                               className={`h-full rounded-full ${
-                                verificationResult.similarity >= 95 ? "bg-gradient-to-r from-emerald-500 to-teal-500"
-                                : verificationResult.similarity >= 78 ? "bg-gradient-to-r from-amber-500 to-orange-500"
-                                : "bg-gradient-to-r from-red-500 to-rose-500"
+                                verificationResult.similarity >= 95 ? "bg-emerald-500"
+                                : verificationResult.similarity >= 78 ? "bg-amber-500"
+                                : "bg-red-500"
                               }`}
                             />
                           </div>
@@ -1158,7 +1152,7 @@ export default function Verification({ public: isPublic = false }) {
                           <button
                             onClick={checkIntegrity}
                             disabled={checkingChain}
-                            className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-2xl border border-indigo-200 dark:border-indigo-500/30 bg-indigo-50/50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 text-sm font-medium hover:bg-indigo-100 dark:hover:bg-indigo-500/15 transition-colors disabled:opacity-50"
+                            className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-2xl border border-brand-200 dark:border-brand-500/30 bg-brand-50/50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400 text-sm font-medium hover:bg-brand-100 dark:hover:bg-brand-500/15 transition-colors disabled:opacity-50"
                           >
                             {checkingChain ? <><Spinner className="w-4 h-4" /> {t("verify.checkingBlockchain")}</> : <><IconShield className="w-4 h-4" /> {t("verify.checkBlockchainIntegrity")}</>}
                           </button>
@@ -1225,7 +1219,7 @@ export default function Verification({ public: isPublic = false }) {
                                     )}
                                     {previewLoading && (
                                       <div className="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
-                                        <Spinner className="w-6 h-6 text-indigo-500" />
+                                        <Spinner className="w-6 h-6 text-brand-500" />
                                       </div>
                                     )}
                                   </>
@@ -1272,7 +1266,7 @@ export default function Verification({ public: isPublic = false }) {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white flex flex-col">
         <div className="flex-1 flex flex-col items-center px-4 py-10 sm:py-16">
           <div className="flex items-center gap-3 mb-12">
-            <div className="w-11 h-11 rounded-2xl bg-accent-gradient-br flex items-center justify-center shadow-lg shadow-accent">
+            <div className="w-11 h-11 rounded-2xl bg-accent flex items-center justify-center">
               <span className="text-white font-bold text-lg">D</span>
             </div>
             <div className="leading-tight">

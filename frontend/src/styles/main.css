@@ -10,66 +10,68 @@
   }
 }
 
-/* ---------- Accent theming (authenticated app only) ----------
-   The accent vars are set by PreferencesProvider on the DashboardLayout root,
-   NOT on :root, so the landing page and login/OTP screens (which never set
-   these vars) fall back to the indigo→violet defaults below and stay untouched.
-   Default fallbacks == the app's original indigo/violet, so an untouched user
-   sees exactly the pre-preferences look. */
-@utility bg-accent-gradient {
-  background-image: linear-gradient(to right, var(--accent-from, #1d4ed8), var(--accent-to, #6d28d9));
-}
-@utility bg-accent-gradient-br {
-  background-image: linear-gradient(to bottom right, var(--accent-from, #1d4ed8), var(--accent-to, #6d28d9));
-}
-/* Accent TEXT is theme-split: one accent color cannot hit 4.5:1 on both a light
-   and a dark panel, so the palette ships two tokens and .dark swaps them.
-   The .dark rule is intentionally unlayered so it wins over the utilities layer. */
-@utility text-accent {
-  color: var(--accent-text-light, #3730a3);
-}
-@utility border-accent {
-  border-color: var(--accent-solid, #4f46e5);
-}
-/* Solid accent fill + its hover (buttons). Hover slightly lightens via the -from stop. */
-@utility bg-accent-solid {
-  background-color: var(--accent-solid, #4f46e5);
-}
-/* Soft colored glow under gradient surfaces (replaces shadow-indigo-500/25) */
-@utility shadow-accent {
-  box-shadow: 0 10px 25px -5px var(--accent-glow, rgba(79, 70, 229, 0.25));
-}
-@utility shadow-accent-sm {
-  box-shadow: 0 4px 12px -2px var(--accent-glow, rgba(79, 70, 229, 0.25));
-}
-/* Tinted surfaces / borders for chips, soft buttons, active states */
-@utility bg-accent-soft {
-  background-color: color-mix(in srgb, var(--accent-solid, #4f46e5) 12%, transparent);
-}
-@utility border-accent-soft {
-  border-color: color-mix(in srgb, var(--accent-solid, #4f46e5) 25%, transparent);
-}
-@utility ring-accent {
-  --tw-ring-color: var(--accent-ring, rgba(79, 70, 229, 0.4));
-}
-/* Soft ambient wash for decorative blurred blobs. Uses plain `opacity` rather than
-   color-mix: Lightning CSS emits an OPAQUE fallback rule for color-mix, which would
-   render these as solid blobs on older browsers. Only ever applied to empty,
-   aria-hidden decorative elements, so the inherited opacity is harmless. */
-@utility bg-accent-wash {
-  background-image: linear-gradient(
-    to bottom right,
-    var(--accent-from, #1d4ed8),
-    var(--accent-to, #6d28d9),
-    transparent
-  );
-  opacity: 0.15;
+/* ---------- Color system: 60 / 30 / 10 ----------
+   60  Paper  neutral surfaces: page + cards (slate-50/100/white, slate-950/900 in dark)
+   30  Ink    structure: sidebar, headings, body text, borders (slate-900 family)
+   10  Brand  ONE solid hue for primary actions, current selection, focus, links.
+   No gradients. Semantic colors (emerald / amber / red) are reserved for state.
+
+   `brand-*` utilities read --brand-* vars. PreferencesProvider overrides them on the
+   authenticated shell root with the user's accent ramp; everything outside the shell
+   uses the cobalt defaults below (mirrored from accent-presets.js, keep in sync).
+   Cobalt = OKLCH hue 255, chroma 0.15 at 500/600; white on 600 is 5.3:1. */
+:root {
+  --brand-50: #eef7ff;
+  --brand-100: #dcedff;
+  --brand-200: #bcdaff;
+  --brand-300: #92c1fd;
+  --brand-400: #64a2f0;
+  --brand-500: #3d84db;
+  --brand-600: #226bc0;
+  --brand-700: #1559a4;
+  --brand-800: #0f4683;
+  --brand-900: #0b3462;
+  --brand-950: #042042;
 }
 
-/* Dark-mode accent text (see note on .text-accent above). Unlayered on purpose:
-   unlayered rules outrank everything in @layer utilities, so this reliably wins. */
+@theme inline {
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-brand-950: var(--brand-950);
+}
+
+/* Semantic accent aliases, so components say what a color is FOR. */
+@utility bg-accent {
+  background-color: var(--brand-600);
+}
+/* Accent TEXT is theme-split: one shade cannot hit 4.5:1 on both a light and a dark
+   panel. The .dark rule below is unlayered so it wins over the utilities layer. */
+@utility text-accent {
+  color: var(--brand-700);
+}
+@utility border-accent {
+  border-color: var(--brand-600);
+}
+@utility bg-accent-soft {
+  background-color: color-mix(in srgb, var(--brand-500) 10%, transparent);
+}
+@utility border-accent-soft {
+  border-color: color-mix(in srgb, var(--brand-500) 25%, transparent);
+}
+@utility ring-accent {
+  --tw-ring-color: color-mix(in srgb, var(--brand-500) 45%, transparent);
+}
+
 .dark .text-accent {
-  color: var(--accent-text-dark, #a5b4fc);
+  color: var(--brand-300);
 }
 
 /* ---------- Landing page: editorial/ledger utilities ---------- */
@@ -108,15 +110,14 @@
 /* Citation marker hover pulse */
 @keyframes citation-highlight {
   0%, 100% { background-color: transparent; }
-  50% { background-color: rgb(99 102 241 / 0.15); }
+  50% { background-color: color-mix(in srgb, var(--brand-500) 15%, transparent); }
 }
 .citation-highlight {
   animation: citation-highlight 1.2s ease-in-out;
 }
 
-/* Web3 Background */
 body {
-  @apply bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950;
+  @apply bg-slate-100 dark:bg-slate-950;
   min-height: 100vh;
   transition: background 0.3s ease;
 }
@@ -146,8 +147,8 @@ body {
 /* Cyber Grid Background */
 .cyber-grid {
   background-image: 
-    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(100, 116, 139, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 116, 139, 0.05) 1px, transparent 1px);
   background-size: 50px 50px;
 }
 
@@ -157,11 +158,9 @@ body {
   scrollbar-color: transparent transparent;
 }
 
-/* Accent-driven: --accent-* is set on the authenticated shell and inherits down, so
-   scrollbars inside the app follow the user's accent while public pages get the
-   default via the fallback. */
+/* Neutral thumb: a scrollbar is chrome, not an accent moment. */
 *:hover {
-  scrollbar-color: var(--accent-solid, #4f46e5) transparent;
+  scrollbar-color: rgb(148 163 184 / 0.6) transparent;
 }
 
 /* Webkit Scrollbar */
@@ -182,11 +181,11 @@ body {
 
 /* Show scrollbar on hover */
 *:hover::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--accent-from, #1d4ed8) 0%, var(--accent-to, #6d28d9) 100%);
+  background: rgb(148 163 184 / 0.6);
 }
 
 *:hover::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-solid, #4f46e5);
+  background: rgb(100 116 139 / 0.8);
 }
 
 /* Animations */
@@ -223,10 +222,10 @@ body {
 
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand-500) 35%, transparent);
   }
   50% {
-    box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--brand-500) 0%, transparent);
   }
 }
 
@@ -318,7 +317,7 @@ body {
   #ai-print-area p { font-size: 13px; line-height: 1.6; margin-bottom: 8px; color: #334155; }
   #ai-print-area .print-meta { font-size: 11px; color: #64748b; margin-bottom: 24px; }
   #ai-print-area .print-source { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
-  #ai-print-area .print-page-badge { background: #e0e7ff; color: #4338ca; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-right: 8px; }
+  #ai-print-area .print-page-badge { background: #dcedff; color: #1559a4; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-right: 8px; }
   #ai-print-area .print-quote { font-style: italic; color: #475569; }
-  #ai-print-area .print-topic { background: #e0e7ff; color: #4338ca; font-size: 11px; padding: 3px 10px; border-radius: 999px; margin: 0 4px 4px 0; display: inline-block; }
+  #ai-print-area .print-topic { background: #dcedff; color: #1559a4; font-size: 11px; padding: 3px 10px; border-radius: 999px; margin: 0 4px 4px 0; display: inline-block; }
 }

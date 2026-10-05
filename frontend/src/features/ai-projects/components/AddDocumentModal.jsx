@@ -157,7 +157,7 @@ export default function AddDocumentModal({ projectId, existingDocIds = [], onClo
                       <button
                         onClick={() => handleAdd(doc)}
                         disabled={adding === doc.id}
-                        className="shrink-0 px-2.5 py-1 text-[11px] font-semibold rounded-md bg-accent-gradient hover:brightness-110 text-white disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
+                        className="shrink-0 px-2.5 py-1 text-[11px] font-semibold rounded-md bg-accent hover:brightness-110 text-white disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
                       >
                         {adding === doc.id ? '...' : t('common.add')}
                       </button>

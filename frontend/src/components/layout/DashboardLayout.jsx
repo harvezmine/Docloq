@@ -192,12 +192,13 @@ export default function DashboardLayout({ children, fullBleed = false }) {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
       >
-        <div className="h-full w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-colors duration-300">
+        {/* Ink sidebar in both themes: the "30" of the 60/30/10 split. */}
+        <div className="h-full w-64 bg-slate-900 border-r border-slate-800 flex flex-col">
           <div className="flex items-center gap-3 px-6 py-5">
-            <div className="w-10 h-10 rounded-xl bg-accent-gradient-br flex items-center justify-center text-white shadow-accent shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center text-white shrink-0">
               <DocLoqMark className="w-6 h-6" variant="current" />
             </div>
-            <DocLoqWordmark className="h-[21px] w-auto text-slate-900 dark:text-white" />
+            <DocLoqWordmark className="h-[21px] w-auto text-white" />
           </div>
 
           <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -207,13 +208,13 @@ export default function DashboardLayout({ children, fullBleed = false }) {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                className={`group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 ${
                   isActive(item.href)
-                    ? "bg-accent-gradient text-white shadow-accent"
-                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+                    ? "bg-accent text-white"
+                    : "text-slate-400 hover:bg-white/[0.06] hover:text-white"
                 }`}
               >
-                <span className={isActive(item.href) ? "text-white" : "text-slate-400 dark:text-slate-500"}>{item.icon}</span>
+                <span className={isActive(item.href) ? "text-white" : "text-slate-500 group-hover:text-slate-300"}>{item.icon}</span>
                 <span>{t(item.labelKey)}</span>
               </Link>
             ))}
@@ -222,7 +223,7 @@ export default function DashboardLayout({ children, fullBleed = false }) {
           <div className="p-4 space-y-2">
             <button
               onClick={toggleTheme}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all duration-200"
+              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/[0.06] hover:text-white transition-colors duration-150"
             >
               {theme === "light" ? (
                 <svg className="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,22 +237,22 @@ export default function DashboardLayout({ children, fullBleed = false }) {
               <span>{theme === "light" ? t("nav.darkMode") : t("nav.lightMode")}</span>
             </button>
             
-            <div className="border-t border-slate-200 dark:border-slate-800 pt-3">
+            <div className="border-t border-slate-800 pt-3">
               <div className="relative" ref={profileDropdownRef}>
                 <button
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/[0.06] transition-colors duration-150"
                 >
                   {user?.avatarUrl ? (
-                    <img src={user.avatarUrl} alt="" className="w-9 h-9 rounded-xl object-cover ring-1 ring-slate-200 dark:ring-white/10 shrink-0" />
+                    <img src={user.avatarUrl} alt="" className="w-9 h-9 rounded-xl object-cover ring-1 ring-white/10 shrink-0" />
                   ) : (
-                    <div className="w-9 h-9 rounded-xl bg-accent-gradient-br flex items-center justify-center text-sm font-bold text-white">
+                    <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center text-sm font-bold text-white">
                       {userInitials}
                     </div>
                   )}
                   <div className="flex-1 min-w-0 text-left">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{displayName}</p>
-                    <p className="text-xs text-slate-500 truncate">{userEmail}</p>
+                    <p className="text-sm font-semibold text-white truncate">{displayName}</p>
+                    <p className="text-xs text-slate-400 truncate">{userEmail}</p>
                   </div>
                   <svg className={`w-5 h-5 text-slate-500 transition-transform duration-200 ${showProfileDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -319,7 +320,7 @@ export default function DashboardLayout({ children, fullBleed = false }) {
           </svg>
         </button>
         <div className="flex items-center gap-2.5 flex-1">
-          <div className="w-8 h-8 rounded-lg bg-accent-gradient-br flex items-center justify-center text-white shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white shrink-0">
             <DocLoqMark className="w-5 h-5" variant="current" />
           </div>
           <DocLoqWordmark className="h-[18px] w-auto text-slate-900 dark:text-white" />
@@ -356,7 +357,7 @@ export default function DashboardLayout({ children, fullBleed = false }) {
                 title={l === "id" ? "Bahasa Indonesia" : "English"}
                 className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-colors ${
                   lang === l
-                    ? "bg-accent-gradient text-white shadow-accent-sm"
+                    ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
                     : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
                 }`}>{l.toUpperCase()}</button>
             ))}
@@ -466,8 +467,6 @@ export default function DashboardLayout({ children, fullBleed = false }) {
               onClick={(e) => e.stopPropagation()}
               className="relative bg-white dark:bg-slate-900 rounded-3xl shadow-2xl shadow-black/50 p-6 sm:p-8 max-w-sm w-full border border-slate-200 dark:border-slate-800/50 overflow-hidden"
             >
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-700/50 to-transparent" />
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-red-500/10 rounded-full blur-3xl pointer-events-none" />
               
               <div className="relative text-center mb-6 sm:mb-8">
                 <motion.div

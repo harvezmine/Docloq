@@ -59,7 +59,7 @@ import CustomSelect from "@/components/ui/CustomSelect";
 import { useLang } from "@/app/providers/LanguageProvider";
 import { useTheme } from "@/app/providers/ThemeProvider";
 import { usePreferences } from "@/app/providers/PreferencesProvider";
-import { DEFAULT_ACCENT_ID } from "@/app/providers/accent-presets";
+import { DEFAULT_ACCENT_ID, SWATCH_COLORS, DEFAULT_SWATCH, swatch } from "@/app/providers/accent-presets";
 
 /* ------------------------------------------------------------------ */
 /*  Design tokens - one source of truth for the whole settings surface */
@@ -72,13 +72,13 @@ const FIELD =
   "w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100/70 dark:bg-white/[0.04] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-all disabled:opacity-60 disabled:cursor-not-allowed";
 
 const BTN_PRIMARY =
-  "inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-accent-gradient hover:brightness-110 text-white text-sm font-medium transition-all shadow-accent disabled:opacity-50 disabled:cursor-not-allowed";
+  "inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:brightness-110 text-white text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed";
 
 const BTN_SOFT =
   "inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-200/70 dark:bg-white/[0.06] border border-slate-300/60 dark:border-white/10 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-300/60 dark:hover:bg-white/[0.1] transition-all disabled:opacity-50 disabled:cursor-not-allowed";
 
 const BTN_DANGER =
-  "inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-medium transition-all shadow-lg shadow-rose-500/20 disabled:opacity-50 disabled:cursor-not-allowed";
+  "inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed";
 
 const BTN_DANGER_SOFT =
   "inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-rose-500/10 dark:bg-rose-500/15 text-rose-600 dark:text-rose-400 text-sm font-medium border border-rose-500/20 hover:bg-rose-500/20 transition-all";
@@ -90,7 +90,7 @@ const SUBCARD =
 /*  Shared primitives                                                  */
 /* ------------------------------------------------------------------ */
 
-function Panel({ children, className = "", hover = false, animate = true, accent = true }) {
+function Panel({ children, className = "", hover = false, animate = true }) {
   const Comp = animate ? motion.div : "div";
   const mp = animate
     ? { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3, ease: "easeOut" } }
@@ -100,12 +100,6 @@ function Panel({ children, className = "", hover = false, animate = true, accent
       {...mp}
       className={`${PANEL} ${hover ? "hover:border-accent-soft hover:shadow-2xl transition-all duration-200" : ""} ${className}`}
     >
-      {accent && (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-[var(--accent-solid,#4f46e5)]/40 to-transparent"
-        />
-      )}
       {children}
     </Comp>
   );
@@ -116,7 +110,7 @@ function IconTile({ icon, className = "", size = "md", tone = "brand" }) {
   const sizes = { sm: "w-8 h-8 rounded-lg", md: "w-10 h-10 rounded-xl", lg: "w-14 h-14 rounded-2xl" };
   const icons = { sm: "w-4 h-4", md: "w-5 h-5", lg: "w-7 h-7" };
   const tones = {
-    brand: "bg-accent-gradient-br text-white shadow-accent",
+    brand: "bg-accent text-white",
     danger: "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/20",
     success: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
     muted: "bg-slate-200/80 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400",
@@ -137,7 +131,7 @@ function TabIntro({ icon: Icon, title, desc, actions, className = "mb-6" }) {
         {Icon && <IconTile icon={Icon} />}
         <div className="min-w-0">
           <h2 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">{title}</h2>
-          <div className="mt-1.5 h-[2px] w-8 rounded-full bg-accent-gradient" />
+          <div className="mt-1.5 h-[2px] w-8 rounded-full bg-accent" />
           {desc && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">{desc}</p>}
         </div>
       </div>
@@ -201,7 +195,7 @@ function Toggle({ checked, onChange, label }) {
   return (
     <label className="relative inline-flex items-center cursor-pointer shrink-0">
       <input type="checkbox" className="sr-only peer" checked={checked} onChange={onChange} aria-label={label} />
-      <div className="w-11 h-6 rounded-full bg-slate-300 dark:bg-white/10 transition-colors peer-checked:bg-accent-gradient peer-focus-visible:ring-2 peer-focus-visible:ring-accent after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:h-[18px] after:w-[18px] after:rounded-full after:bg-slate-50 after:shadow-sm after:transition-all peer-checked:after:translate-x-5" />
+      <div className="w-11 h-6 rounded-full bg-slate-300 dark:bg-white/10 transition-colors peer-checked:bg-accent peer-focus-visible:ring-2 peer-focus-visible:ring-accent after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:h-[18px] after:w-[18px] after:rounded-full after:bg-slate-50 after:shadow-sm after:transition-all peer-checked:after:translate-x-5" />
     </label>
   );
 }
@@ -234,12 +228,11 @@ function ModalShell({ onClose, children, maxW = "max-w-md", scroll = false }) {
   );
 }
 
-// Gradient banner header for form modals.
+// Solid accent header for form modals.
 function ModalHeader({ icon, title, subtitle, onClose }) {
   const Icon = icon;
   return (
-    <div className="relative bg-accent-gradient px-6 py-5 shrink-0">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_80%_0%,white,transparent_50%)]" />
+    <div className="relative bg-accent px-6 py-5 shrink-0">
       <div className="relative flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center">
@@ -341,7 +334,7 @@ export default function Settings() {
   const [deptsLoading, setDeptsLoading] = useState(false);
   const [showDeptModal, setShowDeptModal] = useState(false);
   const [editingDept, setEditingDept] = useState(null);
-  const [deptForm, setDeptForm] = useState({ name: "", description: "", color: "#6366f1" });
+  const [deptForm, setDeptForm] = useState({ name: "", description: "", color: DEFAULT_SWATCH });
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [deptMembers, setDeptMembers] = useState({ department: null, members: [] });
   const [deptMembersLoading, setDeptMembersLoading] = useState(false);
@@ -543,7 +536,7 @@ export default function Settings() {
         await fetchDepartments();
         setShowDeptModal(false);
         setEditingDept(null);
-        setDeptForm({ name: "", description: "", color: "#6366f1" });
+        setDeptForm({ name: "", description: "", color: DEFAULT_SWATCH });
         setShowSaveSuccess(true);
         setTimeout(() => setShowSaveSuccess(false), 3000);
       }
@@ -840,9 +833,9 @@ export default function Settings() {
 
   const getRoleBadgeColor = (role) => {
     switch (role) {
-      case "owner": return "bg-violet-500/12 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300 border border-violet-500/25";
+      case "owner": return "bg-brand-500/12 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300 border border-brand-500/25";
       case "admin":
-      case "Admin": return "bg-indigo-500/12 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300 border border-indigo-500/25";
+      case "Admin": return "bg-brand-500/12 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300 border border-brand-500/25";
       case "editor":
       case "Editor": return "bg-sky-500/12 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300 border border-sky-500/25";
       default: return "bg-slate-500/10 text-slate-600 dark:bg-white/[0.06] dark:text-slate-300 border border-slate-400/25 dark:border-white/10";
@@ -883,7 +876,7 @@ export default function Settings() {
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed top-4 right-4 z-[100] max-w-sm"
           >
-            <div className="rounded-2xl border border-emerald-500/25 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-2xl shadow-emerald-500/15 p-4 flex items-start gap-3">
+            <div className="rounded-2xl border border-emerald-500/25 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xl p-4 flex items-start gap-3">
               <IconTile icon={Check} tone="success" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-slate-900 dark:text-white">{t("settings.saveToast.title")}</p>
@@ -909,8 +902,6 @@ export default function Settings() {
 
       <div className="relative flex flex-col lg:flex-row gap-4 lg:gap-6 items-start">
         {/* Ambient glow */}
-        <div aria-hidden="true" className="pointer-events-none absolute -top-24 left-1/4 w-[36rem] h-[22rem] rounded-full bg-accent-wash blur-3xl -z-10" />
-        <div aria-hidden="true" className="pointer-events-none absolute top-40 right-0 w-[28rem] h-[20rem] rounded-full bg-accent-wash blur-3xl -z-10" />
 
         {/* Mobile: sticky pill rail below the fixed app header */}
         <div className="lg:hidden sticky top-16 z-20 w-full -mx-4 px-4 py-2 bg-slate-100/85 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200/70 dark:border-white/[0.06]">
@@ -925,7 +916,7 @@ export default function Settings() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 ${
                       active
-                        ? "bg-accent-gradient text-white shadow-accent"
+                        ? "bg-accent text-white"
                         : "bg-slate-200/60 dark:bg-white/[0.05] text-slate-600 dark:text-slate-400 border border-slate-300/50 dark:border-white/[0.06]"
                     }`}
                   >
@@ -963,7 +954,7 @@ export default function Settings() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`relative w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                       active
-                        ? "bg-accent-gradient text-white shadow-accent-sm"
+                        ? "bg-accent text-white"
                         : "text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-white/[0.05] hover:text-slate-900 dark:hover:text-white"
                     }`}
                   >
@@ -996,12 +987,9 @@ export default function Settings() {
         >
           {/* ---------------- Profile ---------------- */}
           {activeTab === "profile" && (
-            <Panel className="overflow-hidden p-0" accent={false}>
+            <Panel className="overflow-hidden p-0">
               {/* Identity banner */}
-              <div className="relative h-28 sm:h-32 bg-accent-gradient">
-                <div aria-hidden="true" className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_75%_10%,white,transparent_45%)]" />
-                <div aria-hidden="true" className="absolute inset-0 opacity-[0.12] bg-[radial-gradient(circle_at_20%_90%,white,transparent_40%)]" />
-                <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-12 bg-linear-to-t from-slate-950/30 to-transparent" />
+              <div className="relative h-28 sm:h-32 bg-brand-700">
               </div>
 
               <div className="px-5 sm:px-6 pb-6">
@@ -1024,7 +1012,7 @@ export default function Settings() {
                       {user?.avatarUrl ? (
                         <img src={user.avatarUrl} alt={t("settings.profile.title")} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full bg-accent-gradient-br flex items-center justify-center text-2xl font-bold text-white">
+                        <div className="w-full h-full bg-accent flex items-center justify-center text-2xl font-bold text-white">
                           {(profileForm.firstName[0] || "") + (profileForm.lastName[0] || "") || "U"}
                         </div>
                       )}
@@ -1039,7 +1027,7 @@ export default function Settings() {
                     <label
                       htmlFor="avatar-file-input"
                       aria-label={t("settings.profile.changePhoto")}
-                      className="absolute -bottom-1.5 -right-1.5 w-9 h-9 rounded-xl bg-accent-gradient-br text-white flex items-center justify-center shadow-accent ring-2 ring-slate-50 dark:ring-slate-900 cursor-pointer hover:brightness-110 transition-all"
+                      className="absolute -bottom-1.5 -right-1.5 w-9 h-9 rounded-xl bg-accent text-white flex items-center justify-center ring-2 ring-slate-50 dark:ring-slate-900 cursor-pointer hover:brightness-110 transition-all"
                     >
                       <Camera className="w-4 h-4" />
                     </label>
@@ -1212,13 +1200,13 @@ export default function Settings() {
                           aria-pressed={active}
                           className={`group relative flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
                             active
-                              ? "border-accent-soft bg-accent-soft shadow-accent-sm"
+                              ? "border-accent-soft bg-accent-soft"
                               : "border-slate-200 dark:border-white/[0.08] bg-slate-200/40 dark:bg-white/[0.02] hover:border-slate-300 dark:hover:border-white/20"
                           }`}
                         >
                           <span
                             className="w-9 h-9 rounded-lg shrink-0 ring-1 ring-black/5 dark:ring-white/10"
-                            style={{ backgroundImage: `linear-gradient(to bottom right, ${p.from}, ${p.to})` }}
+                            style={{ backgroundColor: p.ramp[600] }}
                           />
                           <span className="min-w-0 flex-1">
                             <span className={`block text-xs font-medium truncate ${active ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-300"}`}>
@@ -1226,11 +1214,9 @@ export default function Settings() {
                             </span>
                           </span>
                           {active && (
-                            /* uses the gradient's dark stop, not `solid` - white on a
-                               light `solid` (lime/amber) would be unreadable */
                             <span
                               className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-white"
-                              style={{ backgroundColor: p.from }}
+                              style={{ backgroundColor: p.ramp[700] }}
                             >
                               <Check className="w-3 h-3" strokeWidth={3} />
                             </span>
@@ -1250,7 +1236,7 @@ export default function Settings() {
                         <Check className="w-4 h-4" />
                         {t("settings.prefs.previewButton")}
                       </span>
-                      <span className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-accent-gradient text-white text-sm font-medium shadow-accent">
+                      <span className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-accent text-white text-sm font-medium">
                         <Sparkles className="w-4 h-4" />
                         {t("settings.prefs.previewActive")}
                       </span>
@@ -1289,7 +1275,7 @@ export default function Settings() {
                           aria-pressed={active}
                           className={`flex flex-col items-center gap-2 px-3 py-4 rounded-xl border transition-all ${
                             active
-                              ? "border-accent-soft bg-accent-soft text-accent shadow-accent-sm"
+                              ? "border-accent-soft bg-accent-soft text-accent"
                               : "border-slate-200 dark:border-white/[0.08] bg-slate-200/40 dark:bg-white/[0.02] text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-white/20"
                           }`}
                         >
@@ -1324,12 +1310,12 @@ export default function Settings() {
                           aria-pressed={active}
                           className={`flex items-center gap-2.5 px-3 py-3 rounded-xl border transition-all ${
                             active
-                              ? "border-accent-soft bg-accent-soft shadow-accent-sm"
+                              ? "border-accent-soft bg-accent-soft"
                               : "border-slate-200 dark:border-white/[0.08] bg-slate-200/40 dark:bg-white/[0.02] hover:border-slate-300 dark:hover:border-white/20"
                           }`}
                         >
                           <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0 ${
-                            active ? "bg-accent-gradient text-white" : "bg-slate-300/60 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400"
+                            active ? "bg-accent text-white" : "bg-slate-300/60 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400"
                           }`}>
                             {opt.short}
                           </span>
@@ -1363,9 +1349,9 @@ export default function Settings() {
                 />
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                   {[
-                    { label: t("settings.users.totalUsers"), value: users.length, icon: Users, cls: "text-indigo-600 dark:text-indigo-300", tile: "bg-indigo-500/10 border-indigo-500/20" },
+                    { label: t("settings.users.totalUsers"), value: users.length, icon: Users, cls: "text-brand-600 dark:text-brand-300", tile: "bg-brand-500/10 border-brand-500/20" },
                     { label: t("settings.users.activeUsers"), value: users.filter(u => u.status === "Active").length, icon: CheckCircle2, cls: "text-emerald-600 dark:text-emerald-300", tile: "bg-emerald-500/10 border-emerald-500/20" },
-                    { label: t("settings.users.admins"), value: users.filter(u => ['owner', 'admin'].includes(u.role)).length, icon: ShieldCheck, cls: "text-violet-600 dark:text-violet-300", tile: "bg-violet-500/10 border-violet-500/20" },
+                    { label: t("settings.users.admins"), value: users.filter(u => ['owner', 'admin'].includes(u.role)).length, icon: ShieldCheck, cls: "text-brand-600 dark:text-brand-300", tile: "bg-brand-500/10 border-brand-500/20" },
                     { label: t("settings.users.departments"), value: departmentsList.length, icon: Building2, cls: "text-sky-600 dark:text-sky-300", tile: "bg-sky-500/10 border-sky-500/20" },
                   ].map((s) => {
                     const SIcon = s.icon;
@@ -1426,7 +1412,7 @@ export default function Settings() {
                           >
                             <td className="px-5 py-3.5">
                               <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-xl bg-accent-gradient-br flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-accent-sm">
+                                <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center text-xs font-bold text-white shrink-0">
                                   {u.initials}
                                 </div>
                                 <div className="min-w-0">
@@ -1503,7 +1489,7 @@ export default function Settings() {
                   desc={t("settings.departments.desc")}
                   actions={
                     <button
-                      onClick={() => { setEditingDept(null); setDeptForm({ name: "", description: "", color: "#6366f1" }); setShowDeptModal(true); setErrorMessage(""); }}
+                      onClick={() => { setEditingDept(null); setDeptForm({ name: "", description: "", color: DEFAULT_SWATCH }); setShowDeptModal(true); setErrorMessage(""); }}
                       className={BTN_PRIMARY}
                     >
                       <Plus className="w-4 h-4" />
@@ -1524,7 +1510,7 @@ export default function Settings() {
                 <Panel className="p-12">
                   <div className="text-center">
                     <div className="relative w-16 h-16 mx-auto mb-4">
-                      <div className="absolute inset-0 rounded-2xl bg-accent-gradient-br opacity-30 blur-lg" />
+                      <div className="absolute inset-0 rounded-2xl bg-accent opacity-30 blur-lg" />
                       <div className="relative w-16 h-16 rounded-2xl bg-accent-soft border border-accent-soft flex items-center justify-center text-accent">
                         <Building2 className="w-8 h-8" strokeWidth={1.75} />
                       </div>
@@ -1547,9 +1533,9 @@ export default function Settings() {
                           <div className="flex items-center gap-3 min-w-0">
                             <div
                               className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border"
-                              style={{ backgroundColor: (dept.color || '#6366f1') + '1a', borderColor: (dept.color || '#6366f1') + '33' }}
+                              style={{ backgroundColor: swatch(dept.color) + '1a', borderColor: swatch(dept.color) + '33' }}
                             >
-                              <Building2 className="w-5 h-5" style={{ color: dept.color || '#6366f1' }} strokeWidth={2} />
+                              <Building2 className="w-5 h-5" style={{ color: swatch(dept.color) }} strokeWidth={2} />
                             </div>
                             <div className="min-w-0">
                               <h3 className="text-sm font-semibold text-slate-900 dark:text-white truncate">{dept.name}</h3>
@@ -1558,7 +1544,7 @@ export default function Settings() {
                           </div>
                           <div className="flex items-center gap-1 shrink-0">
                             <button
-                              onClick={() => { setEditingDept(dept); setDeptForm({ name: dept.name, description: dept.description || "", color: dept.color || "#6366f1" }); setShowDeptModal(true); setErrorMessage(""); }}
+                              onClick={() => { setEditingDept(dept); setDeptForm({ name: dept.name, description: dept.description || "", color: swatch(dept.color) }); setShowDeptModal(true); setErrorMessage(""); }}
                               className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-200/70 dark:hover:bg-white/[0.06] hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
                               title={t("common.edit")}
                               aria-label={t("common.edit")}
@@ -1584,7 +1570,7 @@ export default function Settings() {
                             {dept.memberCount || 0} {(dept.memberCount || 0) === 1 ? t("settings.departments.memberSingular") : t("settings.departments.membersPlural")}
                           </button>
                           <div className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full ring-2 ring-white/40 dark:ring-white/10" style={{ backgroundColor: dept.color || '#6366f1' }} />
+                            <span className="w-2.5 h-2.5 rounded-full ring-2 ring-white/40 dark:ring-white/10" style={{ backgroundColor: swatch(dept.color) }} />
                             <span className="text-xs text-slate-400 tabular-nums">{new Date(dept.createdAt).toLocaleDateString()}</span>
                           </div>
                         </div>
@@ -1796,7 +1782,7 @@ export default function Settings() {
           {/* ---------------- Company ---------------- */}
           {activeTab === "company" && (
             <div className="space-y-4">
-              <Panel className="overflow-hidden p-0" accent={false}>
+              <Panel className="overflow-hidden p-0">
                 {isLoadingProfile ? (
                   <div className="flex items-center justify-center py-16">
                     <Spinner className="w-7 h-7 text-accent" />
@@ -1808,9 +1794,7 @@ export default function Settings() {
                       style={{
                         background: companyProfile?.coverUrl
                           ? `url(${companyProfile.coverUrl}) center/cover no-repeat`
-                          : companyProfile?.primaryColor
-                          ? `linear-gradient(135deg, ${companyProfile.primaryColor}cc, ${companyProfile.primaryColor}66)`
-                          : 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+                          : companyProfile?.primaryColor || 'var(--brand-700)',
                       }}
                     >
                       <div aria-hidden="true" className="absolute inset-0 bg-linear-to-t from-slate-950/40 to-transparent" />
@@ -1836,7 +1820,7 @@ export default function Settings() {
                         ) : (
                           <div
                             className="w-20 h-20 rounded-2xl border-4 border-slate-50 dark:border-slate-900 ring-1 ring-black/5 shadow-lg flex items-center justify-center text-white font-bold text-2xl"
-                            style={{ background: companyProfile?.primaryColor || '#4f46e5' }}
+                            style={{ background: companyProfile?.primaryColor || 'var(--brand-600)' }}
                           >
                             {(companyProfile?.displayName || companyOrg?.name || 'C').charAt(0).toUpperCase()}
                           </div>
@@ -2124,11 +2108,11 @@ export default function Settings() {
                         <div className="flex items-center gap-2">
                           <input
                             type="color"
-                            value={companyForm.primaryColor || '#6366f1'}
+                            value={companyForm.primaryColor || DEFAULT_SWATCH}
                             onChange={e => setCompanyForm(f => ({ ...f, primaryColor: e.target.value }))}
                             className="w-10 h-10 rounded-lg border border-slate-200 dark:border-white/10 cursor-pointer bg-transparent"
                           />
-                          <span className="text-sm font-mono text-slate-700 dark:text-slate-300">{companyForm.primaryColor || '#6366f1'}</span>
+                          <span className="text-sm font-mono text-slate-700 dark:text-slate-300">{companyForm.primaryColor || DEFAULT_SWATCH}</span>
                         </div>
                       </div>
                       <Field
@@ -2174,7 +2158,7 @@ export default function Settings() {
               )}
 
               <div className="flex justify-center pt-1 pb-1">
-                <div className="w-16 h-16 rounded-2xl bg-accent-gradient-br flex items-center justify-center text-xl font-bold text-white shadow-accent">
+                <div className="w-16 h-16 rounded-2xl bg-accent flex items-center justify-center text-xl font-bold text-white">
                   {newUserForm.firstName && newUserForm.lastName
                     ? `${newUserForm.firstName[0]}${newUserForm.lastName[0]}`.toUpperCase()
                     : <User className="w-8 h-8 text-white/60" strokeWidth={1.5} />}
@@ -2330,13 +2314,13 @@ export default function Settings() {
                     <div key={step} className="flex items-center">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
                         twoFAStep >= step
-                          ? 'bg-accent-gradient text-white shadow-accent-sm'
+                          ? 'bg-accent text-white '
                           : 'bg-slate-200 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400'
                       }`}>
                         {twoFAStep > step ? <Check className="w-4 h-4" /> : step}
                       </div>
                       {step < 3 && (
-                        <div className={`w-12 h-0.5 ${twoFAStep > step ? 'bg-accent-gradient' : 'bg-slate-200 dark:bg-white/[0.08]'}`} />
+                        <div className={`w-12 h-0.5 ${twoFAStep > step ? 'bg-accent' : 'bg-slate-200 dark:bg-white/[0.08]'}`} />
                       )}
                     </div>
                   ))}
@@ -2490,7 +2474,7 @@ export default function Settings() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", damping: 15, stiffness: 200 }}
-                    className="w-20 h-20 mx-auto mb-6 rounded-full bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30"
+                    className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-600 flex items-center justify-center"
                   >
                     <Check className="w-10 h-10 text-white" strokeWidth={3} />
                   </motion.div>
@@ -2629,7 +2613,6 @@ export default function Settings() {
         {showLogoutModal && (
           <ModalShell onClose={() => setShowLogoutModal(false)} maxW="max-w-sm">
             <div className="relative p-6 sm:p-8">
-              <div aria-hidden="true" className="absolute -top-24 -right-24 w-48 h-48 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
               <div className="relative text-center mb-6 sm:mb-8">
                 <motion.div
                   initial={{ scale: 0, rotate: -180 }}
@@ -2709,7 +2692,7 @@ export default function Settings() {
                     aria-label={t("settings.deptModal.colorLabel")}
                   />
                   <div className="flex gap-2">
-                    {['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#6b7280'].map(c => (
+                    {SWATCH_COLORS.map(c => (
                       <button
                         key={c}
                         type="button"
@@ -2772,9 +2755,9 @@ export default function Settings() {
                 <div className="flex items-center gap-3 min-w-0">
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center border shrink-0"
-                    style={{ backgroundColor: (deptMembers.department.color || '#6366f1') + '1a', borderColor: (deptMembers.department.color || '#6366f1') + '33' }}
+                    style={{ backgroundColor: swatch(deptMembers.department.color) + '1a', borderColor: swatch(deptMembers.department.color) + '33' }}
                   >
-                    <Users className="w-5 h-5" style={{ color: deptMembers.department.color || '#6366f1' }} />
+                    <Users className="w-5 h-5" style={{ color: swatch(deptMembers.department.color) }} />
                   </div>
                   <div className="min-w-0">
                     <h2 className="text-lg font-semibold text-slate-900 dark:text-white truncate">{deptMembers.department.name}</h2>
@@ -2807,7 +2790,7 @@ export default function Settings() {
                 <div className="space-y-2.5">
                   {deptMembers.members.map((member) => (
                     <div key={member.id} className={`${SUBCARD} flex items-center gap-3 p-3 hover:bg-slate-200/50 dark:hover:bg-white/[0.05] transition-colors`}>
-                      <div className="w-10 h-10 rounded-xl bg-accent-gradient-br flex items-center justify-center text-sm font-bold text-white shrink-0 shadow-accent-sm">
+                      <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center text-sm font-bold text-white shrink-0">
                         {`${member.firstName?.[0] || ''}${member.lastName?.[0] || ''}`.toUpperCase() || 'U'}
                       </div>
                       <div className="flex-1 min-w-0">

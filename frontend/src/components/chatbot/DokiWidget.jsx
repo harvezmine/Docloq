@@ -44,7 +44,7 @@ export default function DokiWidget() {
       </AnimatePresence>
 
       <motion.button onClick={() => setIsOpen(!isOpen)} aria-label={isOpen ? t('chatbot.closeWidget') : t('chatbot.openWidget')} whileTap={{ scale: 0.92 }} whileHover={{ scale: 1.05 }}
-        className={`fixed z-50 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bottom-4 right-4 w-12 h-12 md:bottom-6 md:right-6 bg-slate-700 hover:bg-slate-600 shadow-lg' : 'bottom-6 right-6 w-14 h-14 p-1 bg-accent-gradient-br shadow-xl shadow-accent'}`}>
+        className={`fixed z-50 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bottom-4 right-4 w-12 h-12 md:bottom-6 md:right-6 bg-slate-700 hover:bg-slate-600 shadow-lg' : 'bottom-6 right-6 w-14 h-14 p-1 bg-accent '}`}>
         {!isOpen && <span className="absolute inset-0 rounded-full ring-2 ring-accent animate-ping opacity-60 pointer-events-none" />}
         {isOpen
           ? <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
@@ -77,7 +77,6 @@ export default function DokiWidget() {
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center px-4 max-w-sm">
                     <div className="relative mx-auto mb-4 w-16 h-16">
-                      <div className="absolute inset-0 rounded-full bg-accent-soft blur-2xl" />
                       <DokiAvatar size={64} className="relative" />
                     </div>
                     <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">{t('chatbot.greeting')}{user?.firstName ? `, ${user.firstName}` : ''}!</p>

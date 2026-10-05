@@ -138,7 +138,7 @@ export default function OutputsStudio({ project, onCitationClick, selectedSource
         {GENERATORS.map((g) => (
           <button key={g.key} onClick={() => startGenerate(g)} disabled={g.disabled || !!creating}
             title={g.disabled ? t('common.comingSoon') : kindLabel(g.key)}
-            className={`min-h-[60px] px-2 py-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition-colors ${g.disabled ? 'border-stone-200/60 dark:border-slate-800 text-slate-300 dark:text-slate-600 cursor-not-allowed' : 'border-stone-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500/40 text-slate-700 dark:text-slate-200'}`}>
+            className={`min-h-[60px] px-2 py-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition-colors ${g.disabled ? 'border-stone-200/60 dark:border-slate-800 text-slate-300 dark:text-slate-600 cursor-not-allowed' : 'border-stone-200 dark:border-slate-700 hover:border-brand-400 dark:hover:border-brand-500/40 text-slate-700 dark:text-slate-200'}`}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={g.icon} /></svg>
             <span className="text-[10.5px] font-medium text-center leading-tight">
               {creating === g.key ? '…' : kindLabel(g.key)}
@@ -150,14 +150,14 @@ export default function OutputsStudio({ project, onCitationClick, selectedSource
 
       {/* Note composer */}
       {noteDraft && (
-        <div className="mb-3 p-3 rounded-xl border border-indigo-300 dark:border-indigo-500/40 space-y-2">
+        <div className="mb-3 p-3 rounded-xl border border-brand-300 dark:border-brand-500/40 space-y-2">
           <input autoFocus value={noteDraft.title} onChange={(e) => setNoteDraft((d) => ({ ...d, title: e.target.value }))} placeholder="Judul catatan"
             className="w-full min-h-[36px] px-2 rounded-lg border border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-semibold" />
           <textarea rows={3} value={noteDraft.content} onChange={(e) => setNoteDraft((d) => ({ ...d, content: e.target.value }))} placeholder="Isi…"
             className="w-full px-2 py-1.5 rounded-lg border border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[12.5px] resize-y" />
           <div className="flex justify-end gap-2">
             <button onClick={() => setNoteDraft(null)} className="min-h-[32px] px-2.5 rounded-lg text-[12px] text-slate-500 hover:bg-stone-100 dark:hover:bg-slate-800">Batal</button>
-            <button onClick={saveNote} disabled={!noteDraft.title.trim() || !noteDraft.content.trim()} className="min-h-[32px] px-2.5 rounded-lg text-[12px] font-medium bg-accent-gradient hover:brightness-110 disabled:bg-stone-200 dark:disabled:bg-slate-700 disabled:text-slate-400 text-white">Simpan</button>
+            <button onClick={saveNote} disabled={!noteDraft.title.trim() || !noteDraft.content.trim()} className="min-h-[32px] px-2.5 rounded-lg text-[12px] font-medium bg-accent hover:brightness-110 disabled:bg-stone-200 dark:disabled:bg-slate-700 disabled:text-slate-400 text-white">Simpan</button>
           </div>
         </div>
       )}
@@ -186,7 +186,7 @@ export default function OutputsStudio({ project, onCitationClick, selectedSource
                   </span>
                 </button>
                 {openThis && (
-                  <button onClick={() => onFocusChange?.(!focused)} title={focused ? 'Perkecil' : 'Perbesar'} className="shrink-0 p-1 rounded text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300">
+                  <button onClick={() => onFocusChange?.(!focused)} title={focused ? 'Perkecil' : 'Perbesar'} className="shrink-0 p-1 rounded text-slate-400 hover:text-brand-600 dark:hover:text-brand-300">
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={focused ? 'M9 9L4 4m0 0v4m0-4h4m11 11l-5-5m5 5v-4m0 4h-4' : 'M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4'} /></svg>
                   </button>
                 )}

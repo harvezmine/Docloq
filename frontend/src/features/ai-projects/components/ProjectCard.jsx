@@ -57,9 +57,9 @@ function hashId(str) {
 }
 
 const COLOR_MAP = {
-  indigo: { bg: 'bg-indigo-500/10 dark:bg-indigo-400/15', fg: 'text-indigo-600 dark:text-indigo-300', hover: 'group-hover:text-indigo-700 dark:group-hover:text-indigo-300' },
+  indigo: { bg: 'bg-brand-500/10 dark:bg-brand-400/15', fg: 'text-brand-600 dark:text-brand-300', hover: 'group-hover:text-brand-700 dark:group-hover:text-brand-300' },
   emerald: { bg: 'bg-emerald-500/10 dark:bg-emerald-400/15', fg: 'text-emerald-600 dark:text-emerald-300', hover: 'group-hover:text-emerald-700 dark:group-hover:text-emerald-300' },
-  violet: { bg: 'bg-violet-500/10 dark:bg-violet-400/15', fg: 'text-violet-600 dark:text-violet-300', hover: 'group-hover:text-violet-700 dark:group-hover:text-violet-300' },
+  violet: { bg: 'bg-brand-500/10 dark:bg-brand-400/15', fg: 'text-brand-600 dark:text-brand-300', hover: 'group-hover:text-brand-700 dark:group-hover:text-brand-300' },
   rose: { bg: 'bg-rose-500/10 dark:bg-rose-400/15', fg: 'text-rose-600 dark:text-rose-300', hover: 'group-hover:text-rose-700 dark:group-hover:text-rose-300' },
   amber: { bg: 'bg-amber-500/10 dark:bg-amber-400/15', fg: 'text-amber-600 dark:text-amber-300', hover: 'group-hover:text-amber-700 dark:group-hover:text-amber-300' },
   cyan: { bg: 'bg-cyan-500/10 dark:bg-cyan-400/15', fg: 'text-cyan-600 dark:text-cyan-300', hover: 'group-hover:text-cyan-700 dark:group-hover:text-cyan-300' },
@@ -104,7 +104,7 @@ export default function ProjectCard({ project, index = 0 }) {
         to={`/ai-projects/${project.id}`}
         className="block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 rounded-2xl"
       >
-        <div className="relative bg-white dark:bg-slate-900 border border-stone-200/70 dark:border-slate-800/70 rounded-2xl p-5 hover:border-indigo-300 dark:hover:border-indigo-500/40 hover:shadow-lg hover:shadow-indigo-500/[0.06] dark:hover:shadow-black/30 transition-all duration-200 ease-out h-full flex flex-col">
+        <div className="relative bg-white dark:bg-slate-900 border border-stone-200/70 dark:border-slate-800/70 rounded-2xl p-5 hover:border-brand-300 dark:hover:border-brand-500/40 hover:shadow-lg hover:shadow-brand-500/[0.06] dark:hover:shadow-black/30 transition-all duration-200 ease-out h-full flex flex-col">
           {/* Top: icon + meta */}
           <div className="flex items-start justify-between mb-3">
             <div className={`w-10 h-10 rounded-xl ${color.bg} ${color.fg} flex items-center justify-center`}>
