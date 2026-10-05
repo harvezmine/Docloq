@@ -607,8 +607,13 @@ USER PROMPT: ${sanitized}`;
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userMessage },
       ],
+      // Reasoning models (gpt-5, o-series) spend completion tokens on hidden
+      // reasoning before emitting any content. At 4000 the reasoning alone hit
+      // the ceiling (finish_reason=length) and the response came back empty, so
+      // JSON.parse threw "invalid response format" on every analysis. Give them
+      // real headroom; non-reasoning models keep the modest budget.
       ...(/^(gpt-5|o[0-9])/i.test(AI_MODEL)
-        ? { max_completion_tokens: 4000 }
+        ? { max_completion_tokens: 16000 }
         : { temperature: 0.3, max_tokens: 4000 }),
       response_format: { type: 'json_object' },
     }),
@@ -622,6 +627,12 @@ USER PROMPT: ${sanitized}`;
 
   const data = await response.json();
   const content = data.choices?.[0]?.message?.content;
+  const finish = data.choices?.[0]?.finish_reason;
+
+  if (!content || finish === 'length') {
+    console.error('[AI Analysis] empty/truncated completion, finish_reason:', finish);
+    throw new Error('AI response was truncated — try a shorter page range.');
+  }
 
   let result;
   try {
