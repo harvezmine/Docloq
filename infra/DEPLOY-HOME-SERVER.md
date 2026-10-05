@@ -229,6 +229,52 @@ docker compose -f docker-compose.home.yml --env-file .env --profile tunnel-token
 
 ## 4. Day-to-day operations
 
+### The one command: `./deploy.sh`
+
+From the repo root, `./deploy.sh` is the whole update cycle and is safe to re-run:
+
+```bash
+cd /home/Docloq-new
+./deploy.sh                 # git pull (ff-only) + deploy only what changed
+./deploy.sh --build         # force-rebuild both images
+./deploy.sh --build-fe      # after changing a VITE_*/Turnstile value in .env
+./deploy.sh --no-pull       # deploy the working tree as-is
+./deploy.sh --no-backup     # skip the pre-migration DB dump (discouraged)
+./deploy.sh --yes           # non-interactive (cron/CI)
+```
+
+What it does, in order, and why it is safe:
+
+1. **git pull, fast-forward only.** Refuses to run if tracked files have local
+   edits (they'd be clobbered) or if the branch has diverged. Untracked/ignored
+   files like `.env` are left alone. It diffs the old vs new commit and only
+   flags `backend/` → backend rebuild, `frontend/` → frontend rebuild.
+2. **Build images first.** A failed build aborts here; the running containers
+   still hold their old image, so nothing is swapped. `:latest` is only replaced
+   on a successful build.
+3. **Bring up the datastores** and wait for Postgres to accept connections.
+4. **Back up the database before migrating** (via `backup-home.sh`). A failed
+   backup aborts — migrations never run without a floor to fall back to.
+5. **Run migrations in a one-off container built from the NEW image**, while the
+   OLD backend keeps serving. `migrate.js` is transactional per file and exits
+   non-zero on failure, so a bad migration rolls itself back and aborts the
+   deploy with the running stack untouched.
+6. **Converge the stack** (`docker compose up -d`), picking the tunnel profile,
+   and reload cloudflared's file-config.
+7. **Wait for the backend, verify** migration count (applied vs shipped),
+   internal reachability of every service, and an external check through the
+   tunnel. On backend failure it prints logs and points at the backup.
+
+Everything is logged to `/var/log/docloq-deploy.log`. The host needs a git
+credential configured for the remote (the repo is private) — e.g. a stored
+credential helper or a deploy key — or `git pull` in step 1 will fail.
+
+The lower-level `deploy-home.sh` still exists (build + up + verify, no git/no
+backup); `deploy.sh` is the one to use normally.
+
+### Lower-level commands
+
+
 ```bash
 cd /home/Docloq-new/infra
 C="docker compose -f docker-compose.home.yml --env-file .env"

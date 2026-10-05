@@ -24,10 +24,16 @@ if [ -n "$MONGO_PASSWORD" ] && [ -z "$MONGO_URL" ]; then
   export MONGO_URL="mongodb://docloq:${MONGO_PASSWORD}@mongodb:27017/docloq_ai_cache?authSource=admin"
 fi
 
-# Run database migrations if this replica is the migration leader
+# Run database migrations if this replica is the migration leader.
+# migrate.js is transactional per file and exits non-zero on failure; abort the
+# boot instead of serving on a half-migrated schema. With restart:unless-stopped
+# the container then restart-loops visibly rather than silently running wrong.
 if [ "$RUN_MIGRATIONS" = "true" ]; then
   echo "[Entrypoint] Running database migrations..."
-  node src/scripts/migrate.js
+  if ! node src/scripts/migrate.js; then
+    echo "[Entrypoint] Migrations FAILED — refusing to start the server." >&2
+    exit 1
+  fi
   echo "[Entrypoint] Migrations complete."
 fi
 
