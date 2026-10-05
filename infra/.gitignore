@@ -1,0 +1,19 @@
+# DocuSeal runtime data
+docuseal/data/
+
+# OnlyOffice runtime data
+onlyoffice/data/
+onlyoffice/logs/
+onlyoffice/lib/
+
+# Gitea runtime data
+gitea/data/
+
+# Secrets (never commit)
+secrets/
+*.secret
+*.key
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,75 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment variables & secrets (NEVER commit secrets to public repos)
+.env
+.env.*
+!.env.example
+*.secret
+*.key
+secrets/
+*/secrets/
+
+# Build outputs
+dist/
+*/dist/
+build/
+*/build/
+dist-ssr/
+*/dist-ssr/
+
+# Runtime storage & uploads
+uploads/
+*/uploads/
+storage/
+*/storage/
+docuseal/data/
+onlyoffice/data/
+onlyoffice/logs/
+onlyoffice/lib/
+gitea/data/
+vault/data/
+*/vault/data/
+
+# Databases
+*.sqlite
+*.db
+
+# Hardhat artifacts
+artifacts/
+*/artifacts/
+cache/
+*/cache/
+typechain-types/
+*/typechain-types/
+
+# Drizzle migration metadata
+drizzle/meta/
+*/drizzle/meta/
+
+# Tests & coverage
+coverage/
+*/coverage/
+tests/
+*/tests/
+scripts/test-captcha.mjs
+
+# Logs
+logs/
+*/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+*.local

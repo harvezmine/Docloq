@@ -1,0 +1,96 @@
+# DocLoq Production Docker Compose
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# This overlay replaces the dev-mode Vault with a 3-node HA cluster
+# and adds Cloudflare Tunnel for secure ingress.
+
+services:
+  # ============================================================
+  # Override: Remove dev-mode Vault (replaced by HA cluster below)
+  # ============================================================
+  vault:
+    deploy:
+      replicas: 0
+
+  # ============================================================
+  # Vault HA — Node 1 (initial leader)
+  # ============================================================
+  vault-1:
+    image: hashicorp/vault:1.17
+    container_name: docloq_vault_1
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_API_ADDR: "http://vault-1:8200"
+      VAULT_CLUSTER_ADDR: "http://vault-1:8201"
+      VAULT_RAFT_NODE_ID: "vault_1"
+    volumes:
+      - vault_data_1:/vault/data
+      - ./vault/config/vault-1.hcl:/vault/config/vault.hcl:ro
+    cap_add:
+      - IPC_LOCK
+    command: vault server -config=/vault/config/vault.hcl
+    networks:
+      - docloq_network
+    restart: always
+
+  # ============================================================
+  # Vault HA — Node 2
+  # ============================================================
+  vault-2:
+    image: hashicorp/vault:1.17
+    container_name: docloq_vault_2
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_API_ADDR: "http://vault-2:8200"
+      VAULT_CLUSTER_ADDR: "http://vault-2:8201"
+      VAULT_RAFT_NODE_ID: "vault_2"
+    volumes:
+      - vault_data_2:/vault/data
+      - ./vault/config/vault-2.hcl:/vault/config/vault.hcl:ro
+    cap_add:
+      - IPC_LOCK
+    command: vault server -config=/vault/config/vault.hcl
+    networks:
+      - docloq_network
+    restart: always
+
+  # ============================================================
+  # Vault HA — Node 3
+  # ============================================================
+  vault-3:
+    image: hashicorp/vault:1.17
+    container_name: docloq_vault_3
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_API_ADDR: "http://vault-3:8200"
+      VAULT_CLUSTER_ADDR: "http://vault-3:8201"
+      VAULT_RAFT_NODE_ID: "vault_3"
+    volumes:
+      - vault_data_3:/vault/data
+      - ./vault/config/vault-3.hcl:/vault/config/vault.hcl:ro
+    cap_add:
+      - IPC_LOCK
+    command: vault server -config=/vault/config/vault.hcl
+    networks:
+      - docloq_network
+    restart: always
+
+  # ============================================================
+  # Cloudflare Tunnel — secure ingress (replaces port exposure)
+  # ============================================================
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: docloq_cloudflared
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - docloq_network
+    restart: always
+
+volumes:
+  vault_data_1:
+  vault_data_2:
+  vault_data_3:

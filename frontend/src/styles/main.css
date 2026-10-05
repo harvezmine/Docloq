@@ -1,0 +1,324 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+/* Hide scrollbar while keeping scrollability (mobile pill rails etc.) */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---------- Accent theming (authenticated app only) ----------
+   The accent vars are set by PreferencesProvider on the DashboardLayout root,
+   NOT on :root, so the landing page and login/OTP screens (which never set
+   these vars) fall back to the indigo→violet defaults below and stay untouched.
+   Default fallbacks == the app's original indigo/violet, so an untouched user
+   sees exactly the pre-preferences look. */
+@utility bg-accent-gradient {
+  background-image: linear-gradient(to right, var(--accent-from, #1d4ed8), var(--accent-to, #6d28d9));
+}
+@utility bg-accent-gradient-br {
+  background-image: linear-gradient(to bottom right, var(--accent-from, #1d4ed8), var(--accent-to, #6d28d9));
+}
+/* Accent TEXT is theme-split: one accent color cannot hit 4.5:1 on both a light
+   and a dark panel, so the palette ships two tokens and .dark swaps them.
+   The .dark rule is intentionally unlayered so it wins over the utilities layer. */
+@utility text-accent {
+  color: var(--accent-text-light, #3730a3);
+}
+@utility border-accent {
+  border-color: var(--accent-solid, #4f46e5);
+}
+/* Solid accent fill + its hover (buttons). Hover slightly lightens via the -from stop. */
+@utility bg-accent-solid {
+  background-color: var(--accent-solid, #4f46e5);
+}
+/* Soft colored glow under gradient surfaces (replaces shadow-indigo-500/25) */
+@utility shadow-accent {
+  box-shadow: 0 10px 25px -5px var(--accent-glow, rgba(79, 70, 229, 0.25));
+}
+@utility shadow-accent-sm {
+  box-shadow: 0 4px 12px -2px var(--accent-glow, rgba(79, 70, 229, 0.25));
+}
+/* Tinted surfaces / borders for chips, soft buttons, active states */
+@utility bg-accent-soft {
+  background-color: color-mix(in srgb, var(--accent-solid, #4f46e5) 12%, transparent);
+}
+@utility border-accent-soft {
+  border-color: color-mix(in srgb, var(--accent-solid, #4f46e5) 25%, transparent);
+}
+@utility ring-accent {
+  --tw-ring-color: var(--accent-ring, rgba(79, 70, 229, 0.4));
+}
+/* Soft ambient wash for decorative blurred blobs. Uses plain `opacity` rather than
+   color-mix: Lightning CSS emits an OPAQUE fallback rule for color-mix, which would
+   render these as solid blobs on older browsers. Only ever applied to empty,
+   aria-hidden decorative elements, so the inherited opacity is harmless. */
+@utility bg-accent-wash {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--accent-from, #1d4ed8),
+    var(--accent-to, #6d28d9),
+    transparent
+  );
+  opacity: 0.15;
+}
+
+/* Dark-mode accent text (see note on .text-accent above). Unlayered on purpose:
+   unlayered rules outrank everything in @layer utilities, so this reliably wins. */
+.dark .text-accent {
+  color: var(--accent-text-dark, #a5b4fc);
+}
+
+/* ---------- Landing page: editorial/ledger utilities ---------- */
+
+/* Edge fade for the scroll-driven marquee strip */
+.lp-marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+/* Outlined ghost numerals (How It Works) */
+.lp-ghost-number {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(148, 163, 184, 0.25);
+}
+
+/* Hero, editorial serif for the accent words */
+.lp-hero-serif {
+  font-family: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  font-optical-sizing: auto;
+}
+
+/* Film-grain overlay, kills the flat gradient look */
+.lp-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* 2D pillar story, chips orbiting the lock icon (wide radius so the
+   AES-256 / ML-KEM pills clear the lock and never overlap the copy) */
+@keyframes lp-orbit {
+  from { transform: rotate(0deg) translateX(92px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(92px) rotate(-360deg); }
+}
+
+/* Citation marker hover pulse */
+@keyframes citation-highlight {
+  0%, 100% { background-color: transparent; }
+  50% { background-color: rgb(99 102 241 / 0.15); }
+}
+.citation-highlight {
+  animation: citation-highlight 1.2s ease-in-out;
+}
+
+/* Web3 Background */
+body {
+  @apply bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950;
+  min-height: 100vh;
+  transition: background 0.3s ease;
+}
+
+/* Smooth theme transitions */
+*,
+*::before,
+*::after {
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
+
+/* Opt out animations & transitions from transition override */
+[class*="animate-"],
+.no-theme-transition,
+[class*="transition-transform"],
+[class*="transition-all"] {
+  transition-property: all;
+}
+
+/* Glassmorphism Effect */
+.glass {
+  @apply bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/20;
+}
+
+/* Cyber Grid Background */
+.cyber-grid {
+  background-image: 
+    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Custom Scrollbar - Elegant Auto-hide */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+/* Accent-driven: --accent-* is set on the authenticated shell and inherits down, so
+   scrollbars inside the app follow the user's accent while public pages get the
+   default via the fallback. */
+*:hover {
+  scrollbar-color: var(--accent-solid, #4f46e5) transparent;
+}
+
+/* Webkit Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+/* Show scrollbar on hover */
+*:hover::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent-from, #1d4ed8) 0%, var(--accent-to, #6d28d9) 100%);
+}
+
+*:hover::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-solid, #4f46e5);
+}
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-slide-up {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-up {
+  animation: slideInUp 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.6s ease-out;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Stagger animations */
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+
+.stagger-5 {
+  animation-delay: 0.5s;
+}
+
+/* ── AI Analysis PDF Print ── */
+@media print {
+  body > #root > * {
+    display: none !important;
+  }
+  #ai-print-area {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    padding: 48px;
+    background: white;
+    color: #0f172a;
+    font-family: system-ui, -apple-system, sans-serif;
+    overflow: auto;
+    z-index: 9999;
+  }
+  #ai-print-area h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  #ai-print-area h2 { font-size: 14px; font-weight: 600; margin: 20px 0 8px; }
+  #ai-print-area p { font-size: 13px; line-height: 1.6; margin-bottom: 8px; color: #334155; }
+  #ai-print-area .print-meta { font-size: 11px; color: #64748b; margin-bottom: 24px; }
+  #ai-print-area .print-source { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+  #ai-print-area .print-page-badge { background: #e0e7ff; color: #4338ca; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-right: 8px; }
+  #ai-print-area .print-quote { font-style: italic; color: #475569; }
+  #ai-print-area .print-topic { background: #e0e7ff; color: #4338ca; font-size: 11px; padding: 3px 10px; border-radius: 999px; margin: 0 4px 4px 0; display: inline-block; }
+}

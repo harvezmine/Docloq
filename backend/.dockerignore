@@ -1,0 +1,13 @@
+node_modules
+.env
+.env.*
+storage/
+*.md
+test-*.js
+tests/
+scripts/lint-tenant-queries.js
+docs/
+.git
+.gitignore
+docker-compose*.yml
+vault/

@@ -1,0 +1,65 @@
+use_default_settings: true
+
+general:
+  instance_name: "DocLoq OSINT Search"
+  debug: false
+  privacypolicy_url: false
+  contact_url: false
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  default_lang: "en"
+  formats:
+    - html
+    - json
+
+server:
+  limiter: false
+  image_proxy: false
+  port: 8080
+  bind_address: "0.0.0.0"
+  secret_key: "docloq-searxng-dev-secret-change-in-production"
+
+ui:
+  static_use_hash: true
+  default_theme: simple
+
+engines:
+  - name: google
+    engine: google
+    shortcut: g
+    disabled: false
+
+  - name: bing
+    engine: bing
+    shortcut: b
+    disabled: false
+
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: ddg
+    disabled: false
+
+  - name: github
+    engine: github
+    shortcut: gh
+    disabled: false
+    categories: [it, repos]
+
+  - name: google scholar
+    engine: google_scholar
+    shortcut: gs
+    disabled: false
+
+  - name: archive.org
+    engine: archive_is
+    shortcut: ar
+    disabled: true
+
+outgoing:
+  request_timeout: 6.0
+  max_request_timeout: 10.0
+  useragent_suffix: ""
+  pool_connections: 100
+  pool_maxsize: 20

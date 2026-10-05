@@ -1,0 +1,35 @@
+============================================================
+ DOCLOQ — CI/CD DEPLOY PROOF
+============================================================
+
+DEPLOY MARKER : 1
+LAST UPDATE   : 2026-06-20
+
+------------------------------------------------------------
+HOW THIS PROVES THE PIPELINE
+------------------------------------------------------------
+This file lives at: frontend/public/trythedeploy.txt
+It is served publicly at: https://docloq.site/trythedeploy.txt
+
+When DEPLOY MARKER changes here and the change is pushed to
+the main branch, the self-hosted Gitea Actions runner picks
+it up automatically:
+
+  1. git push  ->  main branch (Gitea repo on the VPS)
+  2. Gitea Actions runner triggers the workflow
+  3. Runner builds the frontend + backend Docker images
+  4. Runner redeploys the stack (docker compose up -d)
+  5. New frontend goes live behind Traefik (HTTPS via Let's Encrypt)
+  6. This URL now shows the new DEPLOY MARKER value
+
+No manual SSH, no manual build. Push = live.
+
+------------------------------------------------------------
+DEMO STEPS (for the recording)
+------------------------------------------------------------
+  1. Open https://docloq.site/trythedeploy.txt   -> note MARKER = 1
+  2. Edit this file, bump DEPLOY MARKER to 2, commit + push
+  3. Watch the Gitea Actions run go green
+  4. Refresh the URL  -> MARKER now shows 2  =  deploy confirmed
+
+============================================================

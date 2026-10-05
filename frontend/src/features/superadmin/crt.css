@@ -1,0 +1,342 @@
+/* ============================================================================
+   CRT terminal + pixel skin for the superadmin dashboard (/kicawkicaw).
+   EVERYTHING here is scoped under `.crt` so it can NEVER leak into the rest of
+   the app. It re-maps the dashboard's existing slate/cyan Tailwind utilities to
+   a phosphor-CRT palette, adds scanlines, hard pixel edges, and terminal fonts.
+   Green is the default theme; `.crt.theme-amber` switches to amber-CRT.
+   ============================================================================ */
+
+.crt {
+  /* Default theme = AMBER-GOLD terminal on near-black. No green anywhere. */
+  --crt-bg: #0a0a0c;
+  --crt-panel: #121217;
+  --crt-panel-2: #1a1a22;
+  --crt-border: #2a2a34;
+  --crt-border-bright: #47474f;
+  --crt-fg: #ece7df;
+  --crt-fg-dim: #9b978d;
+  --crt-fg-faint: #625f58;
+  --crt-accent: #f2a63a;
+  --crt-accent-dim: #b97d20;
+  --crt-accent-soft: rgba(242, 166, 58, 0.12);
+  --crt-on-accent: #0a0a0c;
+  --crt-warn: #ffcf6b;
+  --crt-warn-soft: rgba(255, 207, 107, 0.12);
+  --crt-crit: #ff5f56;
+  --crt-crit-soft: rgba(255, 95, 86, 0.13);
+  --crt-glow: 0 0 5px rgba(242, 166, 58, 0.26);
+
+  --font-pixel: "Press Start 2P", monospace;
+  --font-term: "VT323", "JetBrains Mono", ui-monospace, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+
+  background: var(--crt-bg) !important;
+  color: var(--crt-fg);
+  font-family: var(--font-mono);
+}
+
+/* COOL BLUE, Tokyo-Night-ish, deep navy-black. */
+.crt.theme-blue {
+  --crt-bg: #080a0f;
+  --crt-panel: #0f131c;
+  --crt-panel-2: #161b28;
+  --crt-border: #242a3b;
+  --crt-border-bright: #3b4358;
+  --crt-fg: #dbe3f4;
+  --crt-fg-dim: #8b94ad;
+  --crt-fg-faint: #565f76;
+  --crt-accent: #7aa2f7;
+  --crt-accent-dim: #4d6fc4;
+  --crt-accent-soft: rgba(122, 162, 247, 0.13);
+  --crt-on-accent: #070a12;
+  --crt-warn: #e0af68;
+  --crt-warn-soft: rgba(224, 175, 104, 0.12);
+  --crt-crit: #f7768e;
+  --crt-crit-soft: rgba(247, 118, 142, 0.13);
+  --crt-glow: 0 0 6px rgba(122, 162, 247, 0.28);
+}
+
+/* MONO, pure black, crisp white/grey. Maximum-clean linux console. */
+.crt.theme-mono {
+  --crt-bg: #000000;
+  --crt-panel: #0b0b0d;
+  --crt-panel-2: #141417;
+  --crt-border: #26262c;
+  --crt-border-bright: #46464e;
+  --crt-fg: #ededf1;
+  --crt-fg-dim: #9a9aa3;
+  --crt-fg-faint: #5c5c65;
+  --crt-accent: #eaeaef;
+  --crt-accent-dim: #a6a6ae;
+  --crt-accent-soft: rgba(234, 234, 239, 0.10);
+  --crt-on-accent: #0a0a0c;
+  --crt-warn: #e6b566;
+  --crt-warn-soft: rgba(230, 181, 102, 0.12);
+  --crt-crit: #ff6b6b;
+  --crt-crit-soft: rgba(255, 107, 107, 0.12);
+  --crt-glow: 0 0 4px rgba(234, 234, 239, 0.18);
+}
+
+/* Fonts: readable mono for body; VT323 (tall CRT) for headings. Pixel font is
+   opt-in via .crt-pixel only (Press Start 2P is too wide for body/tables). */
+.crt,
+.crt input,
+.crt button,
+.crt table {
+  font-family: var(--font-mono);
+}
+.crt h1,
+.crt h2,
+.crt h3 {
+  font-family: var(--font-term);
+  letter-spacing: 0.02em;
+  color: var(--crt-accent);
+  text-shadow: var(--crt-glow);
+}
+.crt-pixel {
+  font-family: var(--font-pixel) !important;
+  line-height: 1.5;
+}
+
+/* Hard pixel edges, kill the rounded look everywhere inside the shell. */
+.crt [class*="rounded"] {
+  border-radius: 2px !important;
+}
+
+/* ── Surface re-map (Tailwind slate → CRT) ──────────────────────────────── */
+.crt .bg-slate-950 { background-color: var(--crt-bg) !important; }
+.crt .bg-slate-900,
+.crt .bg-slate-900\/90,
+.crt .bg-slate-900\/60,
+.crt .bg-slate-900\/40 { background-color: var(--crt-panel) !important; }
+.crt .bg-slate-800,
+.crt .bg-slate-800\/80,
+.crt .bg-slate-800\/60,
+.crt .bg-slate-800\/50,
+.crt .bg-slate-800\/40,
+.crt .bg-slate-800\/30 { background-color: var(--crt-panel-2) !important; }
+.crt .bg-slate-700,
+.crt .bg-slate-700\/60,
+.crt .bg-slate-700\/50 { background-color: var(--crt-border) !important; }
+
+.crt .border-slate-800,
+.crt .border-slate-800\/50,
+.crt .border-slate-700,
+.crt .border-slate-700\/70,
+.crt .border-slate-700\/50,
+.crt .border-cyan-500\/10,
+.crt .border-cyan-500\/20 { border-color: var(--crt-border) !important; }
+.crt .border-cyan-500\/60,
+.crt .border-cyan-500\/40,
+.crt .border-cyan-500\/30 { border-color: var(--crt-accent-dim) !important; }
+
+/* Text re-map. */
+.crt .text-white { color: var(--crt-fg) !important; text-shadow: 0 0 1px rgba(0,0,0,0.4); }
+.crt .text-slate-200,
+.crt .text-slate-300 { color: var(--crt-fg) !important; }
+.crt .text-slate-400,
+.crt .text-slate-500 { color: var(--crt-fg-dim) !important; }
+.crt .text-slate-600 { color: var(--crt-fg-faint) !important; }
+
+/* Accent (cyan/teal/emerald) → phosphor. */
+.crt .text-cyan-200,
+.crt .text-cyan-300,
+.crt .text-cyan-400,
+.crt .text-teal-400,
+.crt .text-emerald-300,
+.crt .text-emerald-400 { color: var(--crt-accent) !important; }
+.crt .bg-cyan-400,
+.crt .bg-cyan-500,
+.crt .bg-cyan-600,
+.crt .bg-emerald-400,
+.crt .bg-emerald-500 { background-color: var(--crt-accent) !important; color: var(--crt-on-accent) !important; }
+.crt .hover\:bg-cyan-500:hover,
+.crt .hover\:bg-cyan-600:hover { background-color: var(--crt-accent-dim) !important; }
+.crt .bg-cyan-500\/5,
+.crt .bg-cyan-500\/10,
+.crt .bg-cyan-500\/20,
+.crt .bg-emerald-500\/10,
+.crt .bg-emerald-500\/15 { background-color: var(--crt-accent-soft) !important; }
+
+/* Warn (amber) + crit (red). */
+.crt .text-amber-300,
+.crt .text-amber-400 { color: var(--crt-warn) !important; }
+.crt .bg-amber-500\/10,
+.crt .bg-amber-500\/15 { background-color: var(--crt-warn-soft) !important; }
+.crt .border-amber-500\/30 { border-color: var(--crt-warn) !important; }
+.crt .text-red-300,
+.crt .text-red-400 { color: var(--crt-crit) !important; }
+.crt .bg-red-400,
+.crt .bg-red-500 { background-color: var(--crt-crit) !important; }
+.crt .bg-red-500\/10,
+.crt .bg-red-500\/15 { background-color: var(--crt-crit-soft) !important; }
+.crt .border-red-500\/25 { border-color: var(--crt-crit) !important; }
+
+/* Gradient accents → flat phosphor (logo tiles etc.). */
+.crt .from-cyan-500,
+.crt .from-cyan-500\/20,
+.crt .to-teal-500,
+.crt .to-teal-500\/20,
+.crt .via-cyan-500 { --tw-gradient-from: var(--crt-accent) !important; --tw-gradient-to: var(--crt-accent-dim) !important; --tw-gradient-stops: var(--crt-accent), var(--crt-accent-dim) !important; }
+
+/* Inputs read like a terminal field. */
+.crt input {
+  color: var(--crt-fg) !important;
+  caret-color: var(--crt-accent);
+}
+.crt input::placeholder { color: var(--crt-fg-faint) !important; }
+
+/* ── Scanlines + vignette overlay (rendered once by <CrtScanlines/>) ──────── */
+.crt-scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+.crt-scanlines::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2.5px,
+    rgba(0, 0, 0, 0.14) 3px,
+    rgba(0, 0, 0, 0.14) 3px
+  );
+  opacity: 0.35;
+}
+.crt-scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* subtle edge vignette only, no color wash, keeps panels crisp/legible */
+  background: radial-gradient(ellipse at center, transparent 62%, rgba(0, 0, 0, 0.34) 100%);
+  animation: crt-flicker 5s infinite steps(80);
+}
+
+@keyframes crt-flicker {
+  0%, 100% { opacity: 0.92; }
+  48% { opacity: 0.88; }
+  50% { opacity: 0.97; }
+}
+
+/* Blinking block cursor. */
+.crt-cursor {
+  display: inline-block;
+  width: 0.6ch;
+  height: 1em;
+  vertical-align: text-bottom;
+  background: var(--crt-accent);
+  box-shadow: var(--crt-glow);
+  animation: crt-blink 1.05s steps(1) infinite;
+}
+@keyframes crt-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+/* Text glow on accent elements. */
+.crt-glow { text-shadow: var(--crt-glow); }
+
+/* Row stream-in (tables). */
+@keyframes crt-row-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
+.crt-row-in { animation: crt-row-in 0.24s ease-out both; }
+
+/* Respect reduced-motion. */
+@media (prefers-reduced-motion: reduce) {
+  .crt-scanlines::after { animation: none; }
+  .crt-cursor { animation: none; opacity: 1; }
+  .crt-row-in { animation: none; }
+}
+
+/* ============================================================================
+   Data-viz atoms, audit hash-chain, Merkle tree, meters, blockchain strip.
+   All colors read from the --crt-* vars so they auto-theme (green/amber/black).
+   ============================================================================ */
+
+/* Terminal stat tile: flat panel, box-drawing corner ticks, hover lift. */
+.crt-tile {
+  position: relative;
+  background: var(--crt-panel);
+  border: 1px solid var(--crt-border);
+  padding: 1rem 1.1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.crt-tile:hover {
+  border-color: var(--crt-accent-dim);
+  box-shadow: inset 0 0 24px -14px var(--crt-accent);
+}
+.crt-tile::before,
+.crt-tile::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: var(--crt-accent-dim);
+  opacity: 0.7;
+}
+.crt-tile::before { top: -1px; left: -1px; border-top: 1px solid; border-left: 1px solid; }
+.crt-tile::after { bottom: -1px; right: -1px; border-bottom: 1px solid; border-right: 1px solid; }
+
+/* Meter (balance / coverage). */
+.crt-meter-track {
+  position: relative;
+  height: 10px;
+  background: var(--crt-panel-2);
+  border: 1px solid var(--crt-border);
+  overflow: hidden;
+}
+.crt-meter-fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--crt-accent) 0, var(--crt-accent) 6px,
+    var(--crt-accent-dim) 6px, var(--crt-accent-dim) 8px
+  );
+  box-shadow: 0 0 8px -1px var(--crt-accent);
+}
+.crt-meter-fill.is-warn { background: var(--crt-warn); box-shadow: 0 0 8px -1px var(--crt-warn); }
+.crt-meter-fill.is-crit { background: var(--crt-crit); box-shadow: 0 0 8px -1px var(--crt-crit); }
+
+/* Chain / merkle node. */
+.crt-node {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.2rem;
+  padding: 0.4rem 0.55rem;
+  background: var(--crt-panel-2);
+  border: 1px solid var(--crt-border);
+  color: var(--crt-fg);
+  font-family: var(--font-mono);
+  line-height: 1.25;
+}
+.crt-node.is-head {
+  border-color: var(--crt-accent);
+  color: var(--crt-accent);
+  box-shadow: 0 0 10px -2px var(--crt-accent);
+}
+.crt-node.is-root {
+  border-color: var(--crt-accent);
+  color: var(--crt-accent);
+  background: var(--crt-accent-soft);
+}
+.crt-node.is-bad { border-color: var(--crt-crit); color: var(--crt-crit); box-shadow: 0 0 10px -2px var(--crt-crit); }
+
+/* Glowing connector pulse for the live head of a chain. */
+@keyframes crt-pulse-glow {
+  0%, 100% { box-shadow: 0 0 6px -2px var(--crt-accent); }
+  50% { box-shadow: 0 0 14px 1px var(--crt-accent); }
+}
+.crt-pulse { animation: crt-pulse-glow 1.9s ease-in-out infinite; }
+
+/* Animated flowing dashes for SVG links (data moving down the chain). */
+@keyframes crt-dash-flow { to { stroke-dashoffset: -16; } }
+.crt-flow { animation: crt-dash-flow 0.75s linear infinite; }
+
+/* Blockchain "live block" tick in the network strip. */
+@keyframes crt-block-in { from { opacity: 0; transform: translateY(3px) scaleY(0.4); } to { opacity: 1; transform: none; } }
+.crt-block-in { animation: crt-block-in 0.3s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-pulse, .crt-flow, .crt-block-in { animation: none; }
+}

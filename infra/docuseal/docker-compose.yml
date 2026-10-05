@@ -1,0 +1,13 @@
+version: '3'
+services:
+  docuseal:
+    image: docuseal/docuseal:latest
+    container_name: docuseal_local
+    ports:
+      - "3030:3000"
+    volumes:
+      - ./data:/data
+    environment:
+      - FORCE_SSL=false
+      - HOST=localhost
+    restart: always

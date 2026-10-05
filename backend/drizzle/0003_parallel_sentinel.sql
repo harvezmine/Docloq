@@ -1,0 +1,1 @@
+ALTER TABLE "form_instances" ADD COLUMN "start_date" timestamp;

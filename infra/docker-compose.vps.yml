@@ -1,0 +1,257 @@
+# ============================================================================
+# DocLoq — VPS Production Compose (Traefik-based)
+# ============================================================================
+# Usage:
+#   cp .env.example .env && nano .env
+#   docker compose -f docker-compose.vps.yml up -d
+#
+# Requires:
+#   - Traefik sudah berjalan dengan external network bernama "web"
+#   - docker network create web  (jika belum ada)
+# ============================================================================
+
+networks:
+  web:
+    external: true        # Network Traefik yang sudah ada
+  internal:
+    internal: true        # Jaringan internal DocLoq (tidak exposed ke luar)
+
+volumes:
+  postgres_data:
+  redis_data:
+  mongodb_data:
+  qdrant_data:
+  vault_data:
+  clamav_data:
+  onlyoffice_data:
+  onlyoffice_logs:
+  onlyoffice_lib:
+  docuseal_data:
+
+services:
+
+  # ==========================================================================
+  # BACKEND — Express API
+  # ==========================================================================
+  backend:
+    image: docloq-backend:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - TRUST_PROXY=true
+      - RUN_MIGRATIONS=true
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - MONGO_URL=mongodb://docloq:${MONGO_PASSWORD}@mongodb:27017/docloq_ai_cache?authSource=admin
+      - QDRANT_URL=http://qdrant:6333
+      - CLAMAV_HOST=clamav
+      - CLAMAV_PORT=3310
+      - VAULT_ADDR=http://vault:8200
+      - BACKEND_URL=https://${DOMAIN_API}
+      - BACKEND_URL_DOCKER=http://backend:3000
+      - ONLYOFFICE_URL=https://${DOMAIN_OFFICE}
+      - FRONTEND_URL=https://${DOMAIN_APP}
+      - DOCUSEAL_API_URL=http://docuseal:3000
+      - QR_VERIFICATION_BASE_URL=https://${DOMAIN_APP}/verify
+      - STORAGE_PROVIDER=${STORAGE_PROVIDER:-r2}
+      - SCANNER_ENABLED=true
+      - BLOCKCHAIN_ENABLED=false
+      - BACKUPS_DIR=/backups
+    volumes:
+      # db backups (rw)
+      - /opt/docloq/backups:/backups:rw
+    networks:
+      - web
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.docloq-api.rule=Host(`${DOMAIN_API}`)"
+      - "traefik.http.routers.docloq-api.entrypoints=websecure"
+      - "traefik.http.routers.docloq-api.service=docloq-api"
+      - "traefik.http.routers.docloq-api.tls=true"
+      - "traefik.http.routers.docloq-api.tls.certresolver=le"
+      - "traefik.http.services.docloq-api.loadbalancer.server.port=3000"
+
+  # ==========================================================================
+  # FRONTEND — React + Nginx
+  # ==========================================================================
+  frontend:
+    image: docloq-frontend:latest
+    restart: unless-stopped
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.docloq-app.rule=Host(`${DOMAIN_APP}`)"
+      - "traefik.http.routers.docloq-app.entrypoints=websecure"
+      - "traefik.http.routers.docloq-app.service=docloq-app"
+      - "traefik.http.routers.docloq-app.tls=true"
+      - "traefik.http.routers.docloq-app.tls.certresolver=le"
+      - "traefik.http.services.docloq-app.loadbalancer.server.port=80"
+
+  # ==========================================================================
+  # DATABASES
+  # ==========================================================================
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  mongodb:
+    image: mongo:7.0
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: docloq
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: docloq_ai_cache
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - internal
+
+  # ==========================================================================
+  # AI & SEARCH
+  # ==========================================================================
+  qdrant:
+    image: qdrant/qdrant:v1.13.1
+    restart: unless-stopped
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - internal
+
+  searxng:
+    image: searxng/searxng:latest
+    container_name: docloq_searxng
+    restart: unless-stopped
+    environment:
+      - SEARXNG_BASE_URL=http://searxng:8080/
+    volumes:
+      - ../backend/searxng:/etc/searxng
+    networks:
+      - internal
+
+  # ==========================================================================
+  # SECURITY — Vault (single node, dev-friendly)
+  # ==========================================================================
+  vault:
+    image: hashicorp/vault:1.17
+    restart: unless-stopped
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_API_ADDR: "http://vault:8200"
+    volumes:
+      - vault_data:/vault/data
+      - ./vault/config/vault-single.hcl:/vault/config/vault.hcl:ro
+    cap_add:
+      - IPC_LOCK
+    command: vault server -config=/vault/config/vault.hcl
+    networks:
+      - internal
+
+  # ==========================================================================
+  # MALWARE SCANNER
+  # ==========================================================================
+  clamav:
+    image: clamav/clamav:stable
+    restart: unless-stopped
+    volumes:
+      - clamav_data:/var/lib/clamav
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "clamdcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 300s
+
+  # ==========================================================================
+  # DOCUMENT SERVICES
+  # ==========================================================================
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    restart: unless-stopped
+    environment:
+      - JWT_ENABLED=false
+      - DS_FORCESAVE=true
+      - ALLOW_PRIVATE_IP_ADDRESS=true
+    volumes:
+      - onlyoffice_data:/var/www/onlyoffice/Data
+      - onlyoffice_logs:/var/log/onlyoffice
+      - onlyoffice_lib:/var/lib/onlyoffice
+    networks:
+      - web
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.docloq-office.rule=Host(`${DOMAIN_OFFICE}`)"
+      - "traefik.http.routers.docloq-office.entrypoints=websecure"
+      - "traefik.http.routers.docloq-office.service=docloq-office"
+      - "traefik.http.routers.docloq-office.tls=true"
+      - "traefik.http.routers.docloq-office.tls.certresolver=le"
+      - "traefik.http.routers.docloq-office.middlewares=office-headers"
+      - "traefik.http.middlewares.office-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.middlewares.office-headers.headers.customrequestheaders.X-Forwarded-Host=${DOMAIN_OFFICE}"
+      - "traefik.http.services.docloq-office.loadbalancer.server.port=80"
+      - "traefik.http.services.docloq-office.loadbalancer.passhostheader=true"
+
+  docuseal:
+    image: docuseal/docuseal:latest
+    restart: unless-stopped
+    environment:
+      - FORCE_SSL=false
+      - HOST=${DOMAIN_SIGN}
+    volumes:
+      - docuseal_data:/data
+    networks:
+      - web
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.docloq-sign.rule=Host(`${DOMAIN_SIGN}`)"
+      - "traefik.http.routers.docloq-sign.entrypoints=web"
+      - "traefik.http.routers.docloq-sign.service=docloq-sign"
+      - "traefik.http.services.docloq-sign.loadbalancer.server.port=3000"
+      # HTTPS
+      # - "traefik.http.routers.docloq-sign-secure.rule=Host(`${DOMAIN_SIGN}`)"
+      # - "traefik.http.routers.docloq-sign-secure.entrypoints=websecure"
+      # - "traefik.http.routers.docloq-sign-secure.tls.certresolver=letsencrypt"
+      # - "traefik.http.routers.docloq-sign-secure.service=docloq-sign"

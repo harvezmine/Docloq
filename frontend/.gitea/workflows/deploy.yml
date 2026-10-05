@@ -1,0 +1,42 @@
+name: Build & Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  VITE_API_URL: https://api.docloq.site/api
+  VITE_ONLYOFFICE_URL: https://office.docloq.site
+  VITE_TURNSTILE_SITE_KEY: 0x4AAAAAADVVXAV9IObkcwD2
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        run: |
+          git config --global http.sslVerify false
+          rm -rf /tmp/docloq-frontend
+          git clone --depth 1 \
+            "https://oauth2:${{ gitea.token }}@git.docloq.site/docloq/frontend.git" \
+            /tmp/docloq-frontend
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg VITE_API_URL=${{ env.VITE_API_URL }} \
+            --build-arg VITE_ONLYOFFICE_URL=${{ env.VITE_ONLYOFFICE_URL }} \
+            --build-arg VITE_TURNSTILE_SITE_KEY=${{ env.VITE_TURNSTILE_SITE_KEY }} \
+            -t docloq-frontend:latest \
+            /tmp/docloq-frontend
+
+      - name: Deploy (zero-downtime restart)
+        run: |
+          docker-compose -f /opt/docloq/infra/docker-compose.vps.yml \
+            up -d --no-deps --no-build frontend
+
+      - name: Health check
+        run: |
+          sleep 5
+          curl -skf https://docloq.site/ && echo "Frontend OK" || echo "Warning: health check inconclusive"

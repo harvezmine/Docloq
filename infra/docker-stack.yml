@@ -1,0 +1,553 @@
+# ============================================================================
+# DocLoq — Docker Swarm Production Stack
+# ============================================================================
+# Deploy: docker stack deploy -c docker-stack.yml docloq
+# Status: docker service ls
+# Logs:   docker service logs docloq_backend --follow
+# ============================================================================
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-restart-policy: &restart-policy
+  condition: any
+  delay: 5s
+  max_attempts: 5
+  window: 120s
+
+x-rolling-update: &rolling-update
+  parallelism: 1
+  delay: 30s
+  failure_action: rollback
+  order: start-first
+
+services:
+  # ==========================================================================
+  # APPLICATION SERVICES
+  # ==========================================================================
+
+  backend:
+    image: docloq-backend:latest
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - TRUST_PROXY=true
+      - RUN_MIGRATIONS=true
+      # Database — URL is constructed in entrypoint.sh from db_password secret
+      # DATABASE_URL=postgresql://docloq:<db_password>@db:5432/docloq_db
+      # Storage
+      - STORAGE_PROVIDER=r2
+      - S3_ENDPOINT=https://7644bc065a6f2d87aca679eb300af542.r2.cloudflarestorage.com
+      - S3_REGION=auto
+      - S3_FORCE_PATH_STYLE=true
+      - S3_DOCUMENTS_BUCKET=docloq-documents
+      - S3_ARCHIVE_BUCKET=docloq-archive
+      - S3_QR_BUCKET=docloq-qrcodes
+      # Key management
+      - KEY_PROVIDER=vault
+      - VAULT_ADDR=http://vault-1:8200
+      - VAULT_TRANSIT_KEY=docloq-master
+      # Internal service URLs
+      - CLAMAV_HOST=clamav
+      - CLAMAV_PORT=3310
+      - SCANNER_ENABLED=true
+      - QDRANT_URL=http://qdrant:6333
+      - QDRANT_COLLECTION=docloq_documents
+      - AI_ANALYSIS_MODEL=gpt-4.1-mini
+      # OnlyOffice
+      - BACKEND_URL=https://api.docloq.site
+      - BACKEND_URL_DOCKER=http://backend:3000
+      - ONLYOFFICE_URL=https://office.docloq.site
+      - FRONTEND_URL=https://docloq.site
+      # DocuSeal
+      - DOCUSEAL_API_URL=http://docuseal:3000
+      # QR
+      - QR_VERIFICATION_BASE_URL=https://docloq.site/verify
+      # Upload
+      - MAX_FILE_SIZE_MB=50
+      # Blockchain (optional)
+      - BLOCKCHAIN_ENABLED=false
+      # SMTP
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=smtp-relay.brevo.com
+      - MAIL_PORT=587
+      - MAIL_ENCRYPTION=tls
+      - MAIL_FROM_ADDRESS=no-reply@docloq.site
+      - MAIL_FROM_NAME=Docloq
+      # Redis (rate limiter)
+      - REDIS_URL=redis://redis:6379
+      # MongoDB — URL constructed in entrypoint.sh from mongo_password secret
+      # MONGO_URL=mongodb://docloq:<mongo_password>@mongodb:27017/docloq_ai_cache?authSource=admin
+      # hCaptcha
+      - HCAPTCHA_ENABLED=false
+    secrets:
+      - db_password
+      - jwt_secret
+      - encryption_master_key
+      - vault_token
+      - s3_access_key
+      - s3_secret_key
+      - openai_api_key
+      - mongo_password
+      - mail_password
+      - qr_signing_secret
+      - docuseal_api_key
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 2
+      update_config: *rolling-update
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  frontend:
+    image: docloq-frontend:latest
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 2
+      update_config: *rolling-update
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+
+  # ==========================================================================
+  # DATABASES
+  # ==========================================================================
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: docloq
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      POSTGRES_DB: docloq_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docloq"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    secrets:
+      - db_password
+
+  mongodb:
+    image: mongo:7.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: docloq
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongo_password
+      MONGO_INITDB_DATABASE: docloq_ai_cache
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    secrets:
+      - mongo_password
+
+  # ==========================================================================
+  # SECURITY SERVICES
+  # ==========================================================================
+
+  vault-1:
+    image: hashicorp/vault:1.17
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_API_ADDR: "http://vault-1:8200"
+      VAULT_CLUSTER_ADDR: "http://vault-1:8201"
+      VAULT_RAFT_NODE_ID: "vault_1"
+    volumes:
+      - vault_data_1:/vault/data
+    configs:
+      - source: vault_config_1
+        target: /vault/config/vault.hcl
+    cap_add:
+      - IPC_LOCK
+    command: vault server -config=/vault/config/vault.hcl
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 512M
+
+  vault-2:
+    image: hashicorp/vault:1.17
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_API_ADDR: "http://vault-2:8200"
+      VAULT_CLUSTER_ADDR: "http://vault-2:8201"
+      VAULT_RAFT_NODE_ID: "vault_2"
+    volumes:
+      - vault_data_2:/vault/data
+    configs:
+      - source: vault_config_2
+        target: /vault/config/vault.hcl
+    cap_add:
+      - IPC_LOCK
+    command: vault server -config=/vault/config/vault.hcl
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 512M
+
+  vault-3:
+    image: hashicorp/vault:1.17
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_API_ADDR: "http://vault-3:8200"
+      VAULT_CLUSTER_ADDR: "http://vault-3:8201"
+      VAULT_RAFT_NODE_ID: "vault_3"
+    volumes:
+      - vault_data_3:/vault/data
+    configs:
+      - source: vault_config_3
+        target: /vault/config/vault.hcl
+    cap_add:
+      - IPC_LOCK
+    command: vault server -config=/vault/config/vault.hcl
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 512M
+
+  clamav:
+    image: clamav/clamav:stable
+    volumes:
+      - clamav_data:/var/lib/clamav
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "clamdcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 300s
+
+  # ==========================================================================
+  # AI & SEARCH
+  # ==========================================================================
+
+  qdrant:
+    image: qdrant/qdrant:v1.13.1
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:6333/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 320M
+        reservations:
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ==========================================================================
+  # DOCUMENT SERVICES
+  # ==========================================================================
+
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    environment:
+      - JWT_ENABLED=false
+      - DS_FORCESAVE=true
+      - ALLOW_PRIVATE_IP_ADDRESS=true
+      - ALLOW_META_IP_ADDRESS=true
+    volumes:
+      - onlyoffice_data:/var/www/onlyoffice/Data
+      - onlyoffice_logs:/var/log/onlyoffice
+      - onlyoffice_lib:/var/lib/onlyoffice
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 3G
+        reservations:
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/healthcheck || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  docuseal:
+    image: docuseal/docuseal:latest
+    environment:
+      - FORCE_SSL=false
+      - HOST=sign.docloq.site
+    volumes:
+      - docuseal_data:/data
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 512M
+
+  # ==========================================================================
+  # GIT SERVER — GITEA
+  # ==========================================================================
+
+  gitea:
+    image: gitea/gitea:latest
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=gitea-db:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD__FILE=/run/secrets/gitea_db_password
+      - GITEA__server__ROOT_URL=https://git.docloq.site
+      - GITEA__server__DOMAIN=git.docloq.site
+      - GITEA__server__SSH_DOMAIN=git.docloq.site
+      - GITEA__server__DISABLE_SSH=true
+      - GITEA__server__HTTP_PORT=3000
+      - GITEA__mailer__ENABLED=false
+      - GITEA__service__DISABLE_REGISTRATION=true
+      - GITEA__service__REQUIRE_SIGNIN_VIEW=true
+    volumes:
+      - gitea_data:/data
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/v1/version || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    secrets:
+      - gitea_db_password
+
+  gitea-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: gitea
+      POSTGRES_PASSWORD_FILE: /run/secrets/gitea_db_password
+      POSTGRES_DB: gitea
+    volumes:
+      - gitea_db_data:/var/lib/postgresql/data
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 256M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gitea"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    secrets:
+      - gitea_db_password
+
+  # ==========================================================================
+  # INGRESS — CLOUDFLARE TUNNEL
+  # ==========================================================================
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN_FILE=/run/secrets/cloudflare_tunnel_token
+    networks:
+      - docloq_overlay
+    logging: *default-logging
+    deploy:
+      replicas: 1
+      restart_policy: *restart-policy
+      resources:
+        limits:
+          memory: 128M
+    secrets:
+      - cloudflare_tunnel_token
+
+# ============================================================================
+# NETWORKS
+# ============================================================================
+
+networks:
+  docloq_overlay:
+    driver: overlay
+    attachable: true
+
+# ============================================================================
+# VOLUMES
+# ============================================================================
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  vault_data_1:
+  vault_data_2:
+  vault_data_3:
+  clamav_data:
+  qdrant_data:
+  onlyoffice_data:
+  onlyoffice_logs:
+  onlyoffice_lib:
+  docuseal_data:
+  gitea_data:
+  gitea_db_data:
+  redis_data:
+
+# ============================================================================
+# SECRETS — Create before deploying:
+#   echo "your-value" | docker secret create secret_name -
+# ============================================================================
+
+secrets:
+  db_password:
+    external: true
+  jwt_secret:
+    external: true
+  encryption_master_key:
+    external: true
+  vault_token:
+    external: true
+  s3_access_key:
+    external: true
+  s3_secret_key:
+    external: true
+  openai_api_key:
+    external: true
+  cloudflare_tunnel_token:
+    external: true
+  mongo_password:
+    external: true
+  mail_password:
+    external: true
+  docuseal_api_key:
+    external: true
+  qr_signing_secret:
+    external: true
+  gitea_db_password:
+    external: true
+
+# ============================================================================
+# CONFIGS — Vault HCL files
+# Create: docker config create vault_config_1 backend/vault/config/vault-1.hcl
+# ============================================================================
+
+configs:
+  vault_config_1:
+    external: true
+  vault_config_2:
+    external: true
+  vault_config_3:
+    external: true

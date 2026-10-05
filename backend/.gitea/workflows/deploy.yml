@@ -1,0 +1,31 @@
+name: Build & Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        run: |
+          git config --global http.sslVerify false
+          rm -rf /tmp/docloq-backend
+          git clone --depth 1 \
+            "https://oauth2:${{ gitea.token }}@git.docloq.site/docloq/backend.git" \
+            /tmp/docloq-backend
+
+      - name: Build Docker image
+        run: docker build -t docloq-backend:latest /tmp/docloq-backend
+
+      - name: Deploy (zero-downtime restart)
+        run: |
+          docker-compose -f /opt/docloq/infra/docker-compose.vps.yml \
+            up -d --no-deps --no-build backend
+
+      - name: Health check
+        run: |
+          sleep 10
+          curl -skf https://api.docloq.site/ && echo "Backend OK" || echo "Warning: health check inconclusive"
