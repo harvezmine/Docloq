@@ -1,0 +1,286 @@
+# ============================================================================
+# DocLoq — Home Server Production Compose (Cloudflare Tunnel ingress)
+# ============================================================================
+# Replaces the old VPS/Traefik + Docker Swarm setups (§18 / §23 of the docs).
+#
+# Why this differs from docker-compose.vps.yml:
+#   - No Traefik, no Let's Encrypt. TLS terminates at the Cloudflare edge and
+#     cloudflared dials the containers from inside this network.
+#   - NO published host ports at all. Nothing on this box is reachable from the
+#     LAN or the internet except through the tunnel. This also means zero port
+#     conflicts with the other stacks already running on this host.
+#   - Datastores sit on an `internal: true` network with no route out.
+#   - Memory caps on every service so DocLoq cannot starve the host.
+#
+# Usage:
+#   ./scripts/deploy-home.sh            # build + up + health check
+#   docker compose -f docker-compose.home.yml --env-file .env ps
+# ============================================================================
+
+name: docloq
+
+networks:
+  # Services that need to be reachable by cloudflared, or need egress
+  # (OpenAI, Turnstile siteverify, R2, SMTP, ClamAV virus DB, SearXNG).
+  edge:
+    name: docloq_edge
+    driver: bridge
+  # Datastores. internal:true == no default route, no egress, not routable
+  # from the host network. Only containers joined here can reach them.
+  data:
+    name: docloq_data
+    internal: true
+
+volumes:
+  postgres_data:
+  redis_data:
+  mongodb_data:
+  qdrant_data:
+  vault_data:
+  clamav_data:
+  onlyoffice_data:
+  onlyoffice_logs:
+  onlyoffice_lib:
+  docuseal_data:
+  backend_storage:    # STORAGE_PROVIDER=local document store
+  backend_backups:    # pg_dump target (BACKUPS_DIR)
+
+services:
+
+  # ==========================================================================
+  # INGRESS — Cloudflare Tunnel
+  # ==========================================================================
+  # Mode A (preferred): locally-managed tunnel. Ingress lives in
+  # cloudflared/config.yml, credentials in cloudflared/<tunnel-id>.json.
+  # Started by: docker compose --profile tunnel-file up -d
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    profiles: ["tunnel-file"]
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --config /etc/cloudflared/config.yml run
+    volumes:
+      - ./cloudflared:/etc/cloudflared:ro
+    networks: [edge]
+    mem_limit: 128m
+    depends_on: [backend, frontend]
+
+  # Mode B (fallback): dashboard-managed tunnel. Ingress is configured in the
+  # Zero Trust dashboard; only the token lives here.
+  # Started by: docker compose --profile tunnel-token up -d
+  cloudflared-token:
+    image: cloudflare/cloudflared:latest
+    profiles: ["tunnel-token"]
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    networks: [edge]
+    mem_limit: 128m
+    depends_on: [backend, frontend]
+
+  # ==========================================================================
+  # BACKEND — Express API  (api.docloq.site)
+  # ==========================================================================
+  backend:
+    image: docloq-backend:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # --- fixed for this deployment; these win over .env ---
+      NODE_ENV: production
+      PORT: 3000
+      TRUST_PROXY: "true"
+      RUN_MIGRATIONS: "true"
+      # --- service wiring (container DNS names) ---
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379
+      MONGO_URI: mongodb://docloq:${MONGO_PASSWORD}@mongodb:27017/docloq_ai_cache?authSource=admin
+      MONGO_URL: mongodb://docloq:${MONGO_PASSWORD}@mongodb:27017/docloq_ai_cache?authSource=admin
+      QDRANT_URL: http://qdrant:6333
+      VAULT_ADDR: http://vault:8200
+      CLAMAV_HOST: clamav
+      CLAMAV_PORT: "3310"
+      SEARXNG_URL: http://searxng:8080
+      DOCUSEAL_API_URL: http://docuseal:3000
+      ONLYOFFICE_URL_INTERNAL: http://onlyoffice
+      # --- public URLs (what browsers and OnlyOffice callbacks see) ---
+      FRONTEND_URL: https://${DOMAIN_APP}
+      APP_URL: https://${DOMAIN_APP}
+      BACKEND_URL: https://${DOMAIN_API}
+      BACKEND_URL_DOCKER: http://backend:3000
+      ONLYOFFICE_URL: https://${DOMAIN_OFFICE}
+      QR_VERIFICATION_BASE_URL: https://${DOMAIN_APP}/verify
+      BACKUPS_DIR: /backups
+    volumes:
+      - backend_storage:/app/storage
+      - backend_backups:/backups
+    networks: [edge, data]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis:    { condition: service_healthy }
+    mem_limit: 1536m
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+  # ==========================================================================
+  # FRONTEND — React build served by Nginx  (docloq.site)
+  # ==========================================================================
+  frontend:
+    image: docloq-frontend:latest
+    restart: unless-stopped
+    networks: [edge]
+    mem_limit: 128m
+    # Override the image's own healthcheck: it probes `localhost`, which busybox
+    # wget resolves to ::1 first, and nginx.conf only has `listen 80` (IPv4).
+    # The image therefore always reports unhealthy. Probe 127.0.0.1 instead.
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ==========================================================================
+  # DATASTORES — internal network only
+  # ==========================================================================
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [data]
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks: [data]
+    mem_limit: 384m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:7.0
+    restart: unless-stopped
+    command: ["--wiredTigerCacheSizeGB", "0.25"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: docloq
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: docloq_ai_cache
+    volumes:
+      - mongodb_data:/data/db
+    networks: [data]
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  qdrant:
+    image: qdrant/qdrant:v1.13.1
+    restart: unless-stopped
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks: [data]
+    mem_limit: 768m
+
+  # ==========================================================================
+  # KEY MANAGEMENT — Vault (Transit). Needs `vault operator init`+unseal before
+  # KEY_PROVIDER can be flipped to `vault`. See scripts/vault-init-home.sh.
+  # ==========================================================================
+  vault:
+    image: hashicorp/vault:1.17
+    restart: unless-stopped
+    environment:
+      VAULT_ADDR: http://0.0.0.0:8200
+      VAULT_API_ADDR: http://vault:8200
+    volumes:
+      - vault_data:/vault/data
+      - ./vault/config/vault-single.hcl:/vault/config/vault.hcl:ro
+    cap_add: [IPC_LOCK]
+    command: vault server -config=/vault/config/vault.hcl
+    networks: [data]
+    mem_limit: 256m
+
+  # ==========================================================================
+  # MALWARE SCANNER — needs egress for freshclam virus DB updates
+  # ==========================================================================
+  clamav:
+    image: clamav/clamav:stable
+    restart: unless-stopped
+    volumes:
+      - clamav_data:/var/lib/clamav
+    networks: [edge]
+    mem_limit: 2g
+    healthcheck:
+      test: ["CMD", "clamdcheck.sh"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 420s
+
+  # ==========================================================================
+  # OSINT web search (SearXNG) — needs egress to query search engines
+  # ==========================================================================
+  searxng:
+    image: searxng/searxng:latest
+    restart: unless-stopped
+    environment:
+      SEARXNG_BASE_URL: http://searxng:8080/
+    volumes:
+      - ./searxng:/etc/searxng:ro
+    networks: [edge]
+    mem_limit: 384m
+
+  # ==========================================================================
+  # DOCUMENT SERVICES
+  # ==========================================================================
+  # office.docloq.site — must see X-Forwarded-Proto=https so it builds https
+  # self-URLs; cloudflared sets that for us (see cloudflared/config.yml).
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    restart: unless-stopped
+    environment:
+      JWT_ENABLED: "false"
+      DS_FORCESAVE: "true"
+      ALLOW_PRIVATE_IP_ADDRESS: "true"
+      ALLOW_META_IP_ADDRESS: "true"
+    volumes:
+      - onlyoffice_data:/var/www/onlyoffice/Data
+      - onlyoffice_logs:/var/log/onlyoffice
+      - onlyoffice_lib:/var/lib/onlyoffice
+    networks: [edge]
+    mem_limit: 2560m
+
+  # sign.docloq.site
+  docuseal:
+    image: docuseal/docuseal:latest
+    restart: unless-stopped
+    environment:
+      FORCE_SSL: "false"
+      HOST: ${DOMAIN_SIGN}
+    volumes:
+      - docuseal_data:/data
+    networks: [edge]
+    mem_limit: 768m

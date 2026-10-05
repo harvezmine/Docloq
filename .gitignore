@@ -11,6 +11,17 @@ node_modules/
 secrets/
 */secrets/
 
+# --- Home-server deployment (infra/) ---
+# Committed template, real secrets stay local
+!.env.home.example
+# Cloudflare Tunnel credentials — the tunnel secret cannot be re-read from the API
+infra/cloudflared/*.json
+infra/cloudflared/config.yml
+# Vault unseal keys + root token
+infra/vault-unseal-keys.txt
+# SearXNG instance secret is generated per deployment
+infra/searxng/settings.yml
+
 # Build outputs
 dist/
 */dist/
