@@ -913,7 +913,7 @@ Tidak ada PII, nama file, atau ID organisasi asli. Aman untuk UU PDP / GDPR.
 
 ```env
 BLOCKCHAIN_ENABLED=false                              # nyalakan SETELAH deploy
-POLYGON_RPC_URL=https://rpc-amoy.polygon.technology
+POLYGON_RPC_URL=https://polygon-amoy-bor-rpc.publicnode.com
 POLYGON_CHAIN_ID=80002                                # 80002 = Amoy testnet, 137 = mainnet
 POLYGON_PRIVATE_KEY=<private-key-wallet-anchoring>    # JANGAN commit
 POLYGON_CONTRACT_ADDRESS=                             # diisi setelah deploy
