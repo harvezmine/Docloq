@@ -157,6 +157,21 @@ export const saveQrCode = async (qrBuffer, filename) => {
   return filename;
 };
 
+// Counterpart to saveQrCode. Must stay provider-aware: under STORAGE_PROVIDER=local
+// the PNG lives on disk in qrCodesDir, and reaching for s3Download instead gave
+// ECONNREFUSED on /documents/:id/qr-image and silently skipped the download stamp.
+export const loadQrCode = async (filename) => {
+  if (isS3Provider) return s3Download(uploadConfig.s3.qrBucket, filename);
+
+  const filePath = path.join(uploadConfig.qrCodesDir, filename);
+  try {
+    return await fs.readFile(filePath);
+  } catch (err) {
+    if (err.code === 'ENOENT') throw new Error(`QR image not found: ${filename}`);
+    throw err;
+  }
+};
+
 export const initStorageDirs = async () => {
   // Always create local dirs (needed for temp at minimum)
   await ensureDir(uploadConfig.storagePath);

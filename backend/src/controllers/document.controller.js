@@ -1456,8 +1456,8 @@ export const downloadDocumentDecrypted = async (req, res) => {
               .where(and(eq(documentQrCodes.documentId, doc.id), eq(documentQrCodes.isActive, true)))
               .orderBy(desc(documentQrCodes.createdAt)).limit(1);
             if (qrRow?.qrImageS3Key) {
-              const { s3Download } = await import('../services/s3.service.js');
-              const qrPng = await s3Download(uploadConfig.s3.qrBucket, qrRow.qrImageS3Key);
+              const { loadQrCode } = await import('../services/storage.service.js');
+              const qrPng = await loadQrCode(qrRow.qrImageS3Key);
               const stamped = await stampQrCode(finalBuffer, doc.mimeType, qrPng, qrRow.shortCode);
               if (stamped.success) finalBuffer = stamped.buffer;
             }
@@ -1668,8 +1668,8 @@ export const downloadDocumentConverted = async (req, res) => {
           .where(and(eq(documentQrCodes.documentId, doc.id), eq(documentQrCodes.isActive, true)))
           .orderBy(desc(documentQrCodes.createdAt)).limit(1);
         if (qrRow?.qrImageS3Key) {
-          const { s3Download } = await import('../services/s3.service.js');
-          const qrPng = await s3Download(uploadConfig.s3.qrBucket, qrRow.qrImageS3Key);
+          const { loadQrCode } = await import('../services/storage.service.js');
+          const qrPng = await loadQrCode(qrRow.qrImageS3Key);
           const stamped = await stampQrCode(finalConvertedBuffer, outputMime, qrPng, qrRow.shortCode);
           if (stamped.success) finalConvertedBuffer = stamped.buffer;
         }
@@ -2292,12 +2292,10 @@ export const getDocumentQrImage = async (req, res) => {
       return res.status(404).json({ success: false, message: 'QR code not found' });
     }
 
-    // QR images are stored in qr bucket — use storage service with override
-    // We need to fetch from QR bucket specifically; storage.downloadFile uses documents bucket.
-    // For minimal change, re-implement R2 fetch inline using s3 service.
-    const { s3Download } = await import('../services/s3.service.js');
-    const uploadConfig = (await import('../config/upload.config.js')).default;
-    const buf = await s3Download(uploadConfig.s3.qrBucket, qr.qrImageS3Key);
+    // QR images live in their own bucket/dir, not the documents one, so this goes
+    // through loadQrCode rather than storage.downloadFile.
+    const { loadQrCode } = await import('../services/storage.service.js');
+    const buf = await loadQrCode(qr.qrImageS3Key);
 
     res.setHeader('Content-Type', 'image/png');
     res.setHeader('Cache-Control', 'private, max-age=300');
