@@ -19,7 +19,7 @@ import { createBlankDocx, convertDocument, downloadFromUrl } from '../services/c
 import { downloadFile, uploadFile } from '../services/storage.service.js';
 import { decryptFile, encryptFile as encryptFileService, generateDocumentKey } from '../services/encryption.service.js';
 import { uploadPipeline } from '../services/upload-pipeline.service.js';
-import { generateOOToken } from './document.controller.js';
+import { generateOOToken, signOOConfig } from './document.controller.js';
 
 const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
 const ensureUploadDir = async () => {
@@ -821,6 +821,11 @@ export const getTemplateDocument = async (req, res) => {
       },
       type: 'desktop',
     };
+
+    // JWT_ENABLED=true on the document server, so the config must be signed or
+    // the editor dies with "jwt must be provided" for BOTH view and edit modes.
+    const tplConfigToken = signOOConfig(config);
+    if (tplConfigToken) config.token = tplConfigToken;
 
     res.json({
       success: true,

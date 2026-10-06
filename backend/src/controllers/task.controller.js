@@ -15,7 +15,7 @@ import {
 import { eq, and, desc, asc, sql, or, inArray } from 'drizzle-orm';
 import path from 'path';
 import { createNotification } from '../services/notification.service.js';
-import { generateOOToken } from './document.controller.js';
+import { generateOOToken, signOOConfig } from './document.controller.js';
 import { previewManifest, previewPage } from '../services/share-preview.service.js';
 
 function resolveOrgId(req) {
@@ -422,6 +422,11 @@ export const getTaskDocumentConfig = async (req, res) => {
       type: 'desktop',
     };
 
+    // JWT_ENABLED=true on the document server, so the config must be signed or
+    // the editor dies with "jwt must be provided" for BOTH view and edit modes.
+    const taskConfigToken = signOOConfig(config);
+    if (taskConfigToken) config.token = taskConfigToken;
+
     let workflowContext = null;
     if (task.relatedFormInstanceId) {
       const allSteps = await db.select({
@@ -457,27 +462,30 @@ export const getTaskDocumentConfig = async (req, res) => {
         .where(eq(documentSignatures.taskId, task.id))
         .orderBy(desc(documentSignatures.createdAt));
       if (sigRecord && sigRecord.status === 'completed' && sigRecord.signedDocumentPath) {
+        const signedConfig = {
+          document: {
+            fileType: 'pdf',
+            key: `signed-${sigRecord.id}-${sigRecord.updatedAt?.getTime() || Date.now()}`,
+            title: `Signed - ${doc.originalFilename || doc.filename}`,
+            url: `${backendUrlDocker}/api/signing/${sigRecord.id}/file`,
+            permissions: { edit: false, download: true, print: true, review: false, comment: false },
+          },
+          documentType: 'pdf',
+          editorConfig: {
+            mode: 'view',
+            lang: 'en',
+            user: { id: currentUserId, name: userName },
+            customization: { autosave: false, forcesave: false, chat: false, comments: false, help: false },
+          },
+          type: 'desktop',
+        };
+        const signedCfgToken = signOOConfig(signedConfig);
+        if (signedCfgToken) signedConfig.token = signedCfgToken;
         signedDocumentInfo = {
           signatureId: sigRecord.id,
           signedDocumentUrl: sigRecord.signedDocumentUrl,
           hasLocalFile: !!sigRecord.signedDocumentPath,
-          signedConfig: {
-            document: {
-              fileType: 'pdf',
-              key: `signed-${sigRecord.id}-${sigRecord.updatedAt?.getTime() || Date.now()}`,
-              title: `Signed - ${doc.originalFilename || doc.filename}`,
-              url: `${backendUrlDocker}/api/signing/${sigRecord.id}/file`,
-              permissions: { edit: false, download: true, print: true, review: false, comment: false },
-            },
-            documentType: 'pdf',
-            editorConfig: {
-              mode: 'view',
-              lang: 'en',
-              user: { id: currentUserId, name: userName },
-              customization: { autosave: false, forcesave: false, chat: false, comments: false, help: false },
-            },
-            type: 'desktop',
-          },
+          signedConfig,
         };
       }
     }
