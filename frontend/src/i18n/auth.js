@@ -132,6 +132,10 @@ export default {
       id: "Verifikasi captcha gagal. Refresh dan coba lagi.",
       en: "Captcha verification failed. Refresh and try again.",
     },
+    oauth_not_configured: {
+      id: "Login Google belum dikonfigurasi di server ini. Gunakan email & password, atau hubungi admin.",
+      en: "Google sign-in isn't configured on this server. Use email & password, or contact your admin.",
+    },
   },
 
   register: {

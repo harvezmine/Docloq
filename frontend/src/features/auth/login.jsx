@@ -13,6 +13,7 @@ const GOOGLE_ERROR_KEYS = {
   account_conflict: "auth.googleError.account_conflict",
   server_error: "auth.googleError.server_error",
   captcha_failed: "auth.googleError.captcha_failed",
+  oauth_not_configured: "auth.googleError.oauth_not_configured",
 };
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";

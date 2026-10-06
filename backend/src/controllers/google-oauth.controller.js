@@ -13,8 +13,20 @@ const FRONTEND = authConfig.google.frontendUrl;
 const COOKIE_NAME = 'gstate';
 const COOKIE_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
+// Without a client id/secret google-auth-library still builds a consent URL,
+// just with `client_id=` empty, and Google answers with its own bare
+// "Error 401: invalid_client" page. Catch it here so the user lands back on
+// /login with an explanation instead.
+const isGoogleConfigured = () =>
+  !!authConfig.google.clientId && !!authConfig.google.clientSecret;
+
 // GET /api/auth/google?captcha=<token>
 export const initiateGoogleLogin = async (req, res) => {
+  if (!isGoogleConfigured()) {
+    console.warn('[Google OAuth] GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET not set — sign-in unavailable');
+    return res.redirect(302, `${FRONTEND}/login?error=oauth_not_configured`);
+  }
+
   const token = req.query.captcha;
   try {
     await verifyTurnstile(token, req.ip);
@@ -37,6 +49,10 @@ export const initiateGoogleLogin = async (req, res) => {
 export const googleCallback = async (req, res) => {
   const redirectError = (code) =>
     res.redirect(302, `${FRONTEND}/login?error=${code}`);
+
+  if (!isGoogleConfigured()) {
+    return redirectError('oauth_not_configured');
+  }
 
   try {
     const { code, state } = req.query;
