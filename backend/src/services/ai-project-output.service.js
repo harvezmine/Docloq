@@ -2,7 +2,6 @@
 // Keyed to the project, not the document, so crypto-shred cannot reach them — the
 // eraseOutputsFor* functions below are the only path that erases their content.
 
-import OpenAI from 'openai';
 import { and, eq, desc, inArray, sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
 import { aiProjectOutputs, aiProjectSources, aiProjects } from '../db/schema.js';
@@ -11,16 +10,15 @@ import { encryptChunkText, decryptChunkText } from './source-chunk.service.js';
 import { resolveProjectKey, ValidationError, NotFoundError } from './ai-project.service.js';
 import { checkAndDecrementQuota, getQuotaStatus, QuotaExceededError } from './ai-analysis.service.js';
 import { getOutputSpec, isValidKind, isImageKind } from './output-schemas.js';
-import { generateImage, storeImage, readImage, deleteImageBlob } from './ai-image.service.js';
+import { generateImage, storeImage, readImage, deleteImageBlob, IMAGE_MODEL } from './ai-image.service.js';
+import { llm as openai, modelId, isReasoningModel, AI_NOT_CONFIGURED } from './llm-client.js';
 
-const LLM_MODEL = process.env.AI_PROJECT_OUTPUT_MODEL || 'gpt-4.1';
+const LLM_MODEL = modelId(process.env.AI_PROJECT_OUTPUT_MODEL || 'gpt-6-luna');
 const MAX_OUTPUT_TOKENS = parseInt(process.env.AI_PROJECT_OUTPUT_MAX_TOKENS || '8000', 10);
 const MAX_OUTPUTS_PER_PROJECT = parseInt(process.env.AI_PROJECT_MAX_OUTPUTS || '50', 10);
 const IMAGE_QUALITY = process.env.AI_IMAGE_QUALITY || 'high';
 // An image costs ~10-50× a text output, so image kinds decrement quota by this weight.
 const IMAGE_QUOTA_WEIGHT = parseInt(process.env.AI_IMAGE_QUOTA_WEIGHT || '5', 10);
-
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 export class NoSourcesForOutputError extends Error {
   constructor() {
@@ -97,7 +95,7 @@ const toMeta = (row) => ({
 /** Insert a 'generating' row and return; a deck over a 120K context takes ~90s and would time out. */
 export async function requestOutput({ projectId, organizationId, userId, kind, sourceIds, instructions }) {
   if (!isValidKind(kind)) throw new ValidationError(`kind tidak valid: ${kind}`);
-  if (!openai) throw new Error('OpenAI tidak terkonfigurasi (OPENAI_API_KEY missing)');
+  if (!openai) throw new Error(AI_NOT_CONFIGURED);
 
   const [{ n }] = await db.select({ n: sql`count(*)::int` })
     .from(aiProjectOutputs)
@@ -167,7 +165,7 @@ async function generateOutput(outputId, { projectId, organizationId, kind, sourc
         { role: 'system', content: systemPrompt },
         { role: 'user', content: `Hasilkan ${spec.title} sekarang.` },
       ],
-      temperature: 0.2,
+      ...(isReasoningModel(LLM_MODEL) ? { reasoning_effort: 'low' } : { temperature: 0.2 }),
       max_tokens: MAX_OUTPUT_TOKENS,
       response_format: {
         type: 'json_schema',
@@ -192,7 +190,7 @@ async function generateOutput(outputId, { projectId, organizationId, kind, sourc
         cipherText: null, iv: null, authTag: null, charLen: 0,
         blobKey: blob.blobKey, blobIv: blob.blobIv, blobAuthTag: blob.blobAuthTag, blobMime: blob.blobMime,
         sourceIds: provenanceSources,
-        model: `${LLM_MODEL}+${process.env.AI_IMAGE_MODEL || 'gpt-image-2'}`,
+        model: `${LLM_MODEL}+${IMAGE_MODEL}`,
         promptTokens: completion.usage?.prompt_tokens || 0,
         completionTokens: completion.usage?.completion_tokens || 0,
         status: 'ready', errorMessage: null, updatedAt: new Date(),

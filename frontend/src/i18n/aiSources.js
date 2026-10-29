@@ -64,8 +64,8 @@ export default {
   text: {
     title: { id: "Tempel Teks", en: "Paste Text" },
     subtitle: {
-      id: "Teks akan dienkripsi dan disimpan sebagai sumber. Konten dikirim ke OpenAI saat kamu bertanya.",
-      en: "The text will be encrypted and stored as a source. The content is sent to OpenAI when you ask.",
+      id: "Teks akan dienkripsi dan disimpan sebagai sumber. Konten dikirim ke layanan AI (OpenRouter → model OpenAI) saat kamu bertanya.",
+      en: "The text will be encrypted and stored as a source. The content is sent to the AI service (OpenRouter → OpenAI models) when you ask.",
     },
     titleLabel: { id: "Judul", en: "Title" },
     titlePlaceholder: {
@@ -99,8 +99,8 @@ export default {
       en: "Confirm content submission",
     },
     confirmBody: {
-      id: "Konten dari URL ini akan di-fetch oleh server DocLoq, di-ekstrak teksnya, dan dikirim ke OpenAI untuk diindex semantic. Pastikan URL tidak mengandung informasi sensitif.",
-      en: "The content of this URL will be fetched by the DocLoq server, its text extracted, and sent to OpenAI for semantic indexing. Make sure the URL does not contain sensitive information.",
+      id: "Konten dari URL ini akan di-fetch oleh server DocLoq, di-ekstrak teksnya, dan dikirim ke layanan AI (OpenRouter → model OpenAI) untuk diindex semantic. Pastikan URL tidak mengandung informasi sensitif.",
+      en: "The content of this URL will be fetched by the DocLoq server, its text extracted, and sent to the AI service (OpenRouter → OpenAI models) for semantic indexing. Make sure the URL does not contain sensitive information.",
     },
     agreeAdd: { id: "Setuju & Tambahkan", en: "Agree & Add" },
   },

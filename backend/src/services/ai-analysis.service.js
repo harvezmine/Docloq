@@ -11,6 +11,7 @@ import { indexDocument, deleteDocumentVector, isDocumentIndexed, searchDocuments
 import { deleteChunksForDocument } from './source-chunk.service.js';
 import { detectPromptInjection, sanitizeInput } from './chatbot.service.js';
 import { redactForOutbound } from './pii-redaction.service.js';
+import { AI_PROVIDER, AI_BASE_URL, aiHeaders, modelId, isReasoningModel } from './llm-client.js';
 import {
   getCachedResult,
   setCachedResult,
@@ -25,7 +26,7 @@ import {
   processImageForAI,
 } from './ocr.service.js';
 
-const AI_MODEL = process.env.AI_ANALYSIS_MODEL || 'gpt-5';
+const AI_MODEL = modelId(process.env.AI_ANALYSIS_MODEL || 'gpt-5');
 
 export const getDocumentsForAnalysis = async (userId, organizationId, userRole, search = '') => {
   const conditions = [
@@ -592,15 +593,11 @@ ${docContext}
 
 USER PROMPT: ${sanitized}`;
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error('OpenAI API key not configured');
+  if (!AI_PROVIDER) throw new Error('AI API key not configured');
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch(`${AI_BASE_URL}/chat/completions`, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: aiHeaders(),
     body: JSON.stringify({
       model: AI_MODEL,
       messages: [
@@ -612,7 +609,7 @@ USER PROMPT: ${sanitized}`;
       // the ceiling (finish_reason=length) and the response came back empty, so
       // JSON.parse threw "invalid response format" on every analysis. Give them
       // real headroom; non-reasoning models keep the modest budget.
-      ...(/^(gpt-5|o[0-9])/i.test(AI_MODEL)
+      ...(isReasoningModel(AI_MODEL)
         ? { max_completion_tokens: 16000 }
         : { temperature: 0.3, max_tokens: 4000 }),
       response_format: { type: 'json_object' },
@@ -621,7 +618,7 @@ USER PROMPT: ${sanitized}`;
 
   if (!response.ok) {
     const err = await response.text();
-    console.error('[AI Analysis] OpenAI error:', err);
+    console.error(`[AI Analysis] ${AI_PROVIDER} error:`, err);
     throw new Error('AI analysis failed. Please try again.');
   }
 

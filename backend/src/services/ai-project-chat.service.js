@@ -1,6 +1,5 @@
 // AI Project chat — multi-source RAG with citation markers
 
-import OpenAI from 'openai';
 import { db } from '../db/index.js';
 import {
   aiProjects,
@@ -11,13 +10,10 @@ import { and, eq, sql } from 'drizzle-orm';
 import { buildContext } from './context-builder.service.js';
 import { detectPromptInjection, sanitizeInput } from './chatbot.service.js';
 import { checkAndDecrementQuota } from './ai-analysis.service.js';
+import { llm as openai, modelId, isReasoningModel, AI_NOT_CONFIGURED } from './llm-client.js';
 
 const CHAT_LIMIT_24H = parseInt(process.env.AI_PROJECT_CHAT_LIMIT_24H || '50', 10);
-const LLM_MODEL = process.env.AI_PROJECT_CHAT_MODEL || 'gpt-4.1-mini';
-
-const openai = process.env.OPENAI_API_KEY
-  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-  : null;
+const LLM_MODEL = modelId(process.env.AI_PROJECT_CHAT_MODEL || 'gpt-6-luna');
 
 export class ChatRateLimitError extends Error {
   constructor(used, max, resetAt) {
@@ -50,7 +46,7 @@ export class NoRelevantChunksError extends Error {
   constructor(indexed) {
     super(indexed
       ? 'Tidak ditemukan bagian sumber yang relevan dengan pertanyaan ini. Coba pertanyaan yang lebih spesifik.'
-      : 'Sumber belum ter-index untuk pencarian. Project ini terlalu besar untuk dibaca utuh, jadi butuh index. Coba retry sumber, atau hubungi admin bila OPENAI_API_KEY/Qdrant bermasalah.');
+      : 'Sumber belum ter-index untuk pencarian. Project ini terlalu besar untuk dibaca utuh, jadi butuh index. Coba retry sumber, atau hubungi admin bila OPENROUTER_API_KEY/Qdrant bermasalah.');
     this.code = indexed ? 'NO_RELEVANT_CHUNKS' : 'SOURCES_NOT_INDEXED';
   }
 }
@@ -117,7 +113,7 @@ ${sourcesBlock}`;
 }
 
 export async function chat({ projectId, userId, organizationId, userRole, prompt, sourceIds }) {
-  if (!openai) throw new Error('OpenAI tidak terkonfigurasi (OPENAI_API_KEY missing)');
+  if (!openai) throw new Error(AI_NOT_CONFIGURED);
 
   const clean = sanitizeInput(prompt);
   if (!clean || clean.length === 0) throw new Error('Prompt kosong');
@@ -193,7 +189,9 @@ export async function chat({ projectId, userId, organizationId, userRole, prompt
         { role: 'system', content: systemPrompt },
         { role: 'user', content: clean },
       ],
-      temperature: 0.2,
+      // Reasoning tokens count against max_tokens; low effort keeps a grounded RAG answer
+      // well inside the 1500 budget. Reasoning models ignore temperature.
+      ...(isReasoningModel(LLM_MODEL) ? { reasoning_effort: 'low' } : { temperature: 0.2 }),
       max_tokens: 1500,
     });
   } catch (err) {

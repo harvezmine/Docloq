@@ -2,6 +2,7 @@
 
 import { QdrantClient } from '@qdrant/js-client-rest';
 import uploadConfig from '../config/upload.config.js';
+import { AI_PROVIDER, AI_BASE_URL, aiHeaders, modelId } from './llm-client.js';
 
 let client = null;
 let collectionReady = false;
@@ -85,11 +86,12 @@ const ensureChunkCollection = async () => {
   }
 };
 
-// Returns embedding vector, or null if OpenAI is unavailable.
+// Returns embedding vector, or null if the AI provider is unavailable.
+// The model is fixed: every stored vector is text-embedding-3-small (1536-d), so changing it
+// would silently break search against the existing collections.
 export const generateEmbedding = async (text) => {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    console.warn('[Qdrant] OPENAI_API_KEY not set — skipping embedding generation');
+  if (!AI_PROVIDER) {
+    console.warn('[Qdrant] OPENROUTER_API_KEY not set — skipping embedding generation');
     return null;
   }
 
@@ -97,21 +99,18 @@ export const generateEmbedding = async (text) => {
     // Truncate to ~8000 tokens (~32000 chars) to stay within model limits
     const truncated = text.length > 32000 ? text.substring(0, 32000) : text;
 
-    const response = await fetch('https://api.openai.com/v1/embeddings', {
+    const response = await fetch(`${AI_BASE_URL}/embeddings`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
+      headers: aiHeaders(),
       body: JSON.stringify({
-        model: 'text-embedding-3-small',
+        model: modelId('text-embedding-3-small'),
         input: truncated,
       }),
     });
 
     if (!response.ok) {
       const err = await response.text();
-      console.error('[Qdrant] OpenAI embedding error:', err);
+      console.error(`[Qdrant] ${AI_PROVIDER} embedding error:`, err);
       return null;
     }
 

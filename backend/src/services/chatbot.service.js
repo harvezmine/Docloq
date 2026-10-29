@@ -1,6 +1,5 @@
 // DoKi (Document Knowledge Intelligence) chatbot: intent detection, role-scoped data, LLM guardrails.
 
-import OpenAI from 'openai';
 import { db } from '../db/index.js';
 import { chatSessions, chatMessages } from '../db/schema.js';
 import { appendAuditEntry } from './audit.service.js';
@@ -12,12 +11,9 @@ import {
   formatRolesResponse,
 } from './chatbot-knowledge.service.js';
 import { DOKI_TOOLS, runTool } from './doki-tools.js';
+import { llm as openai, modelId } from './llm-client.js';
 
-const openai = process.env.OPENAI_API_KEY
-  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-  : null;
-
-const LLM_MODEL = process.env.CHATBOT_MODEL || 'gpt-4o-mini';
+const LLM_MODEL = modelId(process.env.CHATBOT_MODEL || 'gpt-4o-mini');
 
 const PROMPT_INJECTION_PATTERNS = [
   /ignore\s*(all\s*)?(previous|above|prior)\s*(instructions?|rules?|prompts?)/i,

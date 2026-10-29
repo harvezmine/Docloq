@@ -2,20 +2,19 @@
 // same paths that erase a text output, and it is NEVER served from a public URL.
 
 import crypto from 'crypto';
-import OpenAI from 'openai';
 import uploadConfig from '../config/upload.config.js';
 import { uploadFile, downloadFile, deleteFile } from './storage.service.js';
 import { encryptFile, decryptWithKey } from './encryption.service.js';
+import { llm as openai, modelId, AI_NOT_CONFIGURED } from './llm-client.js';
 
 const { ivLength } = uploadConfig.encryption;
-const IMAGE_MODEL = process.env.AI_IMAGE_MODEL || 'gpt-image-2';
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+export const IMAGE_MODEL = modelId(process.env.AI_IMAGE_MODEL || 'gpt-image-2');
 
 /** Storage key — per project and per output, so erasure and tenancy are unambiguous. */
 export const blobKeyFor = (projectId, outputId) => `ai-outputs/${projectId}/${outputId}.png.enc`;
 
 export async function generateImage(prompt, { size = '1536x1024', quality = 'high' } = {}) {
-  if (!openai) throw new Error('OpenAI tidak terkonfigurasi (OPENAI_API_KEY missing)');
+  if (!openai) throw new Error(AI_NOT_CONFIGURED);
   const res = await openai.images.generate({ model: IMAGE_MODEL, prompt, size, quality });
   const b64 = res?.data?.[0]?.b64_json;
   if (!b64) throw new Error('Image model tidak mengembalikan gambar');

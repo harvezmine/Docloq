@@ -150,8 +150,8 @@ export default {
     title: { id: 'Kirim dokumen ini ke AI?', en: 'Send this document to the AI?' },
     bodyPrefix: { id: 'Isi', en: 'The contents of' },
     bodySuffix: {
-      id: 'akan dikirim ke layanan AI pihak ketiga (OpenAI) supaya bisa dibaca dan ditanyai.',
-      en: 'will be sent to a third-party AI service (OpenAI) so it can be read and queried.',
+      id: 'akan dikirim ke layanan AI pihak ketiga (OpenRouter → model OpenAI) supaya bisa dibaca dan ditanyai.',
+      en: 'will be sent to a third-party AI service (OpenRouter → OpenAI models) so it can be read and queried.',
     },
     censorTitle: { id: 'Sensor identitas', en: 'Censor identity' },
     recommended: { id: 'Disarankan', en: 'Recommended' },
