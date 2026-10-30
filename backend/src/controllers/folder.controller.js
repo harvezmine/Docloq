@@ -19,21 +19,27 @@ export const getAllFolders = async (req, res) => {
       .where(and(eq(folders.organizationId, orgId), eq(folders.isActive, true)))
       .orderBy(asc(folders.sortOrder), asc(folders.name));
 
+    // Trashed documents keep their row (deletedAt set) — don't count or list them.
     const allDocs = await db
-      .select({ id: documents.id, folderId: documents.folderId })
+      .select({
+        id: documents.id,
+        folderId: documents.folderId,
+        originalFilename: documents.originalFilename,
+        mimeType: documents.mimeType,
+      })
       .from(documents)
-      .where(eq(documents.organizationId, orgId));
+      .where(and(eq(documents.organizationId, orgId), isNull(documents.deletedAt)));
 
-    const docCountMap = {};
+    const docsByFolder = {};
+    const unfiledDocuments = [];
     for (const doc of allDocs) {
-      if (doc.folderId) {
-        docCountMap[doc.folderId] = (docCountMap[doc.folderId] || 0) + 1;
-      }
+      if (doc.folderId) (docsByFolder[doc.folderId] ||= []).push(doc);
+      else unfiledDocuments.push(doc);
     }
 
     const foldersWithCount = allFolders.map(f => ({
       ...f,
-      documentCount: docCountMap[f.id] || 0,
+      documentCount: docsByFolder[f.id]?.length || 0,
     }));
 
     const userId = req.user?.userId || req.user?.id;
@@ -48,6 +54,17 @@ export const getAllFolders = async (req, res) => {
 
         return res.json({ success: true, data: filteredFolders });
       }
+    }
+
+    // ?include=documents — the role editor grants access per document, so it needs each
+    // folder's documents plus the unfiled ones. Full-access users only: the unfiled list
+    // would otherwise name documents a filtered user can't open.
+    if (req.query.include === 'documents') {
+      return res.json({
+        success: true,
+        data: foldersWithCount.map(f => ({ ...f, documents: docsByFolder[f.id] || [] })),
+        unfiledDocuments,
+      });
     }
 
     res.json({ success: true, data: foldersWithCount });

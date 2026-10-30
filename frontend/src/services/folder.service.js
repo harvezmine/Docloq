@@ -1,9 +1,10 @@
 import api from './api';
 
 const folderService = {
-  // Get all folders (flat list)
-  getAllFolders: async () => {
-    const response = await api.get('/folders');
+  // Get all folders (flat list). includeDocuments (owner/admin): each folder's documents
+  // plus `unfiledDocuments` on the response — used by the role editor.
+  getAllFolders: async ({ includeDocuments = false } = {}) => {
+    const response = await api.get('/folders', includeDocuments ? { params: { include: 'documents' } } : undefined);
     return response.data;
   },
 

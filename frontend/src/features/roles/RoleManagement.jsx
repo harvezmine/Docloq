@@ -175,24 +175,29 @@ export default function RoleManagement() {
     try {
       const [rolesRes, foldersRes, usersRes] = await Promise.all([
         roleService.getRoles(),
-        folderService.getAllFolders(),
+        folderService.getAllFolders({ includeDocuments: true }),
         userService.getUsers({ limit: 100 }),
       ]);
 
       if (rolesRes.success) setRoles(rolesRes.data || []);
 
       if (foldersRes.success) {
-        const foldersData = foldersRes.data || [];
-        // fall back to an empty list when a folder has no nested documents
-        const structured = foldersData.map(f => ({
+        const toDoc = (d) => ({
+          id: d.id,
+          name: d.originalFilename || d.name,
+          type: (d.mimeType || '').split('/').pop()?.toUpperCase() || 'FILE',
+        });
+        const structured = (foldersRes.data || []).map(f => ({
           id: f.id,
           name: f.name,
-          documents: (f.documents || []).map(d => ({
-            id: d.id,
-            name: d.originalName || d.name,
-            type: (d.mimeType || '').split('/').pop()?.toUpperCase() || 'FILE',
-          })),
+          documents: (f.documents || []).map(toDoc),
         }));
+        // Documents outside any folder get a pseudo-group: they can only be granted one by one,
+        // since there is no folder to grant.
+        const unfiled = foldersRes.unfiledDocuments || [];
+        if (unfiled.length > 0) {
+          structured.push({ id: 'unfiled', name: t("roles.form.unfiled"), unfiled: true, documents: unfiled.map(toDoc) });
+        }
         setFolderStructure(structured);
       }
 
@@ -251,7 +256,7 @@ export default function RoleManagement() {
     return folderStructure.map(folder => ({
       ...folder,
       documents: (folder.documents || []).filter(doc =>
-        doc.name.toLowerCase().includes(search)
+        (doc.name || "").toLowerCase().includes(search)
       ),
     })).filter(folder =>
       folder.name.toLowerCase().includes(search) || folder.documents.length > 0
@@ -777,10 +782,12 @@ export default function RoleManagement() {
                               {folder.documents.length} {t("roles.form.docs")}
                             </span>
 
-                            <PermissionDropdown
-                              value={folderPerm}
-                              onChange={(level) => setFolderPermission(folder, level)}
-                            />
+                            {!folder.unfiled && (
+                              <PermissionDropdown
+                                value={folderPerm}
+                                onChange={(level) => setFolderPermission(folder, level)}
+                              />
+                            )}
                           </div>
 
                           {isExpanded && (

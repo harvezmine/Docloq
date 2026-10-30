@@ -845,9 +845,14 @@ export default function Documents() {
     return folderTree.map[currentFolderId]?.children || [];
   }, [currentFolderId, folderTree]);
 
+  // A document shared on its own (role or direct grant) can sit in a folder this user can't
+  // see; list it at the root instead of losing it.
   const currentDocuments = useMemo(() =>
-    documents.filter((d) => currentFolderId ? d.folderId === currentFolderId : !d.folderId),
-  [documents, currentFolderId]);
+    documents.filter((d) => {
+      const folderId = d.folderId && folderTree.map[d.folderId] ? d.folderId : null;
+      return currentFolderId ? folderId === currentFolderId : !folderId;
+    }),
+  [documents, currentFolderId, folderTree]);
 
   const filteredDocuments = useMemo(() =>
     currentDocuments.filter((doc) => {

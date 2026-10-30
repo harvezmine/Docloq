@@ -59,6 +59,7 @@ export default {
     documentPermissions: { id: "Izin Dokumen", en: "Document Permissions" },
     searchDocsPlaceholder: { id: "Cari dokumen…", en: "Search documents..." },
     docs: { id: "dok", en: "docs" },
+    unfiled: { id: "Tanpa folder", en: "No folder" },
     noDocuments: { id: "Tidak ada dokumen ditemukan", en: "No documents found" },
     permissionsSetLabel: { id: "Izin diatur:", en: "Permissions set:" },
   },
