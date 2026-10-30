@@ -78,10 +78,10 @@ function PermissionDropdown({ value, onChange, compact = false }) {
 
   const getPermissionStyle = (level) => {
     switch (level) {
-      case "viewer": return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
-      case "editor": return "bg-brand-500/10 text-brand-400 border-brand-500/30";
-      case "admin": return "bg-brand-500/10 text-brand-400 border-brand-500/30";
-      default:       return "bg-slate-500/10 text-slate-400 border-slate-500/30";
+      case "viewer": return "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30";
+      case "editor": return "bg-brand-500/10 text-brand-700 dark:text-brand-300 border-brand-500/30";
+      case "admin": return "bg-brand-500/10 text-brand-700 dark:text-brand-300 border-brand-500/30";
+      default:       return "bg-slate-500/10 text-slate-500 dark:text-slate-400 border-slate-500/30";
     }
   };
 
@@ -573,7 +573,7 @@ export default function RoleManagement() {
         {filteredRoles.length === 0 && (
           <div className="col-span-full">
             <div className="rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 p-12 text-center">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-700/50 flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 dark:bg-slate-700/50 flex items-center justify-center">
                 <svg className="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
@@ -617,7 +617,7 @@ export default function RoleManagement() {
                 </div>
                 <button
                   onClick={handleCloseModal}
-                  className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-700/50 transition-colors"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                 >
                   <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -630,7 +630,7 @@ export default function RoleManagement() {
               <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                 <div className="lg:col-span-2 space-y-5">
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                       {t("roles.form.roleName")} <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -643,7 +643,7 @@ export default function RoleManagement() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                       {t("common.description")}
                     </label>
                     <textarea
@@ -656,7 +656,7 @@ export default function RoleManagement() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-3">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
                       {t("roles.form.roleColor")}
                     </label>
                     <div className="flex flex-wrap gap-2">
@@ -667,7 +667,7 @@ export default function RoleManagement() {
                           onClick={() => setFormData(prev => ({ ...prev, color: color.id }))}
                           className={`w-9 h-9 rounded-xl ${color.fill} transition-all ${
                             formData.color === color.id 
-                              ? "ring-2 ring-offset-2 ring-offset-slate-900 ring-white scale-110 shadow-lg" 
+                              ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 ring-slate-900 dark:ring-white scale-110 shadow-lg" 
                               : "hover:scale-105 opacity-70 hover:opacity-100"
                           }`}
                         />
@@ -676,7 +676,7 @@ export default function RoleManagement() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                       {t("roles.form.assignUsers")}
                       <span className="ml-2 text-xs font-normal text-slate-500">({formData.assignedUsers.length} {t("roles.form.selected")})</span>
                     </label>
@@ -687,14 +687,14 @@ export default function RoleManagement() {
                           className={`flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-all ${
                             formData.assignedUsers.includes(user.id) 
                               ? "bg-brand-500/10 border border-brand-500/30" 
-                              : "hover:bg-slate-700/30 border border-transparent"
+                              : "hover:bg-slate-100 dark:hover:bg-slate-700/40 border border-transparent"
                           }`}
                         >
                           <input
                             type="checkbox"
                             checked={formData.assignedUsers.includes(user.id)}
                             onChange={() => toggleUserAssignment(user.id)}
-                            className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-brand-500 focus:ring-accent focus:ring-offset-0"
+                            className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-brand-500 focus:ring-accent focus:ring-offset-0"
                           />
                           <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-semibold text-slate-700 dark:text-white">
                             {user.avatar}
@@ -714,13 +714,13 @@ export default function RoleManagement() {
                       {PERMISSION_LEVELS.filter(p => p.id !== "none").map((perm) => (
                         <div key={perm.id} className="flex items-center gap-3">
                           <span className={`w-7 h-7 rounded-lg flex items-center justify-center ${
-                            perm.id === "viewer" ? "bg-emerald-500/10 text-emerald-400" :
-                            perm.id === "editor" ? "bg-brand-500/10 text-brand-400" : "bg-brand-500/10 text-brand-400"
+                            perm.id === "viewer" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" :
+                            perm.id === "editor" ? "bg-brand-500/10 text-brand-600 dark:text-brand-400" : "bg-brand-500/10 text-brand-600 dark:text-brand-400"
                           }`}>
                             {PermissionIcons[perm.id]}
                           </span>
                           <div>
-                            <span className="text-sm font-medium text-slate-200">{t(`roles.permLevels.${perm.id}.name`)}</span>
+                            <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{t(`roles.permLevels.${perm.id}.name`)}</span>
                             <span className="text-xs text-slate-500 ml-2">{t(`roles.permLevels.${perm.id}.desc`)}</span>
                           </div>
                         </div>
@@ -731,7 +731,7 @@ export default function RoleManagement() {
 
                 <div className="lg:col-span-3">
                   <div className="flex items-center justify-between mb-4">
-                    <label className="text-sm font-medium text-slate-300">
+                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                       {t("roles.form.documentPermissions")}
                     </label>
                     <div className="relative">
@@ -755,10 +755,10 @@ export default function RoleManagement() {
                       
                       return (
                         <div key={folder.id} className="border-b border-slate-200 dark:border-slate-700/50 last:border-b-0">
-                          <div className="flex items-center gap-3 p-3.5 bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-700/30 transition-colors">
+                          <div className="flex items-center gap-3 p-3.5 bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200/70 dark:hover:bg-slate-800 transition-colors">
                             <button
                               onClick={() => toggleFolderExpand(folder.id)}
-                              className="p-1.5 rounded-lg hover:bg-slate-600/50 transition-colors"
+                              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                             >
                               <svg
                                 className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isExpanded ? "rotate-90" : ""}`}
@@ -791,21 +791,21 @@ export default function RoleManagement() {
                           </div>
 
                           {isExpanded && (
-                            <div className="bg-slate-900/30">
+                            <div className="bg-white dark:bg-slate-900/40">
                               {folder.documents.map((doc) => {
                                 const docPerm = getPermission(doc.id, "document");
                                 
                                 return (
                                   <div
                                     key={doc.id}
-                                    className="flex items-center gap-3 px-4 py-3 pl-14 border-t border-slate-200 dark:border-slate-700/30 hover:bg-slate-50 dark:bg-slate-800/30 transition-colors"
+                                    className="flex items-center gap-3 px-4 py-3 pl-14 border-t border-slate-200 dark:border-slate-700/30 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
                                   >
-                                    <div className="w-7 h-7 rounded-lg bg-slate-700/50 flex items-center justify-center">
+                                    <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-700/50 flex items-center justify-center">
                                       <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                       </svg>
                                     </div>
-                                    <span className="flex-1 text-sm text-slate-300 truncate">
+                                    <span className="flex-1 text-sm text-slate-700 dark:text-slate-300 truncate">
                                       {doc.name}
                                     </span>
 
@@ -836,13 +836,13 @@ export default function RoleManagement() {
                       const counts = countPermissions(formData.permissions);
                       return (
                         <>
-                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400">
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                             {PermissionIcons.viewer} {counts.viewer} {t("roles.legend.viewer")}
                           </span>
-                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-400">
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 dark:text-brand-400">
                             {PermissionIcons.editor} {counts.editor} {t("roles.legend.editor")}
                           </span>
-                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-400">
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 dark:text-brand-400">
                             {PermissionIcons.admin} {counts.admin} {t("roles.legend.admin")}
                           </span>
                         </>
@@ -856,7 +856,7 @@ export default function RoleManagement() {
             <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-700/50 flex gap-3 shrink-0 bg-slate-50 dark:bg-slate-800/30">
               <button
                 onClick={handleCloseModal}
-                className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-300 font-medium hover:bg-slate-200 dark:bg-slate-800 transition-colors"
+                className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
               >
                 {t("common.cancel")}
               </button>
@@ -883,13 +883,13 @@ export default function RoleManagement() {
               </div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t("roles.delete.title")}</h3>
               <p className="text-slate-400 mb-6">
-                {t("roles.delete.question")} <span className="text-white font-semibold">"{roleToDelete.name}"</span>? {" "}
+                {t("roles.delete.question")} <span className="text-slate-900 dark:text-white font-semibold">"{roleToDelete.name}"</span>? {" "}
                 {t("roles.delete.warnPre")} {roleToDelete.members} {t("roles.delete.warnPost")}
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => { setShowDeleteModal(false); setRoleToDelete(null); }}
-                  className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-300 font-medium hover:bg-slate-200 dark:bg-slate-800 transition-colors"
+                  className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
                 >
                   {t("common.cancel")}
                 </button>
