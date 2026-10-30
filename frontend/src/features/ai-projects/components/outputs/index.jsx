@@ -2,6 +2,7 @@
 // payload = { data, citations } exactly as the backend encrypted it.
 
 import { useMemo, useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useLang } from '@/app/providers/LanguageProvider';
 import api from '@/services/api';
 import CitationMarker from '../CitationMarker';
@@ -216,10 +217,26 @@ export function MindMapView({ payload }) {
 export function SlidesView({ payload, onCitationClick, title = 'deck' }) {
   const { t } = useLang();
   const { data, citations } = payload;
+  const [exporting, setExporting] = useState(false);
   if (!data?.slides?.length) return <Empty>{t('aiStudio.render.deckEmpty')}</Empty>;
   const accent = data.theme?.accent || '#4f46e5';
 
   const exportPptx = async () => {
+    setExporting(true);
+    try {
+      await buildPptx();
+    } catch (err) {
+      // Usually a tab opened before a deploy: its pptxgenjs chunk no longer exists.
+      console.error('[slides] PPTX export failed:', err);
+      toast.error(t('aiStudio.render.exportPptxFailed'), {
+        action: { label: t('aiStudio.render.reload'), onClick: () => window.location.reload() },
+      });
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const buildPptx = async () => {
     // Loaded on demand: pptxgenjs is ~1MB and most sessions never export.
     const { default: PptxGenJS } = await import('pptxgenjs');
     const pptx = new PptxGenJS();
@@ -250,8 +267,8 @@ export function SlidesView({ payload, onCitationClick, title = 'deck' }) {
   return (
     <div>
       <div className="flex justify-end mb-2">
-        <button onClick={exportPptx} className="text-[11px] font-medium text-brand-600 dark:text-brand-300 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-1">
-          {t('aiStudio.render.exportPptx')}
+        <button onClick={exportPptx} disabled={exporting} className="text-[11px] font-medium text-brand-600 dark:text-brand-300 hover:underline disabled:opacity-60 disabled:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-1">
+          {exporting ? t('aiStudio.render.exportPptxBusy') : t('aiStudio.render.exportPptx')}
         </button>
       </div>
       <div className="space-y-2">
