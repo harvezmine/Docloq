@@ -110,11 +110,16 @@ export async function createProject({ name, description, customInstructions, use
  * everyone already sees it) and would leave users staring at projects requireProject 404s.
  * @param {string} userId required — the list is per-user, not per-org
  */
+// Drizzle renders ${aiProjects.id} as a bare "id" in a single-table select, and inside a
+// subquery a bare "id" binds to the subquery's own table, so every count read 0 and members
+// never matched. Qualify the outer column explicitly.
+const PROJECT_ID = sql.raw('"ai_projects"."id"');
+
 export async function listProjects(orgId, userId, { archived = false } = {}) {
   const visible = or(
     eq(aiProjects.createdBy, userId),
     sql`EXISTS (SELECT 1 FROM ${aiProjectMembers} m
-                WHERE m.project_id = ${aiProjects.id}
+                WHERE m.project_id = ${PROJECT_ID}
                   AND m.user_id = ${userId}
                   AND m.status = 'accepted')`,
   );
@@ -131,9 +136,9 @@ export async function listProjects(orgId, userId, { archived = false } = {}) {
       archivedAt: aiProjects.archivedAt,
       createdBy: aiProjects.createdBy,
       isOwner: sql`(${aiProjects.createdBy} = ${userId})`,
-      sourceCount: sql`(SELECT count(*) FROM ${aiProjectSources} WHERE project_id = ${aiProjects.id} AND status = 'active')::int`,
-      messageCount: sql`(SELECT count(*) FROM ${aiProjectChats} WHERE project_id = ${aiProjects.id})::int`,
-      outputCount: sql`(SELECT count(*) FROM ${aiProjectOutputs} WHERE project_id = ${aiProjects.id} AND status = 'ready')::int`,
+      sourceCount: sql`(SELECT count(*) FROM ${aiProjectSources} WHERE project_id = ${PROJECT_ID} AND status = 'active')::int`,
+      messageCount: sql`(SELECT count(*) FROM ${aiProjectChats} WHERE project_id = ${PROJECT_ID})::int`,
+      outputCount: sql`(SELECT count(*) FROM ${aiProjectOutputs} WHERE project_id = ${PROJECT_ID} AND status = 'ready')::int`,
     })
     .from(aiProjects)
     .where(

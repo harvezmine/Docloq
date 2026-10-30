@@ -17,7 +17,7 @@ export const getDepartments = async (req, res) => {
         updatedAt: departments.updatedAt,
         memberCount: sql`(
           SELECT COUNT(*)::int FROM users 
-          WHERE users.department_id = ${departments.id} 
+          WHERE users.department_id = "departments"."id" 
           AND users.organization_id = ${organizationId}
         )`,
       })

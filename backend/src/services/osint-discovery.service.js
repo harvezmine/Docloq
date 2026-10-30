@@ -82,7 +82,7 @@ export async function runDiscoveryScan(orgId, { docIds, maxQueries = 90, onLog =
   const conds = [
     eq(documents.organizationId, orgId),
     eq(documents.trackingEnabled, true),
-    sql`EXISTS (SELECT 1 FROM download_watermarks dw WHERE dw.document_id = ${documents.id} AND dw.visible_code IS NOT NULL)`,
+    sql`EXISTS (SELECT 1 FROM download_watermarks dw WHERE dw.document_id = "documents"."id" AND dw.visible_code IS NOT NULL)`, // qualified: a bare "id" would bind to dw
   ];
   let tracked = await db.select({ 
     id: documents.id, 

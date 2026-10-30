@@ -12,9 +12,10 @@ import {
   securityEvents,
   leakScans,
   leakReports,
+  verificationRequests,
   honeytokenTriggers,
 } from '../db/schema.js';
-import { eq, desc, and, isNull } from 'drizzle-orm';
+import { eq, desc, and, isNull, inArray } from 'drizzle-orm';
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -53,6 +54,12 @@ async function hardDeleteDocument(tx, docId) {
   await tx.update(securityEvents).set({ relatedDocumentId: null }).where(eq(securityEvents.relatedDocumentId, docId));
   await tx.update(leakScans).set({ documentId: null }).where(eq(leakScans.documentId, docId));
   await tx.update(leakReports).set({ documentId: null }).where(eq(leakReports.documentId, docId));
+  // Schema says ON DELETE SET NULL for both links, but the live constraints were created without it.
+  const versionIds = (await tx.select({ id: documentVersions.id }).from(documentVersions).where(eq(documentVersions.documentId, docId))).map((v) => v.id);
+  await tx.update(verificationRequests).set({ matchedDocumentId: null }).where(eq(verificationRequests.matchedDocumentId, docId));
+  if (versionIds.length) {
+    await tx.update(verificationRequests).set({ matchedVersionId: null }).where(inArray(verificationRequests.matchedVersionId, versionIds));
+  }
 
   // honeytoken_triggers.documentId is NOT NULL, so it's deleted along with the document instead
   await tx.delete(honeytokenTriggers).where(eq(honeytokenTriggers.documentId, docId));
