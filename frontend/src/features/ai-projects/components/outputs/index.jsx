@@ -7,6 +7,7 @@ import { useLang } from '@/app/providers/LanguageProvider';
 import api from '@/services/api';
 import CitationMarker from '../CitationMarker';
 import { downloadReportPdf } from '../../lib/reportPdf';
+import { deckTheme, cleanText, splitColumns, downloadSlidesPptx } from '../../lib/slideDeck';
 
 // Same [N]-with-**bold** contract as ChatPanel, including the recursion that keeps a citation
 // inside a bold span clickable, the alternation's bold branch would otherwise swallow it.
@@ -214,17 +215,22 @@ export function MindMapView({ payload }) {
   );
 }
 
-export function SlidesView({ payload, onCitationClick, title = 'deck' }) {
+export function SlidesView({ payload, title = 'deck' }) {
   const { t } = useLang();
-  const { data, citations } = payload;
+  const { data } = payload;
   const [exporting, setExporting] = useState(false);
   if (!data?.slides?.length) return <Empty>{t('aiStudio.render.deckEmpty')}</Empty>;
-  const accent = data.theme?.accent || '#4f46e5';
+
+  // Same theme the PPTX uses, so the preview is an honest picture of the export.
+  const th = deckTheme(data);
+  const c = (h) => `#${h}`;
+  const headFont = th.headFont === 'Georgia' ? { fontFamily: 'Georgia, "Times New Roman", serif' } : undefined;
+  const deckTitle = cleanText(data.slides[0]?.title) || title;
 
   const exportPptx = async () => {
     setExporting(true);
     try {
-      await buildPptx();
+      await downloadSlidesPptx(deckTitle, data, deckTitle);
     } catch (err) {
       // Usually a tab opened before a deploy: its pptxgenjs chunk no longer exists.
       console.error('[slides] PPTX export failed:', err);
@@ -236,33 +242,20 @@ export function SlidesView({ payload, onCitationClick, title = 'deck' }) {
     }
   };
 
-  const buildPptx = async () => {
-    // Loaded on demand: pptxgenjs is ~1MB and most sessions never export.
-    const { default: PptxGenJS } = await import('pptxgenjs');
-    const pptx = new PptxGenJS();
-    const dark = !!data.theme?.dark;
-    const bg = dark ? '0f172a' : 'ffffff';
-    const fg = dark ? 'f8fafc' : '0f172a';
-    const acc = accent.replace('#', '');
-    for (const s of data.slides) {
-      const slide = pptx.addSlide();
-      slide.background = { color: bg };
-      if (s.layout === 'section' || s.layout === 'title') {
-        slide.addText(s.title, { x: 0.5, y: 2.2, w: 9, h: 1.2, fontSize: s.layout === 'title' ? 32 : 26, bold: true, color: acc });
-      } else {
-        slide.addText(s.title, { x: 0.5, y: 0.4, w: 9, h: 0.8, fontSize: 22, bold: true, color: fg });
-        // [N] markers are meaningless in PowerPoint, strip them. This costs traceability:
-        // an exported deck cannot be traced back to its sources.
-        const bullets = (s.bullets || [])
-          .map((b) => String(b).replace(/\[\d+\]/g, '').trim())
-          .filter(Boolean)
-          .map((text) => ({ text, options: { bullet: true, color: fg } }));
-        if (bullets.length) slide.addText(bullets, { x: 0.7, y: 1.4, w: 8.6, h: 3.6, fontSize: 14 });
-      }
-      if (s.notes) slide.addNotes(s.notes);
-    }
-    await pptx.writeFile({ fileName: `${title.replace(/[^\w-]+/g, '-').toLowerCase()}.pptx` });
-  };
+  let section = 0;
+  const pageNo = (i, color) => (
+    <span className="absolute bottom-2 right-3 text-[10px] tabular-nums" style={{ color }}>{i + 1}</span>
+  );
+  const rows = (bullets, marker) => (
+    <ul className="space-y-1.5">
+      {bullets.map((b, j) => (
+        <li key={j} className="flex gap-2 text-[12.5px] leading-relaxed">
+          <span className="mt-[7px] w-1.5 h-1.5 shrink-0" style={{ background: c(marker) }} aria-hidden="true" />
+          <span>{b}</span>
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
     <div>
@@ -271,22 +264,99 @@ export function SlidesView({ payload, onCitationClick, title = 'deck' }) {
           {exporting ? t('aiStudio.render.exportPptxBusy') : t('aiStudio.render.exportPptx')}
         </button>
       </div>
-      <div className="space-y-2">
-        {data.slides.map((s, i) => (
-          <div key={i} className="p-3 rounded-xl border" style={{ borderColor: `${accent}40` }}>
-            <div className="flex items-baseline gap-2">
-              <span className="text-[10px] tabular-nums text-slate-400">{i + 1}</span>
-              {s.layout && <span className="text-[9px] uppercase tracking-wide" style={{ color: accent }}>{s.layout}</span>}
-              <p className="text-[13px] font-semibold text-slate-900 dark:text-white">{s.title}</p>
+      <div className="space-y-2.5">
+        {data.slides.map((s, i) => {
+          const heading = cleanText(s.title);
+          const bullets = (s.bullets || []).map(cleanText).filter(Boolean);
+          const frame = { background: c(th.bg), color: c(th.ink), borderColor: th.dark ? '#334155' : '#e2e8f0' };
+
+          if (s.layout === 'title') {
+            const sub = i === 0 ? cleanText(data.subtitle) || bullets[0] : bullets[0];
+            return (
+              <div key={i} className="relative rounded-xl overflow-hidden" style={{ background: c(th.accent), color: c(th.onAccent) }}>
+                <div className="px-4 pt-4 pb-5">
+                  <div className="w-8 h-1 rounded-full mb-3" style={{ background: c(th.onAccent) }} />
+                  <p className="text-[15px] font-bold leading-snug" style={headFont}>{heading}</p>
+                  {sub && <p className="mt-1.5 text-[12.5px] leading-relaxed opacity-90">{sub}</p>}
+                </div>
+                <div className="h-1.5" style={{ background: c(th.secondary) }} />
+              </div>
+            );
+          }
+          if (s.layout === 'section') {
+            section += 1;
+            return (
+              <div key={i} className="relative flex rounded-xl overflow-hidden border" style={frame}>
+                <div className="w-14 shrink-0 flex items-center justify-center text-[20px] font-bold tabular-nums" style={{ background: c(th.accent), color: c(th.onAccent), ...headFont }}>
+                  {String(section).padStart(2, '0')}
+                </div>
+                <div className="px-3.5 py-3.5 pr-8">
+                  <p className="text-[14px] font-bold leading-snug" style={headFont}>{heading}</p>
+                  {bullets[0] && <p className="mt-1 text-[12px] leading-relaxed" style={{ color: c(th.muted) }}>{bullets[0]}</p>}
+                </div>
+                {pageNo(i, c(th.muted))}
+              </div>
+            );
+          }
+          if (s.layout === 'quote') {
+            return (
+              <div key={i} className="relative rounded-xl px-4 py-3.5 pb-6" style={{ background: c(th.surface), color: c(th.ink) }}>
+                <p className="text-[10.5px] font-semibold uppercase tracking-wide" style={{ color: c(th.muted) }}>{heading}</p>
+                <p className="mt-1 text-[34px] leading-none font-serif" style={{ color: c(th.accent) }} aria-hidden="true">“</p>
+                <p className="-mt-2 text-[14px] italic leading-relaxed" style={headFont}>{bullets[0] || heading}</p>
+                {bullets[1] && <p className="mt-1.5 text-[12px]" style={{ color: c(th.muted) }}>— {bullets[1]}</p>}
+                {pageNo(i, c(th.muted))}
+              </div>
+            );
+          }
+          return (
+            <div key={i} className="relative rounded-xl border px-4 py-3.5 pb-6" style={frame}>
+              <div className="w-6 h-[3px] rounded-full mb-2" style={{ background: c(th.accent) }} />
+              <p className="text-[13.5px] font-bold leading-snug mb-2" style={headFont}>{heading}</p>
+              {s.layout === 'two-col' ? (
+                <div className="grid grid-cols-1 gap-2">
+                  {splitColumns(bullets).map((col, k) => (
+                    <div key={k} className="rounded-lg overflow-hidden" style={{ background: c(th.surface) }}>
+                      <div className="h-[3px]" style={{ background: c(k === 0 ? th.accent : th.secondary) }} />
+                      <div className="p-2.5">{rows(col, k === 0 ? th.accent : th.secondary)}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : rows(bullets, th.accent)}
+              {pageNo(i, c(th.muted))}
             </div>
-            <ul className="mt-1.5 space-y-0.5">
-              {(s.bullets || []).map((b, j) => (
-                <li key={j} className="text-[12.5px] text-slate-600 dark:text-slate-300 ml-3 before:content-['•'] before:mr-1.5 before:text-brand-400">
-                  {inlineCite(b, citations, onCitationClick, `s${i}-${j}`)}
-                </li>
-              ))}
-            </ul>
-          </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/** Sources behind a text output, listed once each: the text itself carries no [N] markers. */
+export function OutputSources({ citations, onCitationClick }) {
+  const { t } = useLang();
+  const bySource = new Map();
+  for (const cite of citations || []) {
+    const key = cite.sourceId || cite.title;
+    if (key && !bySource.has(key)) bySource.set(key, cite);
+  }
+  if (!bySource.size) return null;
+  return (
+    <div className="mt-3 pt-2.5 border-t border-stone-100 dark:border-slate-800">
+      <p className="text-[10.5px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1.5">
+        {t('aiStudio.render.sources')}
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        {[...bySource.entries()].map(([key, cite]) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => onCitationClick?.(cite)}
+            title={cite.title}
+            className="max-w-full truncate text-[11.5px] px-2 py-1 rounded-md bg-stone-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-stone-200 dark:hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          >
+            {cite.title}
+          </button>
         ))}
       </div>
     </div>

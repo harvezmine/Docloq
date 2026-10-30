@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import aiProjectService from '@/services/ai-project.service';
 import { useLang } from '@/app/providers/LanguageProvider';
 import usePolling from '../hooks/usePolling';
-import { RENDERERS } from './outputs';
+import { RENDERERS, OutputSources } from './outputs';
 import GenerateOutputModal from './GenerateOutputModal';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 
@@ -246,5 +246,10 @@ function ImageOutput({ projectId, outputId, kind, title }) {
 // Text kinds render via their renderer with the decrypted payload.
 function TextOutput({ kind, output, onCitationClick }) {
   const R = RENDERERS[kind];
-  return <R payload={output.payload} onCitationClick={onCitationClick} title={output.title} />;
+  return (
+    <>
+      <R payload={output.payload} onCitationClick={onCitationClick} title={output.title} />
+      <OutputSources citations={output.payload.citations} onCitationClick={onCitationClick} />
+    </>
+  );
 }

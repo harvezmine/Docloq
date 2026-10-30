@@ -9,7 +9,7 @@ import { buildContext } from './context-builder.service.js';
 import { encryptChunkText, decryptChunkText } from './source-chunk.service.js';
 import { resolveProjectKey, ValidationError, NotFoundError } from './ai-project.service.js';
 import { checkAndDecrementQuota, getQuotaStatus, QuotaExceededError } from './ai-analysis.service.js';
-import { getOutputSpec, isValidKind, isImageKind } from './output-schemas.js';
+import { getOutputSpec, isValidKind, isImageKind, stripCitationMarkers } from './output-schemas.js';
 import { generateImage, storeImage, readImage, deleteImageBlob, IMAGE_MODEL } from './ai-image.service.js';
 import { llm as openai, modelId, isReasoningModel, AI_NOT_CONFIGURED } from './llm-client.js';
 
@@ -261,7 +261,9 @@ export async function getOutput(projectId, outputId) {
 
   const plaintextKey = await resolveProjectKey(projectId);
   const payload = JSON.parse(decryptChunkText(row, plaintextKey));
-  return { ...toMeta(row), payload, stale };
+  // Stored text keeps its [N] markers (they back `citations` and the provenance receipt), but
+  // users see clean text; sources are listed under the output instead.
+  return { ...toMeta(row), payload: { ...payload, data: stripCitationMarkers(payload.data) }, stale };
 }
 
 /** Decrypt an image output's blob for the authed stream route. Membership is checked by the

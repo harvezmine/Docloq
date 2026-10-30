@@ -225,6 +225,7 @@ export default {
     exportPptxBusy: { id: 'Menyiapkan PPTX…', en: 'Preparing PPTX…' },
     exportPptxFailed: { id: 'Gagal membuat PPTX. Muat ulang halaman lalu coba lagi.', en: 'Could not create the PPTX. Reload the page and try again.' },
     reload: { id: 'Muat ulang', en: 'Reload' },
+    sources: { id: 'Sumber', en: 'Sources' },
     downloadPng: { id: 'Unduh PNG', en: 'Download PNG' },
     downloadPdf: { id: 'Unduh PDF', en: 'Download PDF' },
     imageLoadFailed: { id: 'Gagal memuat gambar.', en: 'Failed to load image.' },
